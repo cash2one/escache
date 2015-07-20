@@ -33,7 +33,6 @@ public class MongoDBUtil {
 
 	static {
 		try {
-			System.out.println("!1111111111111111");
 			settings = ImmutableSettings.settingsBuilder()
 					.loadFromClasspath("mongo.yml").build();
 			connection = new Mongo(settings.get("IP") + ":"

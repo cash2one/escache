@@ -25,10 +25,12 @@ public final class MongoDBOperate {
 	}
 
 	private void query(String collection, String[] filters, String type) {
-		if (isMongoDataExist(collection, filters, type)) {
+		if (!isMongoDataExist(collection, filters, type)) {
+			System.out.println("获取数据");
 			// ES中获取数据
 			// MongoDB存储
-			List<?> data = new ArrayList<Object>();
+			List<Object> data = new ArrayList<Object>();
+			data.add(new Object());
 			insertMongoData(data, collection, filters, type);
 		}
 	}

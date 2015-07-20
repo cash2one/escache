@@ -10,17 +10,18 @@ public abstract class MongoDBAbstractHandle {
 	 */
 	public void load(String[] collectionNames, String[] filters, String type) {
 		// 调用基本方法
-		loadData(collectionNames, filters, type);
+		List<DBObject> _list = loadData(collectionNames, filters, type);
 		hookMethod();
-		handleData(type);
+		handleData(_list, type);
 	}
 
 	/**
 	 * 基本方法的声明（由子类实现）
+	 * @param _list 
 	 * 
 	 * @param type
 	 */
-	protected abstract void handleData(String type);
+	protected abstract void handleData(List<DBObject> _list, String type);
 
 	/**
 	 * 基本方法(空方法)
