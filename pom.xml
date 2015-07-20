@@ -50,6 +50,13 @@
 			<version>3.0.2</version>
 		</dependency>
 		
+		<!-- for fastjson -->  
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+		
 
 	</dependencies>
 

@@ -3,8 +3,8 @@ package com.cache.ws.rest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-
 import javax.ws.rs.core.Response;
+
 
 @Path("/message")
 public class MessageRestService {
@@ -12,7 +12,7 @@ public class MessageRestService {
 	}
 
 	@GET
-	@Path("/{ }")
+	@Path("/{param}")
 	public Response printMessage(@PathParam("param") String msg) {
 
 		String result = "Restful example : " + msg;
@@ -22,9 +22,14 @@ public class MessageRestService {
 	}
 
 	@GET
-	@Path("/get/{param}")
+	@Path("/cacheData/{param}")
 	public Response getMessage(@PathParam("param") String msg) {
 
+		
+		
+		
+		
+		
 		String result = "Restful example12321321 : " + msg;
 
 		return Response.status(200).entity(result).build();
