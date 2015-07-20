@@ -165,7 +165,7 @@ public class MongoDB4CRUDTest {
 		print(users.save(user).getN());
 	}
 
-	@Test
+	// @Test
 	public void query() {
 		// 查询所有
 		// queryAll();
@@ -239,5 +239,13 @@ public class MongoDB4CRUDTest {
 						true, true));
 
 		queryAll();
+	}
+
+	@Test
+	public void dataExists() {
+		queryAll();
+		DBObject dbObject = new BasicDBObject();
+		dbObject.put("name", "11199");
+		print("name = 199 的记录是否存在 : " + users.findOne(dbObject));
 	}
 }

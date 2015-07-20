@@ -33,11 +33,13 @@ public class MongoDBUtil {
 
 	static {
 		try {
+			System.out.println("!1111111111111111");
 			settings = ImmutableSettings.settingsBuilder()
 					.loadFromClasspath("mongo.yml").build();
 			connection = new Mongo(settings.get("IP") + ":"
 					+ settings.get("PORT"));
 			db = connection.getDB(settings.get("DB_NAME"));
+			System.out.println(db);
 		} catch (MongoException e) {
 			e.printStackTrace();
 		} catch (UnknownHostException e) {
@@ -48,7 +50,7 @@ public class MongoDBUtil {
 	private MongoDBUtil() {
 
 	}
-
+	
 	public static void main(String[] args) {
 		MongoDBUtil.find(new BasicDBObject(), "users");
 	}
@@ -352,5 +354,23 @@ public class MongoDBUtil {
 		DBCollection coll = db.getCollection(collName);
 		DBCursor cur = coll.find(ref, keys);
 		return cur;
+	}
+
+	/**
+	 * 判断集合中是否存在特定条件的记录
+	 * 
+	 * @param map
+	 * @param collection
+	 * @return
+	 */
+	public static boolean dataExists(Map<String, Object> map, String collection) {
+		DBObject dbObject = getMapped(map);
+		return getCollection(collection).findOne(dbObject) != null;
+	}
+
+	public static List<DBObject> findByRefs(Map<String, Object> map,
+			String collection) {
+		DBObject dbObject = getMapped(map);
+		return getCollection(collection).find(dbObject).toArray();
 	}
 }
