@@ -49,13 +49,9 @@ public class MongoDBUtil {
 	private MongoDBUtil() {
 
 	}
-	
-	public static void main(String[] args) {
-		MongoDBUtil.find(new BasicDBObject(), "users");
-	}
 
 	/**
-	 * ¸ù¾İÌõ¼şÅĞ¶ÏÊÇ·ñ´æÔÚÊı¾İ
+	 * æ ¹æ®æ¡ä»¶åˆ¤æ–­æ˜¯å¦å­˜åœ¨æ•°æ®
 	 */
 	public static boolean existByDbs(DBObject dbs, String collName) {
 		DBCollection coll = db.getCollection(collName);
@@ -64,7 +60,7 @@ public class MongoDBUtil {
 	}
 
 	/**
-	 * ÅĞ¶Ï¼¯ºÏÊÇ·ñ´æÔÚ
+	 * åˆ¤æ–­é›†åˆæ˜¯å¦å­˜åœ¨
 	 * 
 	 * @param collectionName
 	 * @return
@@ -74,7 +70,7 @@ public class MongoDBUtil {
 	}
 
 	/**
-	 * ²éÑ¯µ¥¸ö,°´Ö÷¼ü²éÑ¯
+	 * æŸ¥è¯¢å•ä¸ª,æŒ‰ä¸»é”®æŸ¥è¯¢
 	 * 
 	 * @param id
 	 * @param collectionName
@@ -86,7 +82,7 @@ public class MongoDBUtil {
 	}
 
 	/**
-	 * ²éÑ¯µ¥¸ö <br>
+	 * æŸ¥è¯¢å•ä¸ª <br>
 	 * ------------------------------<br>
 	 * 
 	 * @param map
@@ -110,7 +106,7 @@ public class MongoDBUtil {
 	}
 
 	/**
-	 * ²éÑ¯
+	 * æŸ¥è¯¢
 	 * 
 	 * @param dbObject
 	 * @param cursor
@@ -126,7 +122,7 @@ public class MongoDBUtil {
 	}
 
 	/**
-	 * »ñÈ¡¼¯ºÏ(±í)
+	 * è·å–é›†åˆ(è¡¨)
 	 * 
 	 * @param collectionName
 	 * @return
@@ -136,7 +132,7 @@ public class MongoDBUtil {
 	}
 
 	/**
-	 * »ñÈ¡ËùÓĞ¼¯ºÏ(±í)Ãû³Æ
+	 * è·å–æ‰€æœ‰é›†åˆ(è¡¨)åç§°
 	 * 
 	 * @return
 	 */
@@ -145,7 +141,7 @@ public class MongoDBUtil {
 	}
 
 	/**
-	 * ´´½¨¼¯ºÏ(±í)
+	 * åˆ›å»ºé›†åˆ(è¡¨)
 	 * 
 	 * @param collectionName
 	 * @param options
@@ -157,7 +153,7 @@ public class MongoDBUtil {
 	}
 
 	/**
-	 * É¾³ı
+	 * åˆ é™¤
 	 * 
 	 * @param collectionName
 	 */
@@ -220,7 +216,7 @@ public class MongoDBUtil {
 	}
 
 	/**
-	 * ²åÈëÊı¾İ
+	 * æ’å…¥æ•°æ®
 	 * 
 	 * @param dbs
 	 * @param collName
@@ -235,13 +231,13 @@ public class MongoDBUtil {
 		// books.add("MONGODB");
 		// dbs.put("books", books);
 		// mongoDb.insert(dbs, "users");
-		// 1.µÃµ½¼¯ºÏ
-		// 2.²åÈë²Ù×÷
+		// 1.å¾—åˆ°é›†åˆ
+		// 2.æ’å…¥æ“ä½œ
 		db.getCollection(collName).insert(dbs);
 	}
 
 	/**
-	 * ÅúÁ¿²åÈëÊı¾İ
+	 * æ‰¹é‡æ’å…¥æ•°æ®
 	 * 
 	 * @param dbses
 	 * @param collName
@@ -254,77 +250,77 @@ public class MongoDBUtil {
 		// dbObjects.add(jim);
 		// dbObjects.add(lisi);
 		// mongoDb.insertBatch(dbObjects, "users");
-		// 1.µÃµ½¼¯ºÏ
-		// 2.²åÈë²Ù×÷
+		// 1.å¾—åˆ°é›†åˆ
+		// 2.æ’å…¥æ“ä½œ
 		db.getCollection(collName).insert(dbses);
 	}
 
 	/**
-	 * ¸ù¾İidÉ¾³ıÊı¾İ
+	 * æ ¹æ®idåˆ é™¤æ•°æ®
 	 * 
 	 * @param id
 	 * @param collName
-	 * @return ·µ»ØÓ°ÏìµÄÊı¾İÌõÊı
+	 * @return è¿”å›å½±å“çš„æ•°æ®æ¡æ•°
 	 */
 	public static int deleteById(String id, String collName) {
 		// EG
 		// mongoDb.deleteById("55a778f9f7fe06b241f54b10", "users");
-		// 1.µÃµ½¼¯ºÏ
+		// 1.å¾—åˆ°é›†åˆ
 		DBObject dbs = new BasicDBObject("_id", new ObjectId(id));
 		int count = db.getCollection(collName).remove(dbs).getN();
 		return count;
 	}
 
 	/**
-	 * ¸ù¾İÌõ¼şÉ¾³ıÊı¾İ
+	 * æ ¹æ®æ¡ä»¶åˆ é™¤æ•°æ®
 	 * 
 	 * @param id
 	 * @param collName
-	 * @return ·µ»ØÓ°ÏìµÄÊı¾İÌõÊı
+	 * @return è¿”å›å½±å“çš„æ•°æ®æ¡æ•°
 	 */
 	public static int deleteByDbs(DBObject dbs, String collName) {
 		// EG
 		// DBObject lisi = new BasicDBObject();
 		// lisi.put("name", "lisi");
 		// int count = mongoDb.deleteByDbs(lisi, "users");
-		// System.out.println("É¾³ıÊı¾İµÄÌõÊıÊÇ: " + count);
-		// 1.µÃµ½¼¯ºÏ
+		// System.out.println("åˆ é™¤æ•°æ®çš„æ¡æ•°æ˜¯: " + count);
+		// 1.å¾—åˆ°é›†åˆ
 		DBCollection coll = db.getCollection(collName);
 		int count = coll.remove(dbs).getN();
 		return count;
 	}
 
 	/**
-	 * ¸üĞÂÊı¾İ
+	 * æ›´æ–°æ•°æ®
 	 * 
 	 * @param find
-	 *            ²éÑ¯Æ÷
+	 *            æŸ¥è¯¢å™¨
 	 * @param update
-	 *            ¸üĞÂÆ÷
+	 *            æ›´æ–°å™¨
 	 * @param upsert
-	 *            ¸üĞÂ»ò²åÈë
+	 *            æ›´æ–°æˆ–æ’å…¥
 	 * @param multi
-	 *            ÊÇ·ñÅúÁ¿¸üĞÂ
+	 *            æ˜¯å¦æ‰¹é‡æ›´æ–°
 	 * @param collName
-	 *            ¼¯ºÏÃû³Æ
-	 * @return ·µ»ØÓ°ÏìµÄÊı¾İÌõÊı
+	 *            é›†åˆåç§°
+	 * @return è¿”å›å½±å“çš„æ•°æ®æ¡æ•°
 	 */
 	public static int update(DBObject find, DBObject update, boolean upsert,
 			boolean multi, String collName) {
 		// EG
 		// DBObject find = new BasicDBObject();
-		// find.put("name", "Ğ¡Ã÷");
+		// find.put("name", "å°æ˜");
 		// DBObject update = new BasicDBObject();
 		// update.put("$set", new BasicDBObject("eamil", "test1111@126.com"));
 		// mongoDb.update(find, update, false, true, "users");
-		// 1.µÃµ½¼¯ºÏ
+		// 1.å¾—åˆ°é›†åˆ
 		DBCollection coll = db.getCollection(collName);
 		int count = coll.update(find, update, upsert, multi).getN();
 		return count;
 	}
 
 	/**
-	 * ²éÑ¯Æ÷(·ÖÒ³)
+	 * æŸ¥è¯¢å™¨(åˆ†é¡µ)
 	 * 
 	 * @param ref
 	 * @param keys
@@ -339,7 +335,7 @@ public class MongoDBUtil {
 	}
 
 	/**
-	 * ²éÑ¯Æ÷(²»·ÖÒ³)
+	 * æŸ¥è¯¢å™¨(ä¸åˆ†é¡µ)
 	 * 
 	 * @param ref
 	 * @param keys
@@ -349,14 +345,14 @@ public class MongoDBUtil {
 	 * @return
 	 */
 	public DBCursor find(DBObject ref, DBObject keys, String collName) {
-		// 1.µÃµ½¼¯ºÏ
+		// 1.å¾—åˆ°é›†åˆ
 		DBCollection coll = db.getCollection(collName);
 		DBCursor cur = coll.find(ref, keys);
 		return cur;
 	}
 
 	/**
-	 * ÅĞ¶Ï¼¯ºÏÖĞÊÇ·ñ´æÔÚÌØ¶¨Ìõ¼şµÄ¼ÇÂ¼
+	 * åˆ¤æ–­é›†åˆä¸­æ˜¯å¦å­˜åœ¨ç‰¹å®šæ¡ä»¶çš„è®°å½•
 	 * 
 	 * @param map
 	 * @param collection
