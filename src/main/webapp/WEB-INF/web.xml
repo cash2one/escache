@@ -14,7 +14,7 @@
   
     <context-param> 
            <param-name>resteasy.resources</param-name> 
-           <param-value>com.cache.ws.rest.MessageRestService</param-value> 
+           <param-value>com.cache.ws.rest.CacheRestService</param-value> 
     </context-param> 
    
     <!-- this need same with resteasy servlet url-pattern --> 
