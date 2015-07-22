@@ -4,6 +4,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.junit.After;
@@ -32,9 +33,9 @@ public class MongoDB4CRUDTest {
 		} catch (MongoException e) {
 			e.printStackTrace();
 		}
-		// »ñÈ¡xnmz_weims_test DB£»Èç¹ûÄ¬ÈÏÃ»ÓĞ´´½¨£¬mongodb»á×Ô¶¯´´½¨
+		// è·å–xnmz_weims_test DBï¼›å¦‚æœé»˜è®¤æ²¡æœ‰åˆ›å»ºï¼Œmongodbä¼šè‡ªåŠ¨åˆ›å»º
 		db = mg.getDB("xnmz_weims_test");
-		// »ñÈ¡users DBCollection£»Èç¹ûÄ¬ÈÏÃ»ÓĞ´´½¨£¬mongodb»á×Ô¶¯´´½¨
+		// è·å–users DBCollectionï¼›å¦‚æœé»˜è®¤æ²¡æœ‰åˆ›å»ºï¼Œmongodbä¼šè‡ªåŠ¨åˆ›å»º
 		users = db.getCollection("users");
 	}
 
@@ -54,17 +55,17 @@ public class MongoDB4CRUDTest {
 	}
 
 	/**
-	 * <b>function:</b> ²éÑ¯ËùÓĞÊı¾İ
+	 * <b>function:</b> æŸ¥è¯¢æ‰€æœ‰æ•°æ®
 	 * 
 	 * @author hoojo
-	 * @createDate 2011-6-2 ÏÂÎç03:22:40
+	 * @createDate 2011-6-2 ä¸‹åˆ03:22:40
 	 */
 	private void queryAll() {
-		print("²éÑ¯usersµÄËùÓĞÊı¾İ£º");
-		// dbÓÎ±ê
+		print("æŸ¥è¯¢usersçš„æ‰€æœ‰æ•°æ®ï¼š");
+		// dbæ¸¸æ ‡
 		DBCursor cur = users.find();
 		if (cur.count() == 0) {
-			print("ÔİÎŞÊı¾İ");
+			print("æš‚æ— æ•°æ®");
 		}
 		while (cur.hasNext()) {
 			print(cur.next());
@@ -73,35 +74,35 @@ public class MongoDB4CRUDTest {
 
 	// @Test
 	public void add() {
-		// ÏÈ²éÑ¯ËùÓĞÊı¾İ
+		// å…ˆæŸ¥è¯¢æ‰€æœ‰æ•°æ®
 		queryAll();
 		print("count: " + users.count());
 
 		DBObject user = new BasicDBObject();
 		user.put("name", "hoojo");
 		user.put("age", 24);
-		// users.save(user)±£´æ£¬getN()»ñÈ¡Ó°ÏìĞĞÊı
+		// users.save(user)ä¿å­˜ï¼ŒgetN()è·å–å½±å“è¡Œæ•°
 		// print(users.save(user).getN());
 
-		// À©Õ¹×Ö¶Î£¬ËæÒâÌí¼Ó×Ö¶Î£¬²»Ó°ÏìÏÖÓĞÊı¾İ
-		user.put("sex", "ÄĞ");
+		// æ‰©å±•å­—æ®µï¼Œéšæ„æ·»åŠ å­—æ®µï¼Œä¸å½±å“ç°æœ‰æ•°æ®
+		user.put("sex", "ç”·");
 		print(users.save(user).getN());
 
-		// Ìí¼Ó¶àÌõÊı¾İ£¬´«µİArray¶ÔÏó
+		// æ·»åŠ å¤šæ¡æ•°æ®ï¼Œä¼ é€’Arrayå¯¹è±¡
 		print(users.insert(new BasicDBObject("name", "tom"),
 				new BasicDBObject("sv", "1111111")).getN());
 
-		// Ìí¼ÓList¼¯ºÏ
+		// æ·»åŠ Listé›†åˆ
 		List<DBObject> list = new ArrayList<DBObject>();
 		DBObject user1 = new BasicDBObject("name", "happy");
 		list.add(user1);
 		DBObject user2 = new BasicDBObject("name", "11133333");
 		user2.put("age", 22);
 		list.add(user2);
-		// Ìí¼ÓList¼¯ºÏ
+		// æ·»åŠ Listé›†åˆ
 		print(users.insert(list).getN());
 
-		// ²éÑ¯ÏÂÊı¾İ£¬¿´¿´ÊÇ·ñÌí¼Ó³É¹¦
+		// æŸ¥è¯¢ä¸‹æ•°æ®ï¼Œçœ‹çœ‹æ˜¯å¦æ·»åŠ æˆåŠŸ
 		print("count: " + users.count());
 		queryAll();
 	}
@@ -113,7 +114,7 @@ public class MongoDB4CRUDTest {
 		while (cur.hasNext()) {
 			DBObject o = cur.next();
 			print(o.get("_id"));
-			print("É¾³ıid = "
+			print("åˆ é™¤id = "
 					+ o.get("_id")
 					+ " : "
 					+ users.remove(
@@ -126,28 +127,28 @@ public class MongoDB4CRUDTest {
 	// @Test
 	public void modify() {
 		queryAll();
-		// print("ĞŞ¸Ä£º"
+		// print("ä¿®æ”¹ï¼š"
 		// + users.update(
 		// new BasicDBObject("_id", new ObjectId(
 		// "4dde25d06be7c53ffbd70906")),
 		// new BasicDBObject("age", 99)).getN());
-		// print("ĞŞ¸Ä£º"
+		// print("ä¿®æ”¹ï¼š"
 		// + users.update(
 		// new BasicDBObject("_id", new ObjectId(
 		// "4dde2b06feb038463ff09042")),
-		// new BasicDBObject("age", 121), true,// Èç¹ûÊı¾İ¿â²»´æÔÚ£¬ÊÇ·ñÌí¼Ó
-		// false// false:ÓĞ¶àÌõÖ»ĞŞ¸ÄµÚÒ»Ìõ,true:ÓĞ¶àÌõ¾Í²»ĞŞ¸Ä
+		// new BasicDBObject("age", 121), true,// å¦‚æœæ•°æ®åº“ä¸å­˜åœ¨ï¼Œæ˜¯å¦æ·»åŠ 
+		// false// false:æœ‰å¤šæ¡åªä¿®æ”¹ç¬¬ä¸€æ¡,true:æœ‰å¤šæ¡å°±ä¸ä¿®æ”¹
 		// ).getN());
-		print("ĞŞ¸Ä£º"
+		print("ä¿®æ”¹ï¼š"
 				+ users.update(new BasicDBObject("name", "hoojo"),
-						new BasicDBObject("name", "dingding"), true,// Èç¹ûÊı¾İ¿â²»´æÔÚ£¬ÊÇ·ñÌí¼Ó
-						false// false:ÓĞ¶àÌõÖ»ĞŞ¸ÄµÚÒ»Ìõ,true:ÓĞ¶àÌõ¾Í²»ĞŞ¸Ä
+						new BasicDBObject("name", "dingding"), true,// å¦‚æœæ•°æ®åº“ä¸å­˜åœ¨ï¼Œæ˜¯å¦æ·»åŠ 
+						false// false:æœ‰å¤šæ¡åªä¿®æ”¹ç¬¬ä¸€æ¡,true:æœ‰å¤šæ¡å°±ä¸ä¿®æ”¹
 				).getN());
 
-		// µ±Êı¾İ¿â²»´æÔÚ¾Í²»ĞŞ¸Ä¡¢²»Ìí¼ÓÊı¾İ£¬µ±¶àÌõÊı¾İ¾Í²»ĞŞ¸Ä
+		// å½“æ•°æ®åº“ä¸å­˜åœ¨å°±ä¸ä¿®æ”¹ã€ä¸æ·»åŠ æ•°æ®ï¼Œå½“å¤šæ¡æ•°æ®å°±ä¸ä¿®æ”¹
 		// DBObject object = new BasicDBObject("_id", new
 		// ObjectId("55ac865a5faa84c0d998e835"));
-		// print("ĞŞ¸Ä¶àÌõ£º"
+		// print("ä¿®æ”¹å¤šæ¡ï¼š"
 		// + users.updateMulti(object, new BasicDBObject("name", "199")));
 		queryAll();
 	}
@@ -157,95 +158,132 @@ public class MongoDB4CRUDTest {
 		DBObject user = new BasicDBObject();
 		user.put("name", "hoojo");
 		user.put("age", new Random().nextInt(10));
-		// users.save(user)±£´æ£¬getN()»ñÈ¡Ó°ÏìĞĞÊı
+		// users.save(user)ä¿å­˜ï¼ŒgetN()è·å–å½±å“è¡Œæ•°
 		// print(users.save(user).getN());
 
-		// À©Õ¹×Ö¶Î£¬ËæÒâÌí¼Ó×Ö¶Î£¬²»Ó°ÏìÏÖÓĞÊı¾İ
-		user.put("sex", "ÄĞ");
+		// æ‰©å±•å­—æ®µï¼Œéšæ„æ·»åŠ å­—æ®µï¼Œä¸å½±å“ç°æœ‰æ•°æ®
+		user.put("sex", "ç”·");
 		print(users.save(user).getN());
 	}
 
 	// @Test
 	public void query() {
-		// ²éÑ¯ËùÓĞ
+		// æŸ¥è¯¢æ‰€æœ‰
 		// queryAll();
 
-		// ²éÑ¯id = 55ac889a5faa4a4e7fd376fc
+		// æŸ¥è¯¢id = 55ac889a5faa4a4e7fd376fc
 		// print("find by id = 55ac889a5faa4a4e7fd376fc : "
 		// + users.find(new BasicDBObject("_id", new ObjectId(
 		// "55ac889a5faa4a4e7fd376fc"))).toArray());
 
-		// ²éÑ¯age = 24
+		// æŸ¥è¯¢age = 24
 		// print("find age = 24 : " + users.find(new BasicDBObject("age",
 		// 24)).toArray());
 
-		// ²éÑ¯age >= 24
+		// æŸ¥è¯¢age >= 24
 		// print("find age >= 24 : " + users.find(new BasicDBObject("age", new
 		// BasicDBObject("$gte", 24))).toArray());
 
-		// ²éÑ¯age <= 24
+		// æŸ¥è¯¢age <= 24
 		// print("find age <= 24 : " + users.find(new BasicDBObject("age", new
 		// BasicDBObject("$lte", 24))).toArray());
 
-		// ²éÑ¯age != 25
+		// æŸ¥è¯¢age != 25
 		// print("find age != 25 : " + users.find(new BasicDBObject("age", new
 		// BasicDBObject("$ne", 25))).toArray());
 
-		// "²éÑ¯age in 25/26/27
+		// "æŸ¥è¯¢age in 25/26/27
 		// print("find age in 25/26/27 : "
 		// + users.find(
 		// new BasicDBObject("age", new BasicDBObject(
 		// QueryOperators.IN, new int[] { 6, 26, 27 })))
 		// .toArray());
 
-		// ²éÑ¯age not in 25/26/27
+		// æŸ¥è¯¢age not in 25/26/27
 		// print("find age not in 25/26/27 : "
 		// + users.find(
 		// new BasicDBObject("age", new BasicDBObject(
 		// QueryOperators.NIN, new int[] { 25, 26, 27 })))
 		// .toArray());
 
-		// ²éÑ¯age exists
+		// æŸ¥è¯¢age exists
 		// print("find age exists : "
 		// + users.find(
 		// new BasicDBObject("age", new BasicDBObject(
 		// QueryOperators.EXISTS, true))).toArray());
 
-		// print("Ö»²éÑ¯ageÊôĞÔ£º"
+		// print("åªæŸ¥è¯¢ageå±æ€§ï¼š"
 		// + users.find(null, new BasicDBObject("age", true)).toArray());
 
-		// Ö»²éÑ¯Ò»ÌõÊı¾İ£¬¶àÌõÈ¥µÚÒ»Ìõ
+		// åªæŸ¥è¯¢ä¸€æ¡æ•°æ®ï¼Œå¤šæ¡å»ç¬¬ä¸€æ¡
 		// print("findOne: " + users.findOne());
 		// print("findOne: " + users.findOne(new BasicDBObject("age", 24)));
 		// print("findOne: "
 		// + users.findOne(new BasicDBObject("age", 24),
 		// new BasicDBObject("name", true)));
 
-		// ²éÑ¯ĞŞ¸Ä¡¢É¾³ı,µÚÒ»Ìõ
-		// print("findAndRemove ²éÑ¯age=25µÄÊı¾İ£¬²¢ÇÒÉ¾³ı: "
+		// æŸ¥è¯¢ä¿®æ”¹ã€åˆ é™¤,ç¬¬ä¸€æ¡
+		// print("findAndRemove æŸ¥è¯¢age=25çš„æ•°æ®ï¼Œå¹¶ä¸”åˆ é™¤: "
 		// + users.findAndRemove(new BasicDBObject("name", "hoojo")));
 
-		// ²éÑ¯age=26µÄÊı¾İ£¬²¢ÇÒĞŞ¸ÄnameµÄÖµÎªAbc
+		// æŸ¥è¯¢age=26çš„æ•°æ®ï¼Œå¹¶ä¸”ä¿®æ”¹nameçš„å€¼ä¸ºAbc
 		// print("findAndModify: "
 		// + users.findAndModify(new BasicDBObject("name", "hoojo"),
 		// new BasicDBObject("age", 111)));
 
 		print("findAndModify: "
-				+ users.findAndModify(new BasicDBObject("age", 28), // ²éÑ¯age=28µÄÊı¾İ
-						new BasicDBObject("name", true), // ²éÑ¯nameÊôĞÔ
-						new BasicDBObject("age", true), // °´ÕÕageÅÅĞò
-						false, // ÊÇ·ñÉ¾³ı£¬true±íÊ¾É¾³ı
-						new BasicDBObject("name", "Abc"), // ĞŞ¸ÄµÄÖµ£¬½«nameĞŞ¸Ä³ÉAbc
+				+ users.findAndModify(new BasicDBObject("age", 28), // æŸ¥è¯¢age=28çš„æ•°æ®
+						new BasicDBObject("name", true), // æŸ¥è¯¢nameå±æ€§
+						new BasicDBObject("age", true), // æŒ‰ç…§ageæ’åº
+						false, // æ˜¯å¦åˆ é™¤ï¼Œtrueè¡¨ç¤ºåˆ é™¤
+						new BasicDBObject("name", "Abc"), // ä¿®æ”¹çš„å€¼ï¼Œå°†nameä¿®æ”¹æˆAbc
 						true, true));
 
 		queryAll();
 	}
 
-	@Test
+	// @Test
 	public void dataExists() {
 		queryAll();
 		DBObject dbObject = new BasicDBObject();
 		dbObject.put("name", "11199");
-		print("name = 199 µÄ¼ÇÂ¼ÊÇ·ñ´æÔÚ : " + users.findOne(dbObject));
+		print("name = 199 çš„è®°å½•æ˜¯å¦å­˜åœ¨ : " + users.findOne(dbObject));
 	}
+
+	// @Test
+	public void queryAllCollectionNames() {
+		Set<String> s = db.getCollectionNames();
+		for (String string : s) {
+			System.out.println(string);
+		}
+	}
+
+//	@Test
+	public void queryAllDatas() {
+		Set<String> collectionNames = db.getCollectionNames();
+		DBCollection dbCollection = null;
+		for (String collectionName : collectionNames) {
+			System.out.println("collectionName : " + collectionName);
+			dbCollection = db.getCollection(collectionName);
+			for (DBObject dbObject : dbCollection.find().toArray()) {
+				print(dbObject);
+			}
+		}
+	}
+
+	private void showAllCollections() {
+		print("---collectionNames---");
+		Set<String> collectionNames = db.getCollectionNames();
+		for (String collectionName : collectionNames) {
+			print("collectionName : " + collectionName);
+		}
+	}
+
+	@Test
+	public void dropCollection() {
+		showAllCollections();
+		db.getCollection("javadb").drop();
+		showAllCollections();
+	}
+
 }

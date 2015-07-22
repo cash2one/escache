@@ -12,11 +12,11 @@ import com.mongodb.DBObject;
 public final class MongoDBOperate {
 	public List<DBObject> query(String[] collectionNames, String[] filters,
 			String type) {
-		// ÅĞ¶ÏÊı¾İÊÇ·ñ´æÔÚ²¢ÇÒ´æ´¢Êı¾İ
+		// åˆ¤æ–­æ•°æ®æ˜¯å¦å­˜åœ¨å¹¶ä¸”å­˜å‚¨æ•°æ®
 		for (String collection : collectionNames) {
 			query(collection, filters, type);
 		}
-		// ²éÑ¯Êı¾İ
+		// æŸ¥è¯¢æ•°æ®
 		List<DBObject> list = new ArrayList<DBObject>();
 		for (String collection : collectionNames) {
 			list.addAll(loadMongoData(collection, filters, type));
@@ -26,9 +26,9 @@ public final class MongoDBOperate {
 
 	private void query(String collection, String[] filters, String type) {
 		if (!isMongoDataExist(collection, filters, type)) {
-			System.out.println("»ñÈ¡Êı¾İ");
-			// ESÖĞ»ñÈ¡Êı¾İ
-			// MongoDB´æ´¢
+			System.out.println("è·å–æ•°æ®");
+			// ESä¸­è·å–æ•°æ®
+			// MongoDBå­˜å‚¨
 			List<Object> data = new ArrayList<Object>();
 			data.add(new Object());
 			insertMongoData(data, collection, filters, type);
@@ -36,14 +36,14 @@ public final class MongoDBOperate {
 	}
 
 	/**
-	 * ÔÚMongoDBÖĞÅĞ¶ÏÊı¾İÊÇ·ñ´æÔÚ
+	 * åœ¨MongoDBä¸­åˆ¤æ–­æ•°æ®æ˜¯å¦å­˜åœ¨
 	 * 
 	 * @param type
-	 *            Êı¾İtype
+	 *            æ•°æ®type
 	 * @param filters
-	 *            ¹ıÂËÌõ¼ş
+	 *            è¿‡æ»¤æ¡ä»¶
 	 * @param collection
-	 *            ¼¯ºÏ,±í
+	 *            é›†åˆ,è¡¨
 	 * 
 	 * @return
 	 */
@@ -62,16 +62,16 @@ public final class MongoDBOperate {
 	}
 
 	/**
-	 * ÔÚMongoDBÖĞ´æ´¢Êı¾İ
+	 * åœ¨MongoDBä¸­å­˜å‚¨æ•°æ®
 	 * 
 	 * @param data
-	 *            Êı¾İ
+	 *            æ•°æ®
 	 * @param collection
-	 *            ¼¯ºÏ,±í
+	 *            é›†åˆ,è¡¨
 	 * @param filters
-	 *            ¹ıÂËÌõ¼ş
+	 *            è¿‡æ»¤æ¡ä»¶
 	 * @param type
-	 *            Êı¾İtype
+	 *            æ•°æ®type
 	 */
 	private void insertMongoData(List<?> data, String collection,
 			String[] filters, String type) {
@@ -83,7 +83,7 @@ public final class MongoDBOperate {
 	}
 
 	/**
-	 * »ñÈ¡ËùÓĞÊı¾İ
+	 * è·å–æ‰€æœ‰æ•°æ®
 	 * 
 	 * @param type
 	 * @param filters

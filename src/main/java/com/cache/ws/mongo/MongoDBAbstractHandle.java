@@ -6,17 +6,17 @@ import com.mongodb.DBObject;
 
 public abstract class MongoDBAbstractHandle {
 	/**
-	 * Ä£°å·½·¨
+	 * æ¨¡æ¿æ–¹æ³•
 	 */
 	public void load(String[] collectionNames, String[] filters, String type) {
-		// µ÷ÓÃ»ù±¾·½·¨
+		// è°ƒç”¨åŸºæœ¬æ–¹æ³•
 		List<DBObject> _list = loadData(collectionNames, filters, type);
 		hookMethod();
 		handleData(_list, type);
 	}
 
 	/**
-	 * »ù±¾·½·¨µÄÉùÃ÷£¨ÓÉ×ÓÀàÊµÏÖ£©
+	 * åŸºæœ¬æ–¹æ³•çš„å£°æ˜ï¼ˆç”±å­ç±»å®ç°ï¼‰
 	 * @param _list 
 	 * 
 	 * @param type
@@ -24,18 +24,18 @@ public abstract class MongoDBAbstractHandle {
 	protected abstract void handleData(List<DBObject> _list, String type);
 
 	/**
-	 * »ù±¾·½·¨(¿Õ·½·¨)
+	 * åŸºæœ¬æ–¹æ³•(ç©ºæ–¹æ³•)
 	 */
 	protected void hookMethod() {
-		System.out.println("Êı¾İ»ñÈ¡³É¹¦....");
+		System.out.println("æ•°æ®è·å–æˆåŠŸ....");
 	}
 
 	/**
-	 * »ù±¾·½·¨£¨ÒÑ¾­ÊµÏÖ£©
+	 * åŸºæœ¬æ–¹æ³•ï¼ˆå·²ç»å®ç°ï¼‰
 	 */
 	private final List<DBObject> loadData(String[] collectionNames,
 			String[] filters, String type) {
-		// ÒµÎñÏà¹ØµÄ´úÂë
+		// ä¸šåŠ¡ç›¸å…³çš„ä»£ç 
 		MongoDBOperate operate = new MongoDBOperate();
 		return operate.query(collectionNames, filters, type);
 	}

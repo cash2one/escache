@@ -12,7 +12,7 @@ public final class ObjectToDBOject {
 	public static DBObject convert(Object object, String[] filters, String type) {
 		DBObject dbObject = new BasicDBObject();
 
-		// TODO:ES对象数据变成MongoDB对象数据
+		// TODO:ES瀵硅薄鏁版嵁鍙樻垚MongoDB瀵硅薄鏁版嵁
 		dbObject.put("pv", "9089");
 		dbObject.put("uv", "4444");
 		dbObject.put("ip", "1232");
