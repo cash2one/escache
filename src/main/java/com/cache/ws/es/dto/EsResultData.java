@@ -1,5 +1,10 @@
 package com.cache.ws.es.dto;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author TomDing
  *
@@ -11,24 +16,41 @@ public class EsResultData {
 	private String key;
 
 	private String doc_count;
+
 	/** 浏览量 */
 	private EsValue pv;
 	/** 访问次数 */
-	private EsValue vc;
+	private Aggs vc;
 	/** 访客数 */
 	private EsValue uv;
+
 	/** 新访客数 */
-	private EsValue nuv;
+	private String nuv;
+	private Aggs new_visitor_aggs;
+
 	/** 新访客比率 */
-	private EsValue nuvRate;
+	private String nuvRate;
+	private Aggs uv_filter;
+
 	/** IP数 */
-	private EsValue ip;
+	private Aggs ip;
+
 	/** 跳出率 */
-	private EsValue outRate;
+	private String outRate;
+	private Aggs single_visitor_aggs;
+
+	public Aggs getSingle_visitor_aggs() {
+		return single_visitor_aggs;
+	}
+
+	public void setSingle_visitor_aggs(Aggs single_visitor_aggs) {
+		this.single_visitor_aggs = single_visitor_aggs;
+	}
+
 	/** 平均访问时长 */
 	private EsValue avgTime;
 	/** 平均访问页数 */
-	private EsValue avgPage;
+	private String avgPage;
 
 	public EsValue getPv() {
 		return pv;
@@ -62,11 +84,11 @@ public class EsResultData {
 		this.doc_count = doc_count;
 	}
 
-	public EsValue getVc() {
+	public Aggs getVc() {
 		return vc;
 	}
 
-	public void setVc(EsValue vc) {
+	public void setVc(Aggs vc) {
 		this.vc = vc;
 	}
 
@@ -78,35 +100,82 @@ public class EsResultData {
 		this.uv = uv;
 	}
 
-	public EsValue getNuv() {
+	public Aggs getNew_visitor_aggs() {
+		return new_visitor_aggs;
+	}
+
+	public void setNew_visitor_aggs(Aggs new_visitor_aggs) {
+		this.new_visitor_aggs = new_visitor_aggs;
+	}
+
+	public String getNuv() {
+
+		if (StringUtils.isBlank(this.nuv)) {
+			setNuv(getNew_visitor_aggs().getAggs().getValue());
+		}
+
 		return nuv;
 	}
 
-	public void setNuv(EsValue nuv) {
+	public void setNuv(String nuv) {
 		this.nuv = nuv;
 	}
 
-	public EsValue getNuvRate() {
-		return nuvRate;
+	public String getNuvRate() {
+
+		Float nRate = new Float(0);
+		if (StringUtils.isBlank(this.nuvRate)) {
+
+			Float nuv = Float.valueOf(this.new_visitor_aggs.getAggs()
+					.getValue());
+			Float nv = Float.valueOf(this.uv_filter.getAggs().getValue());
+
+			if (Float.valueOf(nv) > 0) {
+				nRate = (nuv.floatValue() / nv.floatValue() * 100);
+			}
+
+		}
+
+		return String.format("%10.2f%%", nRate);
+	}
+	
+public String getAvgPage() {
+		
+	Float avgPage = new Float(0);
+	if (StringUtils.isBlank(this.outRate)) {
+
+		Float pv = Float.valueOf(this.getPv().getValue());
+
+		Float uv = Float.valueOf(this.getUv().getValue());
+
+		 if (uv > 0) {
+	            avgPage = (pv / uv *100);
+	     }
+
 	}
 
-	public void setNuvRate(EsValue nuvRate) {
-		this.nuvRate = nuvRate;
+	return String.format("%10.2f%%", avgPage);
+		
 	}
 
-	public EsValue getIp() {
-		return ip;
+	public String getOutRate() {
+		Float orate = new Float(0);
+		if (StringUtils.isBlank(this.outRate)) {
+
+			Float vc = Float.valueOf(this.vc.getAggs().getValue());
+
+			Float svc = vc - single_visitor_aggs.getBuckets().size();
+
+			if (vc > 0) {
+				orate = (svc / vc * 100);
+			}
+
+		}
+
+		return String.format("%10.2f%%", orate);
 	}
 
-	public void setIp(EsValue ip) {
-		this.ip = ip;
-	}
-
-	public EsValue getOutRate() {
-		return outRate;
-	}
-
-	public void setOutRate(EsValue outRate) {
+	public void setOutRate(String outRate) {
 		this.outRate = outRate;
 	}
 
@@ -118,11 +187,57 @@ public class EsResultData {
 		this.avgTime = avgTime;
 	}
 
-	public EsValue getAvgPage() {
-		return avgPage;
-	}
 
-	public void setAvgPage(EsValue avgPage) {
+
+	
+
+	public void setAvgPage(String avgPage) {
 		this.avgPage = avgPage;
 	}
+
+	public Aggs getUv_filter() {
+		return uv_filter;
+	}
+
+	public void setUv_filter(Aggs uv_filter) {
+		this.uv_filter = uv_filter;
+	}
+
+	public void setNuvRate(String nuvRate) {
+
+		this.nuvRate = nuvRate;
+	}
+
+	public Aggs getIp() {
+		return ip;
+	}
+
+	public void setIp(Aggs ip) {
+		this.ip = ip;
+	}
+
+	public class Aggs {
+
+		private EsValue aggs;
+
+		private List<Map<String, Object>> buckets;
+
+		public List<Map<String, Object>> getBuckets() {
+			return buckets;
+		}
+
+		public void setBuckets(List<Map<String, Object>> buckets) {
+			this.buckets = buckets;
+		}
+
+		public EsValue getAggs() {
+			return aggs;
+		}
+
+		public void setAggs(EsValue aggs) {
+			this.aggs = aggs;
+		}
+
+	}
+
 }

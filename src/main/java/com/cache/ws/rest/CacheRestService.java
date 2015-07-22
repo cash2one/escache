@@ -9,7 +9,7 @@ import com.cache.ws.rest.dto.RestPraram;
 import com.cache.ws.util.FastJsonUtils;
 
 
-@Path("/cache")
+@Path("/loading")
 public class CacheRestService {
 	
 	
@@ -26,7 +26,7 @@ public class CacheRestService {
 	}
 
 	@GET
-	@Path("/loadingData/{param}")
+	@Path("/data/{param}")
 	public Response getMessage(@PathParam("param") String param) {
 
 		
