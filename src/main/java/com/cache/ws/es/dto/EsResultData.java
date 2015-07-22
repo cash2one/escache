@@ -39,6 +39,11 @@ public class EsResultData {
 	private String outRate;
 	private Aggs single_visitor_aggs;
 
+	/** 平均访问时长 */
+	private EsValue avgTime;
+	/** 平均访问页数 */
+	private String avgPage;
+
 	public Aggs getSingle_visitor_aggs() {
 		return single_visitor_aggs;
 	}
@@ -46,11 +51,6 @@ public class EsResultData {
 	public void setSingle_visitor_aggs(Aggs single_visitor_aggs) {
 		this.single_visitor_aggs = single_visitor_aggs;
 	}
-
-	/** 平均访问时长 */
-	private EsValue avgTime;
-	/** 平均访问页数 */
-	private String avgPage;
 
 	public EsValue getPv() {
 		return pv;
@@ -138,24 +138,25 @@ public class EsResultData {
 
 		return String.format("%10.2f%%", nRate);
 	}
-	
-public String getAvgPage() {
-		
-	Float avgPage = new Float(0);
-	if (StringUtils.isBlank(this.outRate)) {
 
-		Float pv = Float.valueOf(this.getPv().getValue());
+	public String getAvgPage() {
 
-		Float uv = Float.valueOf(this.getUv().getValue());
+		Float avgPage = new Float(0);
+		if (StringUtils.isBlank(this.avgPage)) {
 
-		 if (uv > 0) {
-	            avgPage = (pv / uv *100);
-	     }
+			Float pv = Float.valueOf(this.getPv().getValue());
 
-	}
+			Float uv = Float.valueOf(this.getUv().getValue());
 
-	return String.format("%10.2f%%", avgPage);
-		
+			if (uv > 0) {
+
+				avgPage = (pv / uv * 100);
+			}
+
+		}
+
+		return String.format("%10.2f%%", avgPage);
+
 	}
 
 	public String getOutRate() {
@@ -186,10 +187,6 @@ public String getAvgPage() {
 	public void setAvgTime(EsValue avgTime) {
 		this.avgTime = avgTime;
 	}
-
-
-
-	
 
 	public void setAvgPage(String avgPage) {
 		this.avgPage = avgPage;
