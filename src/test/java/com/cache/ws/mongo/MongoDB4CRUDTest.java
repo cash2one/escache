@@ -1,58 +1,19 @@
 package com.cache.ws.mongo;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mongodb.Mongo;
-import com.mongodb.MongoException;
 
-public class MongoDB4CRUDTest {
-	private Mongo mg = null;
-	private DB db;
-	private DBCollection users;
-
-	@Before
-	public void init() {
-		try {
-			mg = new Mongo("192.168.100.10", 23135);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (MongoException e) {
-			e.printStackTrace();
-		}
-		// 获取xnmz_weims_test DB；如果默认没有创建，mongodb会自动创建
-		db = mg.getDB("xnmz_weims_test");
-		// 获取users DBCollection；如果默认没有创建，mongodb会自动创建
-		users = db.getCollection("users");
-	}
-
-	@After
-	public void destory() {
-		if (mg != null) {
-			mg.close();
-		}
-		mg = null;
-		db = null;
-		users = null;
-		System.gc();
-	}
-
-	public void print(Object o) {
-		System.out.println(o);
-	}
+public class MongoDB4CRUDTest extends MongoDB4Test {
 
 	/**
 	 * <b>function:</b> 查询所有数据
@@ -279,7 +240,7 @@ public class MongoDB4CRUDTest {
 		}
 	}
 
-//	@Test
+	// @Test
 	public void dropCollection() {
 		showAllCollections();
 		db.getCollection("javadb").drop();

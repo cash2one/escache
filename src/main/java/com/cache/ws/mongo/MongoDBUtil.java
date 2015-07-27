@@ -363,9 +363,35 @@ public class MongoDBUtil {
 		return getCollection(collection).findOne(dbObject) != null;
 	}
 
+	/**
+	 * 查询特定条件的所有记录
+	 * 
+	 * @param map
+	 * @param collection
+	 * @return
+	 */
 	public static List<DBObject> findByRefs(Map<String, Object> map,
 			String collection) {
+		return findByRefs(map, collection, new String[] {});
+	}
+
+	/**
+	 * 查询特定条件的所有记录,并返回特定的字段
+	 * 
+	 * @param map
+	 * @param fields
+	 * @param collection
+	 * @return
+	 */
+	public static List<DBObject> findByRefs(Map<String, Object> map,
+			String collection, String... fields) {
 		DBObject dbObject = getMapped(map);
-		return getCollection(collection).find(dbObject).toArray();
+		DBObject fieldObject = new BasicDBObject();
+		// 永远不显示_id字段
+		fieldObject.put("_id", false);
+		for (String field : fields) {
+			fieldObject.put(field, true);
+		}
+		return getCollection(collection).find(dbObject, fieldObject).toArray();
 	}
 }

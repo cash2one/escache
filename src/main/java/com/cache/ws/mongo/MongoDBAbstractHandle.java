@@ -16,8 +16,9 @@ public abstract class MongoDBAbstractHandle {
 	}
 
 	/**
-	 * 基本方法的声明（由子类实现）
-	 * @param _list 
+	 * 声明处理数据的方法（由子类实现）
+	 * 
+	 * @param _list
 	 * 
 	 * @param type
 	 */
@@ -35,7 +36,6 @@ public abstract class MongoDBAbstractHandle {
 	 */
 	private final List<DBObject> loadData(String[] collectionNames,
 			String[] filters, String type) {
-		// 业务相关的代码
 		MongoDBOperate operate = new MongoDBOperate();
 		return operate.query(collectionNames, filters, type);
 	}
