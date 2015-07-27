@@ -19,6 +19,8 @@ public class EsResultData {
 
 	/** 浏览量 */
 	private EsValue pv;
+	
+	
 	/** 访问次数 */
 	private Aggs vc;
 	/** 访客数 */

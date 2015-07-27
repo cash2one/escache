@@ -8,6 +8,8 @@ package com.cache.ws.es.dto;
  */
 public class IndicatorData {
 
+	
+	
 	/** 浏览量 */
 	private String pv;
 	/** 访问次数 */

@@ -5,6 +5,8 @@ public class EsValue {
 	
 	private String value;
 
+	
+	
 	public String getValue() {
 		return value;
 	}
