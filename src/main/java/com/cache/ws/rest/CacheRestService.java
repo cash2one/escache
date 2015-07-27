@@ -5,6 +5,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
+import com.cache.ws.es.service.EsQueryService;
+import com.cache.ws.mongo.MongoDBOperate;
 import com.cache.ws.rest.dto.RestPraram;
 import com.cache.ws.util.FastJsonUtils;
 
@@ -12,9 +14,10 @@ import com.cache.ws.util.FastJsonUtils;
 @Path("/loading")
 public class CacheRestService {
 	
+	private MongoDBOperate operate = new MongoDBOperate();
 	
-	public CacheRestService() {}
-
+	private EsQueryService esService = new EsQueryService();
+	
 	@GET
 	@Path("/{param}")
 	public Response printMessage(@PathParam("param") String msg) {
@@ -31,6 +34,20 @@ public class CacheRestService {
 
 		
 		RestPraram rp = FastJsonUtils.json2obj(param, RestPraram.class);
+		
+	
+		//是否有缓存
+		//operate.isMongoDataExist(collection, filters, type);
+		
+			//没有
+		    //esService.queryDataindexTable();
+		   // operate.insertMongoData();
+		    
+		
+		//查询
+		    //operate.query(collectionNames, filters, type);
+		
+		
 		
 		String result = "Restful example12321321 : " +rp;
 

@@ -9,7 +9,6 @@ package com.cache.ws.es.dto;
 public class IndicatorData {
 
 	
-	
 	/** 浏览量 */
 	private String pv;
 	/** 访问次数 */
@@ -28,29 +27,9 @@ public class IndicatorData {
 	private String avgTime;
 	/** 平均访问页数 */
 	private String avgPage;
-	/**日期*/
-	private String date;
-	/**日期格式*/
-	private String dateformat;
 	
 	
-
-	public String getDate() {
-		return date;
-	}
-
-	public void setDate(String date) {
-		this.date = date;
-	}
-
-	public String getDateformat() {
-		return dateformat;
-	}
-
-	public void setDateformat(String dateformat) {
-		this.dateformat = dateformat;
-	}
-
+	
 	public String getPv() {
 		return pv;
 	}

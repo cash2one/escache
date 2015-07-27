@@ -4,6 +4,8 @@ import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Search;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +15,7 @@ import org.elasticsearch.common.inject.Inject;
 import com.cache.ws.es.ESConfiguration;
 import com.cache.ws.es.dto.EsResultData;
 import com.cache.ws.es.dto.IndicatorData;
+import com.cache.ws.rest.dto.RestPraram;
 import com.cache.ws.util.FastJsonUtils;
 import com.cache.ws.util.FreeMarkerUtils;
 
@@ -21,20 +24,22 @@ public class EsQueryService {
 	@Inject
 	private ESConfiguration esConfiguration;
 
-	public List<IndicatorData> queryDataindexTable() throws Exception {
+	public List<IndicatorData> queryDataindexTable(RestPraram praram)
+			throws Exception {
 
+		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
 		JestClient client = ESConfiguration.getInstance().getClient();
 
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("start", "1437235200000");
-		data.put("end", "1437321599999");
-		
-		
+		data.put("start", praram.getStartTime());
+		data.put("end", praram.getEndTime());
+
 		String query = FreeMarkerUtils.getDSL(data, "period_hour.ftl");
 
 		Search search = (Search) new Search.Builder(query)
-		// multiple index or types can be added.
-				.addIndex("access-2015-07-19").addType("1").build();
+				// multiple index or types can be added.
+				.addIndex(Arrays.asList(praram.getIndexes()))
+				.addType(Arrays.asList(praram.getTypes())).build();
 
 		JestResult result = client.execute(search);
 
@@ -47,16 +52,23 @@ public class EsQueryService {
 						.getAsJsonObject("result").getAsJsonArray("buckets")
 						.toString(), EsResultData.class);
 
-		for (EsResultData test : list) {
+		for (EsResultData esResultData : list) {
+			IndicatorData indicatorData = new IndicatorData();
 
-			System.out.println(test.getPv().getValue());
-			System.out.println(test.getVc().getAggs().getValue());
-			
-			System.out.println(test.getOutRate());
-			
+			indicatorData.setAvgPage(esResultData.getAvgPage());
+			// indicatorData.setAvgTime(esResultData.getAvgTime().getValue());
+			// indicatorData.setIp(esResultData.getIp().getAggs().getValue());
+			indicatorData.setNuv(esResultData.getNuv());
+			indicatorData.setNuvRate(esResultData.getNuvRate());
+			indicatorData.setOutRate(esResultData.getOutRate());
+			indicatorData.setPv(esResultData.getPv().getValue());
+			indicatorData.setUv(esResultData.getUv().getValue());
+			indicatorData.setVc(esResultData.getVc().getAggs().getValue());
+			resultData.add(indicatorData);
+
 		}
 
-		return null;
+		return resultData;
 
 	}
 
@@ -64,26 +76,15 @@ public class EsQueryService {
 
 		EsQueryService e = new EsQueryService();
 
-		e.queryDataindexTable();
-		//
-		// String s = "{\"value\":409}";
-		//
-		// System.out.print(s.substring(s.indexOf("value")+7,s.lastIndexOf("}")));
-		//
-		// RestPraram rp = new RestPraram();
-		//
-		// rp.setEndTime(new Long(123213));
-		// rp.setStartTime(new Long(456456));
-		// rp.setIndics(new String[]{"pv","uv","ip"});
-		// rp.setIndexes(new String[]{"index1","index2"});
-		// rp.setTypes(new String[]{"1"});
-		// rp.setFormartInterval(new Long(213));
-		//
-		//
-		//
-		// String s = FastJsonUtils.obj2json(rp);
-		//
-		// System.out.print(s);
+		RestPraram rp = new RestPraram();
+
+		rp.setEndTime("1437321599999");
+		rp.setStartTime("1437235200000");
+		rp.setIndexes(new String[] { "access-2015-07-19" });
+		rp.setTypes(new String[] { "1" });
+		rp.setDsl("period_hour.ftl");
+
+		e.queryDataindexTable(rp);
 
 	}
 

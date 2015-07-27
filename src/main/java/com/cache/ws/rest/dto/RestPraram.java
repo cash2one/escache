@@ -2,29 +2,27 @@ package com.cache.ws.rest.dto;
 
 import java.util.Arrays;
 
+import com.cache.ws.util.FastJsonUtils;
+
 public class RestPraram {
 
-	
-	/**索引集合*/
+	/** 索引集合 */
 	private String[] indexes;
-	/**类型集合*/
+	/** 类型集合 */
 	private String[] types;
-	/**查询指标*/
-	private String[] indics;
-	/**开始*/
-	private Long startTime;
-	/**结束*/
-	private Long endTime;
-	/**格式判断*/
-	private Long formartInterval;
-	
-	@Override
-	public String toString() {
-		return "RestPraram [indexes=" + Arrays.toString(indexes) + ", types="
-				+ Arrays.toString(types) + ", indics="
-				+ Arrays.toString(indics) + ", startTime=" + startTime
-				+ ", endTime=" + endTime + ", formartInterval="
-				+ formartInterval + "]";
+	/** 开始 */
+	private String startTime;
+	/** 结束 */
+	private String endTime;
+	/** 缓存语句 */
+	private String dsl;
+
+	public String getDsl() {
+		return dsl;
+	}
+
+	public void setDsl(String dsl) {
+		this.dsl = dsl;
 	}
 
 	public String[] getIndexes() {
@@ -43,45 +41,42 @@ public class RestPraram {
 		this.types = types;
 	}
 
-	public String[] getIndics() {
-		return indics;
-	}
-
-	public void setIndics(String[] indics) {
-		this.indics = indics;
-	}
-
-	public Long getFormartInterval() {
-		return formartInterval;
-	}
-
-	public void setFormartInterval(Long formartInterval) {
-		this.formartInterval = formartInterval;
-	}
-
-	public void setEndTime(Long endTime) {
-		this.endTime = endTime;
-	}
-
-	
-	
-
-	
-
-	public Long getStartTime() {
+	public String getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Long startTime) {
+	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
 
-	public Long getEndTime() {
+	public String getEndTime() {
 		return endTime;
 	}
 
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
 
+	@Override
+	public String toString() {
+		return "RestPraram [indexes=" + Arrays.toString(indexes) + ", types="
+				+ Arrays.toString(types) + ", startTime=" + startTime
+				+ ", endTime=" + endTime + ", dsl=" + dsl + "]";
+	}
 
+	public static void main(String[] args) {
+		RestPraram rp = new RestPraram();
 
-	
+		rp.setDsl("period_hour.ftl");
+		rp.setEndTime("1437235200000");
+		rp.setStartTime("1437235200000");
+		rp.setTypes(new String[] { "1" });
+		rp.setIndexes(new String[] { "access-2015-07-19" });
+
+		String json = FastJsonUtils.obj2json(rp);
+
+		System.out.println(json);
+
+	}
+
 }
