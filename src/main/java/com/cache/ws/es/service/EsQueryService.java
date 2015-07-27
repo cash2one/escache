@@ -23,6 +23,55 @@ public class EsQueryService {
 
 	@Inject
 	private ESConfiguration esConfiguration;
+	
+	
+	public List<IndicatorData> queryDataindexTable(String start,String end,String dsl,String index,String [] types) throws Exception {
+		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
+		JestClient client = ESConfiguration.getInstance().getClient();
+
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("start", start);
+		data.put("end", end);
+
+		String query = FreeMarkerUtils.getDSL(data, dsl);
+
+		Search search = (Search) new Search.Builder(query)
+				// multiple index or types can be added.
+				.addIndex(index)
+				.addType(Arrays.asList(types)).build();
+
+		JestResult result = client.execute(search);
+
+		System.out.println(result.getJsonObject()
+				.getAsJsonObject("aggregations").getAsJsonObject("result")
+				.getAsJsonArray("buckets").toString());
+
+		List<EsResultData> list = FastJsonUtils.json2list(
+				result.getJsonObject().getAsJsonObject("aggregations")
+						.getAsJsonObject("result").getAsJsonArray("buckets")
+						.toString(), EsResultData.class);
+
+		for (EsResultData esResultData : list) {
+			IndicatorData indicatorData = new IndicatorData();
+
+			indicatorData.setAvgPage(esResultData.getAvgPage());
+			// indicatorData.setAvgTime(esResultData.getAvgTime().getValue());
+			// indicatorData.setIp(esResultData.getIp().getAggs().getValue());
+			indicatorData.setNuv(esResultData.getNuv());
+			indicatorData.setNuvRate(esResultData.getNuvRate());
+			indicatorData.setOutRate(esResultData.getOutRate());
+			indicatorData.setPv(esResultData.getPv().getValue());
+			indicatorData.setUv(esResultData.getUv().getValue());
+			indicatorData.setVc(esResultData.getVc().getAggs().getValue());
+			resultData.add(indicatorData);
+
+		}
+
+		return resultData;
+		
+	}
+	
+	
 
 	public List<IndicatorData> queryDataindexTable(RestPraram praram)
 			throws Exception {
@@ -34,7 +83,7 @@ public class EsQueryService {
 		data.put("start", praram.getStartTime());
 		data.put("end", praram.getEndTime());
 
-		String query = FreeMarkerUtils.getDSL(data, "period_hour.ftl");
+		String query = FreeMarkerUtils.getDSL(data, praram.getDsl());
 
 		Search search = (Search) new Search.Builder(query)
 				// multiple index or types can be added.
