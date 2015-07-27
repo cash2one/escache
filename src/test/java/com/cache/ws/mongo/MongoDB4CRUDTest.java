@@ -258,7 +258,7 @@ public class MongoDB4CRUDTest {
 		}
 	}
 
-//	@Test
+	@Test
 	public void queryAllDatas() {
 		Set<String> collectionNames = db.getCollectionNames();
 		DBCollection dbCollection = null;
@@ -279,7 +279,7 @@ public class MongoDB4CRUDTest {
 		}
 	}
 
-	@Test
+//	@Test
 	public void dropCollection() {
 		showAllCollections();
 		db.getCollection("javadb").drop();
