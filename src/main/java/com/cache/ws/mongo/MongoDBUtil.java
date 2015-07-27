@@ -38,7 +38,6 @@ public class MongoDBUtil {
 			connection = new Mongo(settings.get("IP") + ":"
 					+ settings.get("PORT"));
 			db = connection.getDB(settings.get("DB_NAME"));
-			System.out.println(db);
 		} catch (MongoException e) {
 			e.printStackTrace();
 		} catch (UnknownHostException e) {

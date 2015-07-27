@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import com.cache.ws.es.dto.IndicatorData;
@@ -34,7 +35,8 @@ public class CacheRestService {
 
 	@GET
 	@Path("/data/{param}")
-	public Response getMessage(@PathParam("param") String param) {
+	@Produces("application/json")
+	public List<DBObject> getMessage(@PathParam("param") String param) {
 		List<DBObject> resultData = new ArrayList<DBObject>();
 		try {
 			RestPraram rp = FastJsonUtils.json2obj(param, RestPraram.class);
@@ -57,10 +59,9 @@ public class CacheRestService {
 			resultData = operate.query(rp.getIndexes(), null, rp.getDsl());
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return Response.status(200).entity(resultData).build();
+		return resultData;
 
 	}
 
