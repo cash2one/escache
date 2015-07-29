@@ -7,8 +7,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.springframework.stereotype.Controller;
+
+import com.cache.ws.rest.dto.User;
+
+@Controller
 @Path("/json/user")
-public class TestRestService {
+public class TestRestController {
 	@GET
 	@Path("/get")
 	@Produces("application/json")

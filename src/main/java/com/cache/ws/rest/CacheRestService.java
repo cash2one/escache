@@ -9,6 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.springframework.stereotype.Controller;
+
 import com.cache.ws.es.dto.IndicatorData;
 import com.cache.ws.es.service.EsQueryService;
 import com.cache.ws.mongo.MongoDBOperate;
@@ -16,6 +18,7 @@ import com.cache.ws.rest.dto.RestPraram;
 import com.cache.ws.util.FastJsonUtils;
 import com.mongodb.DBObject;
 
+@Controller
 @Path("/loading")
 public class CacheRestService {
 

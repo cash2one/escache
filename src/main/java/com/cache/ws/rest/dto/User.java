@@ -1,4 +1,4 @@
-package com.cache.ws.rest;
+package com.cache.ws.rest.dto;
 
 public class User {
 	String name;
