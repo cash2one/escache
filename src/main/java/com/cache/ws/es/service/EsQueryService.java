@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.elasticsearch.common.inject.Inject;
+import org.springframework.stereotype.Component;
 
 import com.cache.ws.es.ESConfiguration;
 import com.cache.ws.es.dto.EsResultData;
@@ -19,13 +20,14 @@ import com.cache.ws.rest.dto.RestPraram;
 import com.cache.ws.util.FastJsonUtils;
 import com.cache.ws.util.FreeMarkerUtils;
 
+@Component
 public class EsQueryService {
 
 	@Inject
 	private ESConfiguration esConfiguration;
-	
-	
-	public List<IndicatorData> queryDataindexTable(String start,String end,String dsl,String index,String [] types) throws Exception {
+
+	public List<IndicatorData> queryDataindexTable(String start, String end,
+			String dsl, String index, String[] types) throws Exception {
 		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
 		JestClient client = ESConfiguration.getInstance().getClient();
 
@@ -36,9 +38,8 @@ public class EsQueryService {
 		String query = FreeMarkerUtils.getDSL(data, dsl);
 
 		Search search = (Search) new Search.Builder(query)
-				// multiple index or types can be added.
-				.addIndex(index)
-				.addType(Arrays.asList(types)).build();
+		// multiple index or types can be added.
+				.addIndex(index).addType(Arrays.asList(types)).build();
 
 		JestResult result = client.execute(search);
 
@@ -68,10 +69,8 @@ public class EsQueryService {
 		}
 
 		return resultData;
-		
+
 	}
-	
-	
 
 	public List<IndicatorData> queryDataindexTable(RestPraram praram)
 			throws Exception {

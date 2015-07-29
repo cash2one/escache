@@ -5,10 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import com.cache.ws.es.dto.IndicatorData;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+@Component
 public final class MongoDBOperate {
 
 	/**
@@ -54,7 +57,7 @@ public final class MongoDBOperate {
 			String[] filters, String type) {
 		List<DBObject> _List = new ArrayList<DBObject>();
 		for (int i = 0; i < data.size(); i++) {
-			_List.add(ObjectToDBOject.convert(data.get(i), filters, type));
+			_List.add(IndicatorDataToDBOject.convert(data.get(i), filters, type));
 		}
 		MongoDBUtil.insertBatch(_List, collection);
 	}

@@ -1,4 +1,4 @@
-package com.cache.ws.rest.dto;
+package com.cache.ws.pojo.response;
 
 public class User {
 	String name;

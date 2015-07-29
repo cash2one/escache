@@ -22,8 +22,8 @@ import static com.cache.ws.mongo.MongoDBFields.F_TYPE;
  * 
  * @version v001-20150727
  */
-public final class ObjectToDBOject {
-	private ObjectToDBOject() {
+public final class IndicatorDataToDBOject {
+	private IndicatorDataToDBOject() {
 	}
 
 	public static DBObject convert(IndicatorData indic, String[] filters,
@@ -42,6 +42,20 @@ public final class ObjectToDBOject {
 		// dbObject.put(F_FILTER, Arrays.toString(filters));
 		dbObject.put(F_TYPE, type);
 		return dbObject;
+	}
+
+	public static IndicatorData parse(DBObject dbObject) {
+		IndicatorData indicatorData = new IndicatorData();
+		indicatorData.setPvObject(dbObject.get(F_PV));
+		indicatorData.setVcObject(dbObject.get(F_VC));
+		indicatorData.setUvObject(dbObject.get(F_UV));
+		indicatorData.setOutRateObject(dbObject.get(F_OUT_RATE));
+		indicatorData.setIpObject(dbObject.get(F_IP));
+		indicatorData.setNuvObject(dbObject.get(F_NUV));
+		indicatorData.setNuvRateObject(dbObject.get(F_NUV_RATE));
+		indicatorData.setAvgTimeObject(dbObject.get(F_AVG_TIME));
+		indicatorData.setAvgPageObject(dbObject.get(F_AVG_PAGE));
+		return indicatorData;
 	}
 
 }
