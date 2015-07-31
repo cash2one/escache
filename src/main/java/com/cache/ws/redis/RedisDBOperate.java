@@ -18,4 +18,13 @@ public class RedisDBOperate {
 		Jedis jedis = RedisConfiguration.getInstance().getClient();
 		return jedis.get(key);
 	}
+	
+	public static void main(String[] args) {
+	
+		
+		String s = RedisDBOperate.loadDsl("test_cache");
+		
+		System.out.println(s);
+		
+	}
 }

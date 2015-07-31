@@ -1,5 +1,6 @@
 package com.cache.ws.rest.dto;
 
+
 import java.util.Arrays;
 
 import com.cache.ws.util.FastJsonUtils;
@@ -10,19 +11,17 @@ public class RestPraram {
 	private String[] indexes;
 	/** 类型集合 */
 	private String[] types;
-	/** 开始 */
-	private String startTime;
-	/** 结束 */
-	private String endTime;
-	/** 缓存语句 */
-	private String dsl;
+	
+	
+	/**key*/
+	private String redisKey;
 
-	public String getDsl() {
-		return dsl;
+	public String getRedisKey() {
+		return redisKey;
 	}
 
-	public void setDsl(String dsl) {
-		this.dsl = dsl;
+	public void setRedisKey(String redisKey) {
+		this.redisKey = redisKey;
 	}
 
 	public String[] getIndexes() {
@@ -31,6 +30,10 @@ public class RestPraram {
 
 	public void setIndexes(String[] indexes) {
 		this.indexes = indexes;
+	}
+	
+	public void setIndexes(String indexes) {
+		this.indexes = indexes.split(",");
 	}
 
 	public String[] getTypes() {
@@ -41,38 +44,26 @@ public class RestPraram {
 		this.types = types;
 	}
 
-	public String getStartTime() {
-		return startTime;
-	}
 
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
+	public void setTypes(String types) {
+		
+		this.types = types.split(",");
 	}
-
-	public String getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
-	}
+	
 
 	@Override
 	public String toString() {
 		return "RestPraram [indexes=" + Arrays.toString(indexes) + ", types="
-				+ Arrays.toString(types) + ", startTime=" + startTime
-				+ ", endTime=" + endTime + ", dsl=" + dsl + "]";
+				+ Arrays.toString(types) + ", redisKey=" + redisKey + "]";
 	}
 
 	public static void main(String[] args) {
 		RestPraram rp = new RestPraram();
 
-		rp.setDsl("period_hour.ftl");
-		rp.setEndTime("1437235200000");
-		rp.setStartTime("1437235200000");
-		rp.setTypes(new String[] { "1" });
+		rp.setTypes(new String[] {"1"});
 		rp.setIndexes(new String[] { "access-2015-07-19" });
-
+		rp.setRedisKey("test_cache");
+		
 		String json = FastJsonUtils.obj2json(rp);
 
 		System.out.println(json);

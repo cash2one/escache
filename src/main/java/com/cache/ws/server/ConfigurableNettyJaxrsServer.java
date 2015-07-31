@@ -1,12 +1,14 @@
 package com.cache.ws.server;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 import javax.net.ssl.SSLContext;
 
 import org.jboss.netty.bootstrap.Bootstrap;
 import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.ChannelHandler;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
@@ -25,13 +27,11 @@ import org.jboss.resteasy.plugins.server.netty.RequestDispatcher;
  */
 public class ConfigurableNettyJaxrsServer extends NettyJaxrsServer {
 
-	private final int ioWorkerCount = Runtime.getRuntime()
-			.availableProcessors() * 2;
-	private final int executorThreadCount = 16;
-	private SSLContext sslContext;
-	private final int maxRequestSize = 1024 * 1024 * 10;
-	static final ChannelGroup allChannels = new DefaultChannelGroup(
-			"NettyJaxrsServer");
+	private final int			ioWorkerCount		= Runtime.getRuntime().availableProcessors() * 2;
+	private final int			executorThreadCount	= 16;
+	private SSLContext			sslContext;
+	private final int			maxRequestSize		= 1024 * 1024 * 10;
+	static final ChannelGroup	allChannels			= new DefaultChannelGroup("NettyJaxrsServer");
 
 	/**
 	 * expose bootstrap to be able to config
@@ -39,9 +39,11 @@ public class ConfigurableNettyJaxrsServer extends NettyJaxrsServer {
 	 * @return
 	 */
 	public Bootstrap initBootstrap() {
-		this.bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(
-				Executors.newCachedThreadPool(),
-				Executors.newCachedThreadPool(), ioWorkerCount));
+		this.bootstrap = new ServerBootstrap(
+				new NioServerSocketChannelFactory(
+						Executors.newCachedThreadPool(),
+						Executors.newCachedThreadPool(),
+						ioWorkerCount));
 		return bootstrap;
 	}
 
@@ -50,12 +52,13 @@ public class ConfigurableNettyJaxrsServer extends NettyJaxrsServer {
 	}
 
 	@Override
-	public void start() {
+	public void start()
+	{
 		deployment.start();
 		RequestDispatcher dispatcher = new RequestDispatcher(
 				(SynchronousDispatcher) deployment.getDispatcher(),
 				deployment.getProviderFactory(), domain);
-
+		
 		// Configure the server.
 		if (bootstrap == null) {
 			initBootstrap();
@@ -63,11 +66,10 @@ public class ConfigurableNettyJaxrsServer extends NettyJaxrsServer {
 
 		ChannelPipelineFactory factory;
 		if (sslContext == null) {
-			factory = new HttpServerPipelineFactory(dispatcher, root,
-					executorThreadCount, maxRequestSize);
+			factory = new HttpServerPipelineFactory(dispatcher, root, executorThreadCount, maxRequestSize, false, new ArrayList<ChannelHandler>());
+	
 		} else {
-			factory = new HttpsServerPipelineFactory(dispatcher, root,
-					executorThreadCount, maxRequestSize, sslContext);
+			factory = new HttpsServerPipelineFactory(dispatcher, root, executorThreadCount, maxRequestSize, false, new ArrayList<ChannelHandler>(), sslContext);
 		}
 		// Set up the event pipeline factory.
 		bootstrap.setPipelineFactory(factory);

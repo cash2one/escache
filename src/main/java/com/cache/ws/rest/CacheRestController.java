@@ -28,32 +28,37 @@ public class CacheRestController {
 	@Autowired
 	private EsQueryService esService;
 
+
 	@GET
-	@Path("/data/{param}")
+	@Path("/data/{redisKey}/{types}/{indexes}")
 	@Produces("application/json")
-	public List<IndicatorData> loadCacheData(@PathParam("param") String redisKey) {
+	public List<IndicatorData> loadCacheData(@PathParam("redisKey") String redisKey,
+			@PathParam("types") String types,@PathParam("indexes") String indexes ) {
 		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
 		try {
-			RestPraram rp = FastJsonUtils.json2obj(getDsl(), RestPraram.class);
-			// 根据redisKey获取dsl值
-
+			
+			RestPraram rp = new RestPraram();
+			rp.setRedisKey(redisKey);
+			rp.setTypes(types);
+			rp.setIndexes(indexes);
+	
 			String[] indexs = rp.getIndexes();
 
 			for (String index : indexs) {
 				// 是否有缓存
-				if (!operate.isMongoDataExist(index, null, rp.getDsl())) {
+				if (!operate.isMongoDataExist(index, null, rp.getRedisKey())) {
 
 					List<IndicatorData> data = esService.queryDataindexTable(
-							rp.getStartTime(), rp.getEndTime(), rp.getDsl(),
+							rp.getRedisKey(),
 							index, rp.getTypes());
 
-					operate.insertMongoData(data, index, null, rp.getDsl());
+					operate.insertMongoData(data, index, null, rp.getRedisKey());
 				}
 			}
 
 			// 查询
 			List<DBObject> temp = operate.query(rp.getIndexes(), null,
-					rp.getDsl());
+					rp.getRedisKey());
 
 			for (DBObject dbObject : temp) {
 				resultData.add(IndicatorDataToDBOject.parse(dbObject));
@@ -65,7 +70,4 @@ public class CacheRestController {
 		return resultData;
 	}
 
-	private String getDsl() {
-		return "{\"dsl\":\"period_hour.ftl\",\"endTime\":1437235200000,\"indexes\":[\"access-2015-07-19\"],\"startTime\":1437235200000,\"types\":[\"1\"]}";
-	}
 }
