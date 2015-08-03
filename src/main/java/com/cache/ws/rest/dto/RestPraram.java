@@ -3,6 +3,8 @@ package com.cache.ws.rest.dto;
 
 import java.util.Arrays;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.cache.ws.util.FastJsonUtils;
 
 public class RestPraram {
@@ -21,6 +23,9 @@ public class RestPraram {
 	}
 
 	public void setRedisKey(String redisKey) {
+		if(StringUtils.isBlank(redisKey)) {
+			new NullPointerException("RestPraram.setRedisKey: Please check redisKey." );
+		}
 		this.redisKey = redisKey;
 	}
 
@@ -46,7 +51,9 @@ public class RestPraram {
 
 
 	public void setTypes(String types) {
-		
+		if(StringUtils.isBlank(types)) {
+			new NullPointerException("RestPraram.setTypes: Please check types." );
+		}
 		this.types = types.split(",");
 	}
 	

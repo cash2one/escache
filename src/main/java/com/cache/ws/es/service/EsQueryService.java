@@ -29,7 +29,7 @@ public class EsQueryService {
 		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
 		JestClient client = ESConfiguration.getInstance().getClient();
 
-
+		//根据KEY从Redis中获取查询语句
 		String query = RedisDBOperate.loadDsl(redisKey);
 
 		Search search = (Search) new Search.Builder(query)

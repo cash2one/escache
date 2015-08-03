@@ -16,11 +16,11 @@ import com.cache.ws.es.service.EsQueryService;
 import com.cache.ws.mongo.IndicatorDataToDBOject;
 import com.cache.ws.mongo.MongoDBOperate;
 import com.cache.ws.rest.dto.RestPraram;
-import com.cache.ws.util.FastJsonUtils;
+import com.cache.ws.util.CacheUtils;
 import com.mongodb.DBObject;
 
 @Controller
-@Path("/load")
+@Path("/loading")
 public class CacheRestController {
 	@Autowired
 	private MongoDBOperate operate;
@@ -30,21 +30,20 @@ public class CacheRestController {
 
 
 	@GET
-	@Path("/data/{redisKey}/{types}/{indexes}")
+	@Path("/condition/{redisKey}/{types}/{start}/{end}")
 	@Produces("application/json")
 	public List<IndicatorData> loadCacheData(@PathParam("redisKey") String redisKey,
-			@PathParam("types") String types,@PathParam("indexes") String indexes ) {
+			@PathParam("types") String types,@PathParam("start") Long start ,@PathParam("end") Long end) {
 		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
+		String[] indexes = null;
 		try {
-			
+			indexes = CacheUtils.createIndexes(start, end, "access-");
 			RestPraram rp = new RestPraram();
 			rp.setRedisKey(redisKey);
 			rp.setTypes(types);
 			rp.setIndexes(indexes);
-	
-			String[] indexs = rp.getIndexes();
 
-			for (String index : indexs) {
+			for (String index : indexes) {
 				// 是否有缓存
 				if (!operate.isMongoDataExist(index, null, rp.getRedisKey())) {
 
