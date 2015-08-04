@@ -19,21 +19,17 @@ public final class MongoDBOperate {
 	 * 
 	 * @param type
 	 *            数据type
-	 * @param filters
-	 *            过滤条件
 	 * @param collection
 	 *            集合,表
 	 * 
 	 * @return
 	 */
-	public boolean isMongoDataExist(String collection, String[] filters,
-			String type) {
+	public boolean isMongoDataExist(String collection, String type) {
 		boolean flag = false;
 		if (MongoDBUtil.collectionExists(collection)) {
 			// TODO:判断MongoDB中是否存在满足条件的数据
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("type", type);
-			// map.put("filter", Arrays.toString(filters));
 			flag = MongoDBUtil.dataExists(map, collection);
 		} else {
 			MongoDBUtil.createCollection(collection, new BasicDBObject());
@@ -48,26 +44,23 @@ public final class MongoDBOperate {
 	 *            数据
 	 * @param collection
 	 *            集合,表
-	 * @param filters
-	 *            过滤条件
 	 * @param type
 	 *            数据type
 	 */
 	public void insertMongoData(List<IndicatorData> data, String collection,
-			String[] filters, String type) {
+			String type) {
 		List<DBObject> _List = new ArrayList<DBObject>();
 		for (int i = 0; i < data.size(); i++) {
-			_List.add(IndicatorDataToDBOject.convert(data.get(i), filters, type));
+			_List.add(IndicatorDataToDBOject.convert(data.get(i), type));
 		}
 		MongoDBUtil.insertBatch(_List, collection);
 	}
 
-	public List<DBObject> query(String[] collectionNames, String[] filters,
-			String type) {
+	public List<DBObject> query(String[] collectionNames, String type) {
 		// 查询数据
 		List<DBObject> list = new ArrayList<DBObject>();
 		for (String collection : collectionNames) {
-			list.addAll(loadMongoData(collection, filters, type));
+			list.addAll(loadMongoData(collection, type));
 		}
 		return list;
 	}
@@ -81,11 +74,9 @@ public final class MongoDBOperate {
 	 * 
 	 * @return
 	 */
-	private List<DBObject> loadMongoData(String collection, String[] filters,
-			String type) {
+	private List<DBObject> loadMongoData(String collection, String type) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("type", type);
-		// map.put("filter", Arrays.toString(filters));
 		return MongoDBUtil.findByRefs(map, collection);
 	}
 

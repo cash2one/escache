@@ -10,7 +10,7 @@ public abstract class MongoDBAbstractHandle {
 	 */
 	public void load(String[] collectionNames, String[] filters, String type) {
 		// 调用基本方法
-		List<DBObject> _list = loadData(collectionNames, filters, type);
+		List<DBObject> _list = loadData(collectionNames, type);
 		hookMethod();
 		handleData(_list, type);
 	}
@@ -34,9 +34,8 @@ public abstract class MongoDBAbstractHandle {
 	/**
 	 * 基本方法（已经实现）
 	 */
-	private final List<DBObject> loadData(String[] collectionNames,
-			String[] filters, String type) {
+	private final List<DBObject> loadData(String[] collectionNames, String type) {
 		MongoDBOperate operate = new MongoDBOperate();
-		return operate.query(collectionNames, filters, type);
+		return operate.query(collectionNames, type);
 	}
 }

@@ -26,8 +26,7 @@ public final class IndicatorDataToDBOject {
 	private IndicatorDataToDBOject() {
 	}
 
-	public static DBObject convert(IndicatorData indic, String[] filters,
-			String type) {
+	public static DBObject convert(IndicatorData indic, String type) {
 		DBObject dbObject = new BasicDBObject();
 		// TODO:ES对象数据变成MongoDB对象数据
 		dbObject.put(F_PV, indic.getPv());
@@ -39,7 +38,6 @@ public final class IndicatorDataToDBOject {
 		dbObject.put(F_NUV_RATE, indic.getNuvRate());
 		dbObject.put(F_AVG_TIME, indic.getAvgTime());
 		dbObject.put(F_AVG_PAGE, indic.getAvgPage());
-		// dbObject.put(F_FILTER, Arrays.toString(filters));
 		dbObject.put(F_TYPE, type);
 		return dbObject;
 	}

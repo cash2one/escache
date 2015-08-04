@@ -28,12 +28,13 @@ public class CacheRestController {
 	@Autowired
 	private EsQueryService esService;
 
-
 	@GET
 	@Path("/condition/{redisKey}/{types}/{start}/{end}")
 	@Produces("application/json")
-	public List<IndicatorData> loadCacheData(@PathParam("redisKey") String redisKey,
-			@PathParam("types") String types,@PathParam("start") Long start ,@PathParam("end") Long end) {
+	public List<IndicatorData> loadCacheData(
+			@PathParam("redisKey") String redisKey,
+			@PathParam("types") String types, @PathParam("start") Long start,
+			@PathParam("end") Long end) {
 		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
 		String[] indexes = null;
 		try {
@@ -45,18 +46,17 @@ public class CacheRestController {
 
 			for (String index : indexes) {
 				// 是否有缓存
-				if (!operate.isMongoDataExist(index, null, rp.getRedisKey())) {
+				if (!operate.isMongoDataExist(index, rp.getRedisKey())) {
 
 					List<IndicatorData> data = esService.queryDataindexTable(
-							rp.getRedisKey(),
-							index, rp.getTypes());
+							rp.getRedisKey(), index, rp.getTypes());
 
-					operate.insertMongoData(data, index, null, rp.getRedisKey());
+					operate.insertMongoData(data, index, rp.getRedisKey());
 				}
 			}
 
 			// 查询
-			List<DBObject> temp = operate.query(rp.getIndexes(), null,
+			List<DBObject> temp = operate.query(rp.getIndexes(),
 					rp.getRedisKey());
 
 			for (DBObject dbObject : temp) {
