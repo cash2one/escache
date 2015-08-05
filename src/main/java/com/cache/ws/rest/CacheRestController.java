@@ -29,7 +29,7 @@ public class CacheRestController {
 	private EsQueryService esService;
 
 	@GET
-	@Path("/condition/{redisKey}/{types}/{start}/{end}")
+	@Path("/condition/{redisKey}/{types}/{start}/{end}/{formartInfo}")
 	@Produces("application/json")
 	public List<IndicatorData> loadCacheData(
 			@PathParam("redisKey") String redisKey,
@@ -68,5 +68,49 @@ public class CacheRestController {
 		}
 		return resultData;
 	}
+	
+	
+	@GET
+	@Path("/summaryCondition/{redisKey}/{types}/{start}/{end}/{formartInfo}")
+	@Produces("application/json")
+	public List<IndicatorData> loadSummaryCacheData(
+			@PathParam("redisKey") String redisKey,
+			@PathParam("types") String types, @PathParam("start") Long start,
+			@PathParam("end") Long end) {
+		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
+		String[] indexes = null;
+		try {
+			indexes = CacheUtils.createIndexes(start, end, "access-");
+			RestPraram rp = new RestPraram();
+			rp.setRedisKey(redisKey);
+			rp.setTypes(types);
+			rp.setIndexes(indexes);
+
+			for (String index : indexes) {
+				// 是否有缓存
+				if (!operate.isMongoDataExist(index, rp.getRedisKey())) {
+
+					List<IndicatorData> data = esService.queryDataindexTable(
+							rp.getRedisKey(), index, rp.getTypes());
+
+					operate.insertMongoData(data, index, rp.getRedisKey());
+				}
+			}
+
+			// 查询
+			List<DBObject> temp = operate.query(rp.getIndexes(),
+					rp.getRedisKey());
+
+			for (DBObject dbObject : temp) {
+				resultData.add(IndicatorDataToDBOject.parse(dbObject));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resultData;
+	}
+
+	
 
 }
