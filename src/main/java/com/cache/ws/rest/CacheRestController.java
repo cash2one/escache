@@ -60,7 +60,7 @@ public class CacheRestController {
 					rp.getRedisKey());
 
 			for (DBObject dbObject : temp) {
-				resultData.add(IndicatorDataToDBOject.parse(dbObject));
+//				resultData.add(IndicatorDataToDBOject.parse(dbObject));
 			}
 
 		} catch (Exception e) {
@@ -102,7 +102,7 @@ public class CacheRestController {
 					rp.getRedisKey());
 
 			for (DBObject dbObject : temp) {
-				resultData.add(IndicatorDataToDBOject.parse(dbObject));
+//				resultData.add(IndicatorDataToDBOject.parse(dbObject));
 			}
 
 		} catch (Exception e) {
