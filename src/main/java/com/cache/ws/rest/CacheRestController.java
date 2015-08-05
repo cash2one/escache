@@ -13,8 +13,9 @@ import org.springframework.stereotype.Controller;
 
 import com.cache.ws.es.dto.IndicatorData;
 import com.cache.ws.es.service.EsQueryService;
-import com.cache.ws.mongo.IndicatorDataToDBOject;
 import com.cache.ws.mongo.MongoDBOperate;
+import com.cache.ws.mongo.MongoDBSummaryHandle;
+import com.cache.ws.mongo.dto.ResultData;
 import com.cache.ws.rest.dto.RestPraram;
 import com.cache.ws.util.CacheUtils;
 import com.mongodb.DBObject;
@@ -31,11 +32,12 @@ public class CacheRestController {
 	@GET
 	@Path("/condition/{redisKey}/{types}/{start}/{end}/{formartInfo}")
 	@Produces("application/json")
-	public List<IndicatorData> loadCacheData(
+	public List<ResultData> loadCacheData(
 			@PathParam("redisKey") String redisKey,
 			@PathParam("types") String types, @PathParam("start") Long start,
 			@PathParam("end") Long end) {
 		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
+		List<ResultData> resultData1 = new ArrayList<ResultData>();
 		String[] indexes = null;
 		try {
 			indexes = CacheUtils.createIndexes(start, end, "access-");
@@ -59,25 +61,27 @@ public class CacheRestController {
 			List<DBObject> temp = operate.query(rp.getIndexes(),
 					rp.getRedisKey());
 
+			resultData1 = new MongoDBSummaryHandle().handle(temp, null);
+
 			for (DBObject dbObject : temp) {
-//				resultData.add(IndicatorDataToDBOject.parse(dbObject));
+				// resultData.add(IndicatorDataToDBOject.parse(dbObject));
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return resultData;
+		return resultData1;
 	}
-	
-	
+
 	@GET
 	@Path("/summaryCondition/{redisKey}/{types}/{start}/{end}/{formartInfo}")
 	@Produces("application/json")
-	public List<IndicatorData> loadSummaryCacheData(
+	public List<ResultData> loadSummaryCacheData(
 			@PathParam("redisKey") String redisKey,
 			@PathParam("types") String types, @PathParam("start") Long start,
 			@PathParam("end") Long end) {
 		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
+		List<ResultData> resultData1 = new ArrayList<ResultData>();
 		String[] indexes = null;
 		try {
 			indexes = CacheUtils.createIndexes(start, end, "access-");
@@ -101,16 +105,16 @@ public class CacheRestController {
 			List<DBObject> temp = operate.query(rp.getIndexes(),
 					rp.getRedisKey());
 
+			resultData1 = new MongoDBSummaryHandle().handle(temp, null);
+
 			for (DBObject dbObject : temp) {
-//				resultData.add(IndicatorDataToDBOject.parse(dbObject));
+				// resultData.add(IndicatorDataToDBOject.parse(dbObject));
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return resultData;
+		return resultData1;
 	}
-
-	
 
 }

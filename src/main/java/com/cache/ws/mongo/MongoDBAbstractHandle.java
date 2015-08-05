@@ -20,10 +20,11 @@ public abstract class MongoDBAbstractHandle {
 	/**
 	 * 模板方法
 	 */
-	public void load(List<DBObject> _list, String type) {
+	public List<ResultData> handle(List<DBObject> _list, String type) {
 		// 调用基本方法
 		handleKey(_list);
 		handleData();
+		return resultDatas;
 	}
 
 	/**
