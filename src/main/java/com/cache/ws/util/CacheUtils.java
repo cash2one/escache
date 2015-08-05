@@ -2,16 +2,26 @@ package com.cache.ws.util;
 
 import java.util.Date;
 
+
 public class CacheUtils {
+
+	public static boolean isSingleIndex(long start, long end) {
+
+		if (start == end) {
+			return true;
+		}
+		return false;
+	}
 
 	@SuppressWarnings("deprecation")
 	public static String[] createIndexes(Long startDay, Long endDay,
 			String prefix) {
-		
-		if(startDay == null || endDay == null) {
-			new NullPointerException("CacheUtils.CreateIndexes: Please check startDay or endDay." );
+
+		if (startDay == null || endDay == null) {
+			new NullPointerException(
+					"CacheUtils.CreateIndexes: Please check startDay or endDay.");
 		}
-		
+
 		int dayMills = 24 * 60 * 60 * 1000;
 
 		Date date = new Date();
