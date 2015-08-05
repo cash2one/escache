@@ -1,7 +1,6 @@
 package com.cache.ws.es.dto;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -48,10 +47,14 @@ public class EsResultData {
 	@SuppressWarnings("unused")
 	private String avgTime;
 	private Aggs tvt_aggs;
-	private Long tvt;
+	private Long tvt = new Long("0");
 
 	/** 平均访问页数 */
 	private String avgPage;
+
+	public void setTvt(Long tvt) {
+		this.tvt = tvt;
+	}
 
 	public Aggs getSingle_visitor_aggs() {
 		return single_visitor_aggs;
@@ -191,22 +194,7 @@ public class EsResultData {
 
 	public String getAvgTime() {
 
-		List<Map<String, Object>> buckets = tvt_aggs.getBuckets();
-
-		Long tvt = new Long("0");
-		for (Map<String, Object> bucket : buckets) {
-			Map<String, Object> maxMap = FastJsonUtils.json2map(bucket.get(
-					"max_aggs").toString());
-			BigDecimal max = new BigDecimal(maxMap.get("value").toString());
-
-			Map<String, Object> minMap = FastJsonUtils.json2map(bucket.get(
-					"min_aggs").toString());
-			
-			BigDecimal min = new BigDecimal(minMap.get("value").toString());
-			
-			tvt += max.subtract(min).longValue();
-		}
-		tvt = tvt / buckets.size();
+		Long tvt = getTvt();
 
 		Float vc = Float.valueOf(this.vc.getAggs().getValue());
 
@@ -256,11 +244,24 @@ public class EsResultData {
 	}
 
 	public Long getTvt() {
-		return tvt;
-	}
 
-	public void setTvt(Long tvt) {
-		this.tvt = tvt;
+		List<Map<String, Object>> buckets = tvt_aggs.getBuckets();
+
+		for (Map<String, Object> bucket : buckets) {
+			Map<String, Object> maxMap = FastJsonUtils.json2map(bucket.get(
+					"max_aggs").toString());
+			BigDecimal max = new BigDecimal(maxMap.get("value").toString());
+
+			Map<String, Object> minMap = FastJsonUtils.json2map(bucket.get(
+					"min_aggs").toString());
+
+			BigDecimal min = new BigDecimal(minMap.get("value").toString());
+
+			tvt += max.subtract(min).longValue();
+		}
+		tvt = tvt / buckets.size();
+
+		return tvt;
 	}
 
 }

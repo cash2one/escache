@@ -8,24 +8,31 @@ package com.cache.ws.es.dto;
  */
 public class IndicatorData {
 
+	private String key_as_string;
 	/** 浏览量 */
 	private String pv;
 	/** 访问次数 */
 	private String vc;
 	/** 访客数 */
 	private String uv;
-	/** 新访客数 */
-	private String nuv;
-	/** 新访客比率 */
-	private String nuvRate;
+	/** 新访客数需要的参数 */
+	private String new_visitor_aggs;
+	/** 新访客比率 需要的参数 */
+	private String uv_filter;
 	/** IP数 */
 	private String ip;
-	/** 跳出率 */
-	private String outRate;
-	/** 平均访问时长 */
-	private String avgTime;
-	/** 平均访问页数 */
-	private String avgPage;
+	/** 跳出率 需要的参数 */
+	private int single_visitor_aggs;
+	/** 平均访问时长需要的参数 */
+	private long tvt;
+
+	public String getKey_as_string() {
+		return key_as_string;
+	}
+
+	public void setKey_as_string(String key_as_string) {
+		this.key_as_string = key_as_string;
+	}
 
 	public String getPv() {
 		return pv;
@@ -33,12 +40,6 @@ public class IndicatorData {
 
 	public void setPv(String pv) {
 		this.pv = pv;
-	}
-
-	public void setPvObject(Object pv) {
-		if (pv != null) {
-			this.pv = pv.toString();
-		}
 	}
 
 	public String getVc() {
@@ -49,12 +50,6 @@ public class IndicatorData {
 		this.vc = vc;
 	}
 
-	public void setVcObject(Object vc) {
-		if (vc != null) {
-			this.vc = vc.toString();
-		}
-	}
-
 	public String getUv() {
 		return uv;
 	}
@@ -63,38 +58,20 @@ public class IndicatorData {
 		this.uv = uv;
 	}
 
-	public void setUvObject(Object uv) {
-		if (uv != null) {
-			this.uv = uv.toString();
-		}
+	public String getNew_visitor_aggs() {
+		return new_visitor_aggs;
 	}
 
-	public String getNuv() {
-		return nuv;
+	public void setNew_visitor_aggs(String new_visitor_aggs) {
+		this.new_visitor_aggs = new_visitor_aggs;
 	}
 
-	public void setNuv(String nuv) {
-		this.nuv = nuv;
+	public String getUv_filter() {
+		return uv_filter;
 	}
 
-	public void setNuvObject(Object nuv) {
-		if (nuv != null) {
-			this.nuv = nuv.toString();
-		}
-	}
-
-	public String getNuvRate() {
-		return nuvRate;
-	}
-
-	public void setNuvRate(String nuvRate) {
-		this.nuvRate = nuvRate;
-	}
-
-	public void setNuvRateObject(Object nuvRate) {
-		if (nuvRate != null) {
-			this.nuvRate = nuvRate.toString();
-		}
+	public void setUv_filter(String uv_filter) {
+		this.uv_filter = uv_filter;
 	}
 
 	public String getIp() {
@@ -105,52 +82,19 @@ public class IndicatorData {
 		this.ip = ip;
 	}
 
-	public void setIpObject(Object ip) {
-		if (ip != null) {
-			this.ip = ip.toString();
-		}
+	public int getSingle_visitor_aggs() {
+		return single_visitor_aggs;
 	}
 
-	public String getOutRate() {
-		return outRate;
+	public void setSingle_visitor_aggs(int single_visitor_aggs) {
+		this.single_visitor_aggs = single_visitor_aggs;
 	}
 
-	public void setOutRate(String outRate) {
-		this.outRate = outRate;
+	public long getTvt() {
+		return tvt;
 	}
 
-	public void setOutRateObject(Object outRate) {
-		if (outRate != null) {
-			this.outRate = outRate.toString();
-		}
+	public void setTvt(long tvt) {
+		this.tvt = tvt;
 	}
-
-	public String getAvgTime() {
-		return avgTime;
-	}
-
-	public void setAvgTime(String avgTime) {
-		this.avgTime = avgTime;
-	}
-
-	public void setAvgTimeObject(Object avgTime) {
-		if (avgTime != null) {
-			this.avgTime = avgTime.toString();
-		}
-	}
-
-	public String getAvgPage() {
-		return avgPage;
-	}
-
-	public void setAvgPage(String avgPage) {
-		this.avgPage = avgPage;
-	}
-
-	public void setAvgPageObject(Object avgPage) {
-		if (avgPage != null) {
-			this.avgPage = avgPage.toString();
-		}
-	}
-
 }

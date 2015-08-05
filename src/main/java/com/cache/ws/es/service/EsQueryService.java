@@ -25,16 +25,16 @@ public class EsQueryService {
 	private ESConfiguration esConfiguration;
 
 	public List<IndicatorData> queryDataindexTable(String redisKey,
-			 String index, String[] types) throws Exception {
+			String index, String[] types) throws Exception {
 		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
 		JestClient client = ESConfiguration.getInstance().getClient();
 
-		//根据KEY从Redis中获取查询语句
+		// 根据KEY从Redis中获取查询语句
 		String query = RedisDBOperate.loadDsl(redisKey);
 
 		Search search = (Search) new Search.Builder(query)
-		
-				.addIndex(index).addType(Arrays.asList(types)).build();
+
+		.addIndex(index).addType(Arrays.asList(types)).build();
 
 		JestResult result = client.execute(search);
 
@@ -49,16 +49,19 @@ public class EsQueryService {
 
 		for (EsResultData esResultData : list) {
 			IndicatorData indicatorData = new IndicatorData();
-
-			indicatorData.setAvgPage(esResultData.getAvgPage());
-			indicatorData.setAvgTime(esResultData.getAvgTime());
+			indicatorData.setKey_as_string(esResultData.getKey_as_string());
 			indicatorData.setIp(esResultData.getIp().getAggs().getValue());
-			indicatorData.setNuv(esResultData.getNuv());
-			indicatorData.setNuvRate(esResultData.getNuvRate());
-			indicatorData.setOutRate(esResultData.getOutRate());
 			indicatorData.setPv(esResultData.getPv().getValue());
 			indicatorData.setUv(esResultData.getUv().getValue());
 			indicatorData.setVc(esResultData.getVc().getAggs().getValue());
+			indicatorData.setUv_filter(esResultData.getUv_filter().getAggs()
+					.getValue());
+			indicatorData.setNew_visitor_aggs(esResultData
+					.getNew_visitor_aggs().getAggs().getValue());
+			indicatorData.setTvt(esResultData.getTvt());
+			indicatorData.setSingle_visitor_aggs(esResultData
+					.getSingle_visitor_aggs().getBuckets().size());
+
 			resultData.add(indicatorData);
 
 		}
@@ -66,8 +69,6 @@ public class EsQueryService {
 		return resultData;
 
 	}
-
-
 
 	public static void main(String[] args) throws Exception {
 
@@ -79,7 +80,8 @@ public class EsQueryService {
 		rp.setTypes(new String[] { "1" });
 		rp.setRedisKey("test_cache");
 
-		e.queryDataindexTable(rp.getRedisKey(),"access-2015-07-19",rp.getTypes());
+		e.queryDataindexTable(rp.getRedisKey(), "access-2015-07-19",
+				rp.getTypes());
 
 	}
 
