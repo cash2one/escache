@@ -1,7 +1,13 @@
 package com.cache.ws.es.dto;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.cache.ws.util.FastJsonUtils;
 
 /**
  * @author TomDing
@@ -17,7 +23,7 @@ public class EsResultData {
 
 	/** 浏览量 */
 	private EsValue pv;
-	
+
 	/** 访问次数 */
 	private Aggs vc;
 	/** 访客数 */
@@ -39,7 +45,11 @@ public class EsResultData {
 	private Aggs single_visitor_aggs;
 
 	/** 平均访问时长 */
-	private EsValue avgTime;
+	@SuppressWarnings("unused")
+	private String avgTime;
+	private Aggs tvt_aggs;
+	private Long tvt;
+
 	/** 平均访问页数 */
 	private String avgPage;
 
@@ -179,16 +189,36 @@ public class EsResultData {
 		this.outRate = outRate;
 	}
 
-	public EsValue getAvgTime() {
-		
-	
-		
-		
-		
-		return avgTime;
+	public String getAvgTime() {
+
+		List<Map<String, Object>> buckets = tvt_aggs.getBuckets();
+
+		Long tvt = new Long("0");
+		for (Map<String, Object> bucket : buckets) {
+			Map<String, Object> maxMap = FastJsonUtils.json2map(bucket.get(
+					"max_aggs").toString());
+			BigDecimal max = new BigDecimal(maxMap.get("value").toString());
+
+			Map<String, Object> minMap = FastJsonUtils.json2map(bucket.get(
+					"min_aggs").toString());
+			
+			BigDecimal min = new BigDecimal(minMap.get("value").toString());
+			
+			tvt += max.subtract(min).longValue();
+		}
+		tvt = tvt / buckets.size();
+
+		Float vc = Float.valueOf(this.vc.getAggs().getValue());
+
+		Float avgTime = new Float("0");
+		if (vc > 0) {
+			avgTime = (float) Math.ceil(tvt / 1000 / vc);
+		}
+
+		return avgTime.toString();
 	}
 
-	public void setAvgTime(EsValue avgTime) {
+	public void setAvgTime(String avgTime) {
 		this.avgTime = avgTime;
 	}
 
@@ -217,5 +247,20 @@ public class EsResultData {
 		this.ip = ip;
 	}
 
-	
+	public Aggs getTvt_aggs() {
+		return tvt_aggs;
+	}
+
+	public void setTvt_aggs(Aggs tvt_aggs) {
+		this.tvt_aggs = tvt_aggs;
+	}
+
+	public Long getTvt() {
+		return tvt;
+	}
+
+	public void setTvt(Long tvt) {
+		this.tvt = tvt;
+	}
+
 }

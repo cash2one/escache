@@ -51,7 +51,7 @@ public class EsQueryService {
 			IndicatorData indicatorData = new IndicatorData();
 
 			indicatorData.setAvgPage(esResultData.getAvgPage());
-			//indicatorData.setAvgTime(esResultData.getAvgTime().getValue());
+			indicatorData.setAvgTime(esResultData.getAvgTime());
 			indicatorData.setIp(esResultData.getIp().getAggs().getValue());
 			indicatorData.setNuv(esResultData.getNuv());
 			indicatorData.setNuvRate(esResultData.getNuvRate());
