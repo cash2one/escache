@@ -68,7 +68,7 @@ public class MongoDB4CRUDTest extends MongoDB4Test {
 		queryAll();
 	}
 
-	// @Test
+	 @Test
 	public void remove() {
 		queryAll();
 		DBCursor cur = users.find();

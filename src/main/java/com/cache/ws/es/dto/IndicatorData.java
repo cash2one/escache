@@ -25,6 +25,19 @@ public class IndicatorData {
 	private int single_visitor_aggs;
 	/** 平均访问时长需要的参数 */
 	private long tvt;
+	
+
+	private String out_vc_aggs;
+	
+
+
+	public String getOut_vc_aggs() {
+		return out_vc_aggs;
+	}
+
+	public void setOut_vc_aggs(String out_vc_aggs) {
+		this.out_vc_aggs = out_vc_aggs;
+	}
 
 	public String getKey_as_string() {
 		return key_as_string;

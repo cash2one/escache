@@ -43,6 +43,8 @@ public class EsResultData {
 	private String outRate;
 	private Aggs single_visitor_aggs;
 
+	private EsValue out_vc_aggs;
+
 	/** 平均访问时长 */
 	@SuppressWarnings("unused")
 	private String avgTime;
@@ -162,7 +164,7 @@ public class EsResultData {
 
 			if (uv > 0) {
 
-				avgPage = (pv / uv * 100);
+				avgPage = (pv / uv);
 			}
 
 		}
@@ -241,6 +243,14 @@ public class EsResultData {
 
 	public void setTvt_aggs(Aggs tvt_aggs) {
 		this.tvt_aggs = tvt_aggs;
+	}
+
+	public EsValue getOut_vc_aggs() {
+		return out_vc_aggs;
+	}
+
+	public void setOut_vc_aggs(EsValue out_vc_aggs) {
+		this.out_vc_aggs = out_vc_aggs;
 	}
 
 	public Long getTvt() {

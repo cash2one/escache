@@ -63,6 +63,7 @@ public class ESConfiguration {
 				.addIndex("access-2015-07-16").addType("1").build();
 
 		JestResult result = client.execute(search);
+		
 
 		// SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		// searchSourceBuilder.query(QueryBuilders.queryStringQuery("宣城市"));

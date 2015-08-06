@@ -68,6 +68,12 @@ public class CacheUtils {
 						.getSingle_visitor_aggs().getBuckets().size());
 			}
 
+			if (esResultData.getOut_vc_aggs() != null) {
+
+				indicatorData.setOut_vc_aggs(esResultData.getOut_vc_aggs()
+						.getValue());
+			}
+
 			resultData.add(indicatorData);
 
 		}

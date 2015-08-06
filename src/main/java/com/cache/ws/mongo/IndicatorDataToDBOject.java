@@ -15,6 +15,8 @@ import static com.cache.ws.mongo.MongoDBFields.F_NUV;
 import static com.cache.ws.mongo.MongoDBFields.F_SINGLE_VISITOR_AGGS;
 import static com.cache.ws.mongo.MongoDBFields.F_TVT;
 import static com.cache.ws.mongo.MongoDBFields.F_TYPE;
+import static com.cache.ws.mongo.MongoDBFields.F_OUT_VC_AGGS;;
+
 
 /**
  * 用于将ES的对象数据转换为MongoDB的对象数据
@@ -41,6 +43,8 @@ public final class IndicatorDataToDBOject {
 		dbObject.put(F_SINGLE_VISITOR_AGGS, indic.getSingle_visitor_aggs());
 		dbObject.put(F_TVT, indic.getTvt());
 		dbObject.put(F_TYPE, type);
+		dbObject.put(F_OUT_VC_AGGS, indic.getOut_vc_aggs());
+		
 		return dbObject;
 	}
 

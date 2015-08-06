@@ -21,7 +21,7 @@ public class ResultData implements Serializable {
 	private int new_visitor_aggs = 0;
 
 	/** 新访客比率 */
-	private float nuvRate = 0;
+	private String nuvRate = "0";
 	private int uv_filter = 0;
 
 	/** IP数 */
@@ -35,7 +35,17 @@ public class ResultData implements Serializable {
 	private long avgTime = 0;
 	private long tvt = 0;
 	/** 平均访问页数 */
-	private float avgPage = 0;
+	private String avgPage = "0";
+
+	private int outVcAggs = 0;
+
+	public int getOutVcAggs() {
+		return outVcAggs;
+	}
+
+	public void setOutVcAggs(int outVcAggs) {
+		this.outVcAggs = outVcAggs;
+	}
 
 	public String getKey_as_string() {
 		return key_as_string;
@@ -85,16 +95,20 @@ public class ResultData implements Serializable {
 		this.new_visitor_aggs = new_visitor_aggs;
 	}
 
-	public float getNuvRate() {
+	public String getNuvRate() {
 
 		if (uv_filter > 0) {
-			return new_visitor_aggs / uv_filter * 100;
+
+			float nuvRate = new Float(new_visitor_aggs) / new Float(uv_filter)
+					* new Float(100);
+
+			return String.format("%.2f ", nuvRate);
 		}
 
 		return nuvRate;
 	}
 
-	public void setNuvRate(float nuvRate) {
+	public void setNuvRate(String nuvRate) {
 		this.nuvRate = nuvRate;
 	}
 
@@ -115,10 +129,11 @@ public class ResultData implements Serializable {
 	}
 
 	public float getOutRate() {
-		int svc = vc - single_visitor_aggs;
 
-		if (vc > 0) {
-			return svc / vc * 100;
+		int svc = outVcAggs - single_visitor_aggs;
+
+		if (outVcAggs > 0) {
+			return new Float(svc) / new Float(outVcAggs);
 		}
 
 		return outRate;
@@ -137,8 +152,9 @@ public class ResultData implements Serializable {
 	}
 
 	public long getAvgTime() {
+
 		if (vc > 0) {
-			return (long) Math.ceil(tvt / 1000 / vc);
+			return (long) Math.ceil(new Float(tvt) / 1000 / new Float(vc));
 		}
 
 		return avgTime;
@@ -156,16 +172,21 @@ public class ResultData implements Serializable {
 		this.tvt = tvt;
 	}
 
-	public float getAvgPage() {
+	public String getAvgPage() {
 
+		Float pv = Float.valueOf(this.pv);
+
+		Float vc = Float.valueOf(this.vc);
+		Float avgPage = new Float("0");
 		if (uv > 0) {
-			return pv / uv * 100;
+			avgPage = (pv / vc);
 		}
 
-		return avgPage;
+		return String.format("%.2f ", avgPage);
+
 	}
 
-	public void setAvgPage(float avgPage) {
+	public void setAvgPage(String avgPage) {
 		this.avgPage = avgPage;
 	}
 

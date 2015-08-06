@@ -10,6 +10,9 @@ import static com.cache.ws.mongo.MongoDBFields.F_UV;
 import static com.cache.ws.mongo.MongoDBFields.F_UV_FILTER;
 import static com.cache.ws.mongo.MongoDBFields.F_VC;
 
+import static com.cache.ws.mongo.MongoDBFields.F_OUT_VC_AGGS;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.cache.ws.mongo.dto.ResultData;
@@ -34,6 +37,8 @@ public class DBObjectToResultData {
 			_rd.setSingle_visitor_aggs(_rd.getSingle_visitor_aggs()
 					+ getValue(dbObject, F_SINGLE_VISITOR_AGGS));
 			_rd.setTvt(_rd.getTvt() + getValue(dbObject, F_TVT));
+			_rd.setOutVcAggs(_rd.getOutVcAggs()
+					+ getValue(dbObject, F_OUT_VC_AGGS));
 		}
 
 		return _rd;
@@ -41,7 +46,10 @@ public class DBObjectToResultData {
 
 	private static int getValue(DBObject dbObject, String key) {
 		try {
-			return Integer.parseInt(dbObject.get(key).toString());
+
+			BigDecimal bigDecimal = new BigDecimal(dbObject.get(key).toString());
+
+			return bigDecimal.intValue();
 		} catch (Exception e) {
 			return 0;
 		}

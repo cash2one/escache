@@ -17,6 +17,7 @@ public interface MongoDBFields {
 	String F_AVG_TIME = "avgTime";// 平均访问时长
 	String F_AVG_PAGE = "avgPage";// 平均访问页数
 	String F_TVT = "tvt";
+	String F_OUT_VC_AGGS = "out_vc_aggs";
 
 	// MongoDB
 	String F_MODULE_ID = "moduleId";
