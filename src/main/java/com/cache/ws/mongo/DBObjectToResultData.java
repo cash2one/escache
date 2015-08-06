@@ -36,7 +36,7 @@ public class DBObjectToResultData {
 			_rd.setTvt(_rd.getTvt() + getValue(dbObject, F_TVT));
 		}
 
-		return null;
+		return _rd;
 	}
 
 	private static int getValue(DBObject dbObject, String key) {

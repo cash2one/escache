@@ -30,14 +30,13 @@ public class CacheRestController {
 	private EsQueryService esService;
 
 	@GET
-	@Path("/condition/{redisKey}/{types}/{start}/{end}/{formartInfo}")
+	@Path("/condition/{redisKey}/{types}/{start}/{end}")
 	@Produces("application/json")
 	public List<ResultData> loadCacheData(
 			@PathParam("redisKey") String redisKey,
 			@PathParam("types") String types, @PathParam("start") Long start,
 			@PathParam("end") Long end) {
-		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
-		List<ResultData> resultData1 = new ArrayList<ResultData>();
+		List<ResultData> resultData = new ArrayList<ResultData>();
 		String[] indexes = null;
 		try {
 			indexes = CacheUtils.createIndexes(start, end, "access-");
@@ -61,27 +60,23 @@ public class CacheRestController {
 			List<DBObject> temp = operate.query(rp.getIndexes(),
 					rp.getRedisKey());
 
-			resultData1 = new MongoDBSummaryHandle().handle(temp, null);
-
-			for (DBObject dbObject : temp) {
-				// resultData.add(IndicatorDataToDBOject.parse(dbObject));
-			}
+			resultData = new MongoDBSummaryHandle().handle(temp, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return resultData1;
+		return resultData;
 	}
 
 	@GET
-	@Path("/summaryCondition/{redisKey}/{types}/{start}/{end}/{formartInfo}")
+	@Path("/summaryCondition/{redisKey}/{types}/{start}/{end}")
 	@Produces("application/json")
 	public List<ResultData> loadSummaryCacheData(
 			@PathParam("redisKey") String redisKey,
 			@PathParam("types") String types, @PathParam("start") Long start,
 			@PathParam("end") Long end) {
-		List<IndicatorData> resultData = new ArrayList<IndicatorData>();
-		List<ResultData> resultData1 = new ArrayList<ResultData>();
+
+		List<ResultData> resultData = new ArrayList<ResultData>();
 		String[] indexes = null;
 		try {
 			indexes = CacheUtils.createIndexes(start, end, "access-");
@@ -105,16 +100,12 @@ public class CacheRestController {
 			List<DBObject> temp = operate.query(rp.getIndexes(),
 					rp.getRedisKey());
 
-			resultData1 = new MongoDBSummaryHandle().handle(temp, null);
-
-			for (DBObject dbObject : temp) {
-				// resultData.add(IndicatorDataToDBOject.parse(dbObject));
-			}
+			resultData = new MongoDBSummaryHandle().handle(temp, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return resultData1;
+		return resultData;
 	}
 
 }

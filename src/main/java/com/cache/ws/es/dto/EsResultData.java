@@ -247,6 +247,10 @@ public class EsResultData {
 
 		List<Map<String, Object>> buckets = tvt_aggs.getBuckets();
 
+		if (buckets != null && buckets.size() == 0) {
+			return new Long(0);
+		}
+
 		for (Map<String, Object> bucket : buckets) {
 			Map<String, Object> maxMap = FastJsonUtils.json2map(bucket.get(
 					"max_aggs").toString());
@@ -259,6 +263,7 @@ public class EsResultData {
 
 			tvt += max.subtract(min).longValue();
 		}
+
 		tvt = tvt / buckets.size();
 
 		return tvt;
