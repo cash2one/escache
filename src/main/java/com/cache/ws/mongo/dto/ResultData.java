@@ -28,13 +28,15 @@ public class ResultData implements Serializable {
 	private int ip = 0;
 
 	/** 跳出率 */
-	private float outRate = 0;
+	@SuppressWarnings("unused")
+	private String outRate = "0";
 	private int single_visitor_aggs = 0;
 
 	/** 平均访问时长 */
 	private long avgTime = 0;
 	private long tvt = 0;
 	/** 平均访问页数 */
+	@SuppressWarnings("unused")
 	private String avgPage = "0";
 
 	private int outVcAggs = 0;
@@ -128,18 +130,18 @@ public class ResultData implements Serializable {
 		this.ip = ip;
 	}
 
-	public float getOutRate() {
+	public String getOutRate() {
 
 		int svc = outVcAggs - single_visitor_aggs;
-
+		Float ourRate = new Float(0);
 		if (outVcAggs > 0) {
-			return new Float(svc) / new Float(outVcAggs);
+			ourRate = new Float(svc) / new Float(outVcAggs);
 		}
 
-		return outRate;
+		return String.format("%.2f ", ourRate);
 	}
 
-	public void setOutRate(float outRate) {
+	public void setOutRate(String outRate) {
 		this.outRate = outRate;
 	}
 

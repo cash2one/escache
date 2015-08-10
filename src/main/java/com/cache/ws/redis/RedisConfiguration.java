@@ -4,6 +4,8 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * 
@@ -12,6 +14,7 @@ import redis.clients.jedis.Jedis;
  */
 public class RedisConfiguration {
 	private static RedisConfiguration singleton = new RedisConfiguration();
+	private static JedisPool jedisPool;
 	private Settings settings;
 
 	private RedisConfiguration() {
@@ -24,11 +27,28 @@ public class RedisConfiguration {
 	}
 
 	public Jedis getClient() {
-		Jedis jedis = new Jedis(settings.get("IP"), Integer.parseInt(settings
-				.get("PORT")));
-		// 密码验证，如果你没有设置redis密码可不验证。即可不使用相关命令
-		jedis.auth(settings.get("AUTH"));
-		return jedis;
+
+		if (jedisPool == null) {
+			JedisPoolConfig jedisPoolConfig = initPoolConfig();
+			String host = settings.get("IP");
+			int port = Integer.valueOf(settings.get("Port"));
+			int timeout = Integer.valueOf(settings.get("TimeOut"));
+			String password = settings.get("Auth");
+			// 构造连接池
+			jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout,
+					password);
+		}
+
+		return jedisPool.getResource();
 	}
 
+	private JedisPoolConfig initPoolConfig() {
+		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+		jedisPoolConfig.setMaxIdle(Integer.valueOf(settings.get("MaxIdle")));
+		jedisPoolConfig.setMaxWaitMillis(Integer.valueOf(settings
+				.get("MaxWaitMillis")));
+		jedisPoolConfig.setTestOnBorrow(true);
+		jedisPoolConfig.setTestOnReturn(true);
+		return jedisPoolConfig;
+	}
 }

@@ -1,3 +1,6 @@
 IP: 182.92.227.23
-PORT: 6379
-AUTH: 3edcvfr4
+Port: 6379
+Auth: 3edcvfr4
+TimeOut: 1000
+MaxIdle: 300
+MaxWaitMillis: 1000
