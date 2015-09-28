@@ -23,9 +23,6 @@
 		<version>4.1.6.RELEASE</version>
 		</dependency>
 		
-		
-		
-	
 		<!-- RESTeasy -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
@@ -193,6 +190,12 @@
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>2.3.20</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3.2</version>
 		</dependency>
 
 	</dependencies>

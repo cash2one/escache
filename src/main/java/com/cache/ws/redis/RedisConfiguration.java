@@ -42,6 +42,12 @@ public class RedisConfiguration {
 		return jedisPool.getResource();
 	}
 
+	public static void returnResource(final Jedis jedis) {
+		if (jedis != null) {
+			jedis.close();
+		}
+	}
+
 	private JedisPoolConfig initPoolConfig() {
 		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		jedisPoolConfig.setMaxIdle(Integer.valueOf(settings.get("MaxIdle")));

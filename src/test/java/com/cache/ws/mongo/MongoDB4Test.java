@@ -1,12 +1,16 @@
 package com.cache.ws.mongo;
 
 import java.net.UnknownHostException;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
@@ -37,6 +41,14 @@ public abstract class MongoDB4Test {
 		mg = null;
 		db = null;
 		System.gc();
+	}
+	
+	@Test
+	public void createCollection() {
+		
+		db.createCollection("CA-2015-09-22", new BasicDBObject());
+
+		
 	}
 
 	public void print(Object o) {

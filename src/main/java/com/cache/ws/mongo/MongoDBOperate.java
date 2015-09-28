@@ -37,6 +37,14 @@ public final class MongoDBOperate {
 		return flag;
 	}
 
+	public void createMongoTable(String collection) {
+
+		if (!MongoDBUtil.collectionExists(collection)) {
+			MongoDBUtil.createCollection(collection, new BasicDBObject());
+		}
+
+	}
+
 	/**
 	 * 在MongoDB中存储数据
 	 * 
@@ -74,9 +82,18 @@ public final class MongoDBOperate {
 	 * 
 	 * @return
 	 */
-	private List<DBObject> loadMongoData(String collection, String type) {
+	public List<DBObject> loadMongoData(String collection, String type) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("type", type);
+		return MongoDBUtil.findByRefs(map, collection);
+	}
+
+	public List<DBObject> loadMongoData(String collection, String type,
+			String isNew) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("type", type);
+		map.put("isNew", isNew);
+
 		return MongoDBUtil.findByRefs(map, collection);
 	}
 
