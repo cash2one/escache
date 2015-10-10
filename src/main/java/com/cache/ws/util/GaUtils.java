@@ -1,6 +1,8 @@
 package com.cache.ws.util;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,7 +32,7 @@ public class GaUtils {
 		}
 		Integer totalPv = 0;
 		for (String key : keys) {
-			Integer pv = pvDataMap.get(key);
+			Integer pv = pvDataMap.get(key) == null ? 0:pvDataMap.get(key);
 			totalPv = Integer.sum(totalPv, pv);
 		}
 
@@ -64,14 +66,44 @@ public class GaUtils {
 
 		DecimalFormat df1 = new DecimalFormat("0.00%");
 
+		if(dividend == 0) {
+			return "0.00%";
+		}
+		
 		String result = df1.format(Double.valueOf(dividend)
 				/ Double.valueOf(divisor));
 
 		return result;
 	}
+	
+	public static Double calculateRetentionRateValue(int dividend, int divisor) {
+
+		if(dividend == 0) {
+			return 0.00;
+		}
+		return Double.valueOf(dividend)
+				/ Double.valueOf(divisor);
+
+	}
+
+	public static String calculateRetentionRate(double dayDateRetention,
+			int size) {
+
+		DecimalFormat df1 = new DecimalFormat("0.00%");
+
+		String result = df1.format(dayDateRetention / Double.valueOf(size));
+
+		return result;
+	}
+
+	public static Double changeString(String str) throws ParseException {
+		NumberFormat nf = NumberFormat.getPercentInstance();
+		Number m = nf.parse(str);
+		return m.doubleValue();
+	}
 
 	/**
-	 * //留存率=登录用户数/新增用户数*100%（一般统计周期为天）
+	 * 
 	 * 
 	 * @param DBObjects
 	 * @return

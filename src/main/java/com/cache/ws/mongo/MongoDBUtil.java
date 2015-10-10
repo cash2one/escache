@@ -22,10 +22,7 @@ import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
-/**
- * @author hydm
- * @version 1.0
- */
+
 public class MongoDBUtil {
 	private static Mongo connection = null;
 	private static DB db = null;
@@ -221,17 +218,6 @@ public class MongoDBUtil {
 	 * @param collName
 	 */
 	public static void insert(DBObject dbs, String collName) {
-		// EG
-		// DBObject dbs = new BasicDBObject();
-		// dbs.put("name", "uspcat.com");
-		// dbs.put("age", 2);
-		// List<String> books = new ArrayList<String>();
-		// books.add("EXTJS");
-		// books.add("MONGODB");
-		// dbs.put("books", books);
-		// mongoDb.insert(dbs, "users");
-		// 1.得到集合
-		// 2.插入操作
 		db.getCollection(collName).insert(dbs);
 	}
 

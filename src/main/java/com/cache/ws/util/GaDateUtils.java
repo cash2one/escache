@@ -188,6 +188,14 @@ public class GaDateUtils {
 		String currentDate = DateFormatUtils.format(cal, DATE_FORMAT);
 		return currentDate;
 	}
+	
+	public static String getYesterdayDate() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);
+		String yesterdayDate = DateFormatUtils.format(cal, DATE_FORMAT);
+		return yesterdayDate;
+	}
+
 
 	/**
 	 * @Title:getCurrentTime

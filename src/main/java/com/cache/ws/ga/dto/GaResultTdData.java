@@ -3,18 +3,18 @@ package com.cache.ws.ga.dto;
 
 public class GaResultTdData {
 
-	private String title;
 
 	private String data;
 	
+	private Double value;
 	
-
-	public String getTitle() {
-		return title;
+	
+	public Double getValue() {
+		return value;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setValue(Double value) {
+		this.value = value;
 	}
 
 

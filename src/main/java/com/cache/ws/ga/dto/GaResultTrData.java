@@ -12,16 +12,24 @@ public class GaResultTrData {
 
 	private String data;
 
-	private List<GaResultTdData> GaResultTdDatas;
+	private List<GaResultTdData> gaResultTdDatas;
 
+	private String Message;
 
+	public String getMessage() {
+		return Message;
+	}
+
+	public void setMessage(String message) {
+		Message = message;
+	}
 
 	public List<GaResultTdData> getGaResultTdDatas() {
-		return GaResultTdDatas;
+		return gaResultTdDatas;
 	}
 
 	public void setGaResultTdDatas(List<GaResultTdData> gaResultTdDatas) {
-		GaResultTdDatas = gaResultTdDatas;
+		this.gaResultTdDatas = gaResultTdDatas;
 	}
 
 	public String getTitle() {
