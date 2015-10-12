@@ -346,6 +346,18 @@ public class GaDateUtils {
 			return SUNDAY;
 		}
 	}
+	
+	public static boolean isBeginningOfWeek(Calendar c) {
+		if (c == null) {
+			return false;
+		}
+		
+		 if(MONDAY == getWeekDayCode(c)) {
+			 return true;
+		 }
+		
+		return false;
+	}
 
 	public static boolean isBeginningOfMonth(Calendar c) {
 		if (c == null) {
@@ -548,6 +560,8 @@ public class GaDateUtils {
 		System.out.println(getMonthsListBetweenDates(1, "2012-01-21"));
 
 		System.out.println(isBeginningOfMonth(Calendar.getInstance()));
-
+		
+		System.out.println(isBeginningOfWeek(Calendar.getInstance()));
+		
 	}
 }

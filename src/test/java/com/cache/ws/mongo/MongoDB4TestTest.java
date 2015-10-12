@@ -64,7 +64,7 @@ public class MongoDB4TestTest {
 		
 		
 		//创建数据库
-		DBCollection ca = db.createCollection("ga-2015-10-10",
+		DBCollection ca = db.createCollection("ga-2015-10-12",
 				new BasicDBObject());
 	
 		
@@ -79,7 +79,7 @@ public class MongoDB4TestTest {
 		//支持分片
 		BasicDBObject comfirmShard = new BasicDBObject();
 		Map<Object,Object> shardMap = new HashMap<Object,Object>();
-		shardMap.put("shardcollection", "test.ga-2015-10-10");
+		shardMap.put("shardcollection", "test.ga-2015-10-12");
 		shardMap.put("key", new BasicDBObject("userId",1));
 	
 		
@@ -92,7 +92,7 @@ public class MongoDB4TestTest {
 		ca.insert(dbObjects);
 		
 
-		System.out.println(db.getCollection("ga-2015-10-10").getStats());
+		System.out.println(db.getCollection("ga-2015-10-12").getStats());
 		System.out.println(ca.getIndexInfo());
 		
 		
