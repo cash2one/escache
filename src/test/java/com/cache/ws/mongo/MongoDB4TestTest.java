@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.cache.ws.util.GaDateUtils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
 import com.mongodb.DB;
@@ -37,7 +38,7 @@ public class MongoDB4TestTest {
 			e.printStackTrace();
 		}
 		// 获取xnmz_weims_test DB；如果默认没有创建，mongodb会自动创建
-		db = mg.getDB("test");
+		db = mg.getDB("dev");
 		adminDB =  mg.getDB("admin");
 
 	}
@@ -48,6 +49,10 @@ public class MongoDB4TestTest {
 		List<DBObject> dbObjects = new ArrayList<DBObject>();
 
 		
+		List<String> dates = GaDateUtils.getDaysListBetweenDates(30, "2015-10-06");
+		
+		
+		for(String date : dates) {
 		for (int i = 1; i <= new Random().nextInt(150); i++) {
 
 			Map<String, String> mapData = new HashMap<String, String>();
@@ -64,24 +69,18 @@ public class MongoDB4TestTest {
 		
 		
 		//创建数据库
-		DBCollection ca = db.createCollection("ga-2015-10-12",
+		DBCollection ca = db.createCollection("ga-"+date,
 				new BasicDBObject());
-	
-		
+
 	
 		CommandResult cr = null;
-//		BasicDBObject openShard = new BasicDBObject();
-//		CommandResult cr = adminDB.command(openShard);
-		
-//		openShard.put("enablesharding", "test");
-//		System.out.println(cr.toString());
 		
 		//支持分片
 		BasicDBObject comfirmShard = new BasicDBObject();
 		Map<Object,Object> shardMap = new HashMap<Object,Object>();
-		shardMap.put("shardcollection", "test.ga-2015-10-12");
+		shardMap.put("shardcollection", "dev.ga-"+date);
 		shardMap.put("key", new BasicDBObject("userId",1));
-	
+		shardMap.put("enablesharding", "dev");
 		
 		
 		comfirmShard.putAll(shardMap);
@@ -92,10 +91,10 @@ public class MongoDB4TestTest {
 		ca.insert(dbObjects);
 		
 
-		System.out.println(db.getCollection("ga-2015-10-12").getStats());
+		System.out.println(db.getCollection("ga-"+date).getStats());
 		System.out.println(ca.getIndexInfo());
 		
-		
+		}
 		
 	
 	}

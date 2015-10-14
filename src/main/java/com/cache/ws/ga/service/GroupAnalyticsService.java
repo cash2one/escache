@@ -49,6 +49,7 @@ public class GroupAnalyticsService {
 					+ date, type);
 			String[] ids = GaUtils.getIds(dbObjects);
 			// 分组将ID保存进入redis
+			jedis.del(date);
 			if (ids != null && ids.length > 0) {
 				jedis.sadd(date, ids);
 			}
@@ -56,19 +57,16 @@ public class GroupAnalyticsService {
 
 		// 进行分组统计
 		for (int i = 0; i < dates.size() - 1; i++) {
-			if (jedis.smembers(dates.get(i)) == null
-					|| jedis.smembers(dates.get(i)).size() <= 0) {
-				break;
-			}
+		
 			// 初始化数据
 			int count = 0;
 			GaResultTrData trData = new GaResultTrData();
 			trData.setGaResultTdDatas(new ArrayList<GaResultTdData>());
 			trData.setCode(dates.get(i));
 			trData.setTitle(scale + "-" + count);
-			trData.setData(String.valueOf(jedis.smembers(dates.get(i)).size()));
-			trData.setUserNumber(String.valueOf(jedis.smembers(dates.get(i))
-					.size()));
+			int size = jedis.smembers(dates.get(i)) == null ? 0 : jedis.smembers(dates.get(i)).size();
+			trData.setData(String.valueOf(size));
+			trData.setUserNumber(String.valueOf(size));
 			result.add(trData);
 
 			// 记录同类群组数据
@@ -113,10 +111,12 @@ public class GroupAnalyticsService {
 			String[] newUserIds = GaUtils.getIds(newUser);
 
 			// 分组将所有用户保存进入redis
+			jedis.del(date);
 			if (totalIds != null && totalIds.length > 0) {
 				jedis.sadd(date, totalIds);
 			}
 			// 分组将新用户保存进入redis
+			jedis.del("new-" + date);
 			if (newUserIds != null && newUserIds.length > 0) {
 				jedis.sadd("new-" + date, newUserIds);
 			}
@@ -128,10 +128,7 @@ public class GroupAnalyticsService {
 
 		// 进行分组统计
 		for (int i = 0; i < dates.size() - 1; i++) {
-			if (jedis.smembers(dates.get(i)) == null
-					|| jedis.smembers(dates.get(i)).size() <= 0) {
-				break;
-			}
+			
 			// 初始化数据统计
 			int count = 0;
 			GaResultTrData trData = new GaResultTrData();
@@ -145,8 +142,9 @@ public class GroupAnalyticsService {
 			// loginTotal));
 			trData.setData("100%");
 
-			trData.setUserNumber(String.valueOf(jedis.smembers(dates.get(i))
-					.size()));
+			int size = jedis.smembers(dates.get(i)) == null ? 0 : jedis.smembers(dates.get(i)).size();
+			
+			trData.setUserNumber(String.valueOf(size));
 			result.add(trData);
 
 			// 计算同类群主-留存率
@@ -154,6 +152,9 @@ public class GroupAnalyticsService {
 				count++;
 				GaResultTdData tdData = new GaResultTdData();
 				// （新增用户中，在往后的第N天还有登录的用户数）/新增总用户数
+				jedis.mget("new-" + dates.get(i));
+				jedis.mget(dates.get(j));
+				
 				Set<String> sinter = jedis.sinter("new-" + dates.get(i),
 						dates.get(j));
 
@@ -194,16 +195,14 @@ public class GroupAnalyticsService {
 			// 保存PV数据
 			pvDataMap.putAll(GaUtils.getPvMap(dbObjects));
 			// 分组将ID保存进入redis
+			jedis.del(date);
 			if (ids != null && ids.length > 0) {
 				jedis.sadd(date, ids);
 			}
 		}
 		// 进行分组统计
 		for (int i = 0; i < dates.size() - 1; i++) {
-			if (jedis.smembers(dates.get(i)) == null
-					|| jedis.smembers(dates.get(i)).size() <= 0) {
-				break;
-			}
+			
 			// 初始化数据统计
 			int count = 0;
 			GaResultTrData trData = new GaResultTrData();
@@ -212,9 +211,9 @@ public class GroupAnalyticsService {
 			trData.setTitle(scale + "-" + count);
 
 			trData.setData(GaUtils.getPv(pvDataMap,jedis.smembers(dates.get(i))));
-
-			trData.setUserNumber(String.valueOf(jedis.smembers(dates.get(i))
-					.size()));
+			int size = jedis.smembers(dates.get(i)) == null ? 0 : jedis.smembers(dates.get(i)).size();
+			
+			trData.setUserNumber(String.valueOf(size));
 			result.add(trData);
 
 			// 记录同类群组数据
