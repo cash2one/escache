@@ -42,39 +42,38 @@ public class GroupAnalyticsService {
 		Jedis jedis = RedisConfiguration.getInstance().getClient();
 		// 获取查询日期
 		List<String> dates = GaDateUtils.getQueryDates(scale, dateRange);
+		// 获取DB名称
+		List<String> mongoDBNames = GaUtils.getMongDBName(scale, dates);
 
 		// 分组将数据插入redis中
-		for (String date : dates) {
-			List<DBObject> dbObjects = groupAnalyticsDao.queryGaData("ga-"
-					+ date, type);
+		for (String mongoDBName : mongoDBNames) {
+			List<DBObject> dbObjects = groupAnalyticsDao.queryGaData(
+					mongoDBName, type);
 			String[] ids = GaUtils.getIds(dbObjects);
 			// 分组将ID保存进入redis
-			jedis.del(date);
+			jedis.del(mongoDBName);
 			if (ids != null && ids.length > 0) {
-				jedis.sadd(date, ids);
+				jedis.sadd(mongoDBName, ids);
 			}
 		}
 
 		// 进行分组统计
-		for (int i = 0; i < dates.size() - 1; i++) {
-		
-			// 初始化数据
-			int count = 0;
+		for (int i = 0; i < mongoDBNames.size() - 1; i++) {
+			String mongoDBName = mongoDBNames.get(i);
+			// 初始化当天数据
 			GaResultTrData trData = new GaResultTrData();
 			trData.setGaResultTdDatas(new ArrayList<GaResultTdData>());
 			trData.setCode(dates.get(i));
-			trData.setTitle(scale + "-" + count);
-			int size = jedis.smembers(dates.get(i)) == null ? 0 : jedis.smembers(dates.get(i)).size();
+			int size = jedis.smembers(mongoDBName) == null ? 0 : jedis
+					.smembers(mongoDBName).size();
 			trData.setData(String.valueOf(size));
 			trData.setUserNumber(String.valueOf(size));
 			result.add(trData);
 
 			// 记录同类群组数据
 			for (int j = i + 1; j < dates.size(); j++) {
-				count++;
 				GaResultTdData tdData = new GaResultTdData();
-				Set<String> sinter = jedis.sinter(dates.get(i), dates.get(j));
-				//tdData.setTitle(scale + "-" + count);
+				Set<String> sinter = jedis.sinter(mongoDBName, mongoDBNames.get(j));
 				tdData.setData(String.valueOf(sinter.size()));
 				trData.getGaResultTdDatas().add(tdData);
 			}
@@ -97,73 +96,72 @@ public class GroupAnalyticsService {
 		Jedis jedis = RedisConfiguration.getInstance().getClient();
 		// 获取查询日期
 		List<String> dates = GaDateUtils.getQueryDates(scale, dateRange);
-
+		// 获取DB名称
+		List<String> mongoDBNames = GaUtils.getMongDBName(scale, dates);
 		// 分组将数据插入redis中
 		Map<String, List<DBObject>> dbObjects = new HashMap<String, List<DBObject>>();
-		for (String date : dates) {
-			List<DBObject> totalUser = groupAnalyticsDao.queryGaData("ga-"
-					+ date, type);
 
-			List<DBObject> newUser = groupAnalyticsDao.queryGaData(
-					"ga-" + date, type, "0");
+		for (String mongoDBName : mongoDBNames) {
+			List<DBObject> totalUser = groupAnalyticsDao.queryGaData(
+					mongoDBName, type);
+
+			List<DBObject> newUser = groupAnalyticsDao.queryGaData(mongoDBName,
+					type, "0");
 
 			String[] totalIds = GaUtils.getIds(totalUser);
 			String[] newUserIds = GaUtils.getIds(newUser);
 
 			// 分组将所有用户保存进入redis
-			jedis.del(date);
+			jedis.del(mongoDBName);
 			if (totalIds != null && totalIds.length > 0) {
-				jedis.sadd(date, totalIds);
+				jedis.sadd(mongoDBName, totalIds);
 			}
 			// 分组将新用户保存进入redis
-			jedis.del("new-" + date);
+			jedis.del(GaConstant.NEW_USER + mongoDBName);
 			if (newUserIds != null && newUserIds.length > 0) {
-				jedis.sadd("new-" + date, newUserIds);
+				jedis.sadd(GaConstant.NEW_USER + mongoDBName, newUserIds);
 			}
 
-			dbObjects.put(date, totalUser);
-			dbObjects.put("new-" + date, newUser);
+			dbObjects.put(mongoDBName, totalUser);
+			dbObjects.put(GaConstant.NEW_USER + mongoDBName, newUser);
 
 		}
 
 		// 进行分组统计
-		for (int i = 0; i < dates.size() - 1; i++) {
-			
+		for (int i = 0; i < mongoDBNames.size() - 1; i++) {
+
+			String mongoDBName = mongoDBNames.get(i);
 			// 初始化数据统计
-			int count = 0;
 			GaResultTrData trData = new GaResultTrData();
 			trData.setGaResultTdDatas(new ArrayList<GaResultTdData>());
 			trData.setCode(dates.get(i));
-			trData.setTitle(scale + "-" + count);
-			// 留存率=新增用户数/登录用户数*100%（一般统计周期为天）
-			int loginNew = dbObjects.get("new-" + dates.get(i)).size();
-			// int loginTotal = dbObjects.get(dates.get(i)).size();
-			// trData.setData(GaUtils.calculateRetentionRate(loginNew,
-			// loginTotal));
-			trData.setData("100%");
+			trData.setTitle(scale);
 
-			int size = jedis.smembers(dates.get(i)) == null ? 0 : jedis.smembers(dates.get(i)).size();
-			
+			int loginNew = dbObjects.get(GaConstant.NEW_USER + mongoDBName)
+					.size();
+			int loginTotal = dbObjects.get(mongoDBName).size();
+
+			// 当天留存率=新增用户数/登录用户数*100%
+			trData.setData(GaUtils.calculateRetentionRate(loginNew, loginTotal));
+
+			int size = jedis.smembers(mongoDBName) == null ? 0 : jedis
+					.smembers(mongoDBName).size();
+
 			trData.setUserNumber(String.valueOf(size));
 			result.add(trData);
 
-			// 计算同类群主-留存率
-			for (int j = i + 1; j < dates.size(); j++) {
-				count++;
-				GaResultTdData tdData = new GaResultTdData();
-				// （新增用户中，在往后的第N天还有登录的用户数）/新增总用户数
-				jedis.mget("new-" + dates.get(i));
-				jedis.mget(dates.get(j));
-				
-				Set<String> sinter = jedis.sinter("new-" + dates.get(i),
-						dates.get(j));
+			// 分组统计
+			for (int j = i + 1; j < mongoDBNames.size(); j++) {
 
+				GaResultTdData tdData = new GaResultTdData();
+
+				Set<String> sinter = jedis.sinter(GaConstant.NEW_USER
+						+ mongoDBName, mongoDBNames.get(j));
+				// N天后留存率 = （新增用户中，在往后的第N天还有登录的用户数）/新增总用户数
 				tdData.setData(GaUtils.calculateRetentionRate(sinter.size(),
 						loginNew));
-				tdData.setValue(GaUtils.calculateRetentionRateValue(sinter.size(),
-						loginNew));
-
-				//tdData.setTitle(scale + "-" + count);
+				tdData.setValue(GaUtils.calculateRetentionRateValue(
+						sinter.size(), loginNew));
 
 				trData.getGaResultTdDatas().add(tdData);
 			}
@@ -186,23 +184,27 @@ public class GroupAnalyticsService {
 		Jedis jedis = RedisConfiguration.getInstance().getClient();
 		// 获取查询日期
 		List<String> dates = GaDateUtils.getQueryDates(scale, dateRange);
+		// 获取DB名称
+		List<String> mongoDBNames = GaUtils.getMongDBName(scale, dates);
+
 		ConcurrentHashMap<String, Integer> pvDataMap = new ConcurrentHashMap<String, Integer>();
 		// 分组将数据插入redis中
-		for (String date : dates) {
-			List<DBObject> dbObjects = groupAnalyticsDao.queryGaData("ga-"
-					+ date, type);
+		for (String mongoDBName : mongoDBNames) {
+			List<DBObject> dbObjects = groupAnalyticsDao.queryGaData(
+					mongoDBName, type);
 			String[] ids = GaUtils.getIds(dbObjects);
 			// 保存PV数据
 			pvDataMap.putAll(GaUtils.getPvMap(dbObjects));
 			// 分组将ID保存进入redis
-			jedis.del(date);
+			jedis.del(mongoDBName);
 			if (ids != null && ids.length > 0) {
-				jedis.sadd(date, ids);
+				jedis.sadd(mongoDBName, ids);
 			}
 		}
 		// 进行分组统计
-		for (int i = 0; i < dates.size() - 1; i++) {
-			
+		for (int i = 0; i < mongoDBNames.size() - 1; i++) {
+
+			String mongoDBName = mongoDBNames.get(i);
 			// 初始化数据统计
 			int count = 0;
 			GaResultTrData trData = new GaResultTrData();
@@ -210,18 +212,18 @@ public class GroupAnalyticsService {
 			trData.setCode(dates.get(i));
 			trData.setTitle(scale + "-" + count);
 
-			trData.setData(GaUtils.getPv(pvDataMap,jedis.smembers(dates.get(i))));
-			int size = jedis.smembers(dates.get(i)) == null ? 0 : jedis.smembers(dates.get(i)).size();
-			
+			trData.setData(GaUtils.getPv(pvDataMap, jedis.smembers(mongoDBName)));
+			int size = jedis.smembers(mongoDBName) == null ? 0 : jedis
+					.smembers(mongoDBName).size();
+
 			trData.setUserNumber(String.valueOf(size));
 			result.add(trData);
 
 			// 记录同类群组数据
-			for (int j = i + 1; j < dates.size(); j++) {
+			for (int j = i + 1; j < mongoDBNames.size(); j++) {
 				count++;
 				GaResultTdData tdData = new GaResultTdData();
-				Set<String> sinter = jedis.sinter(dates.get(i), dates.get(j));
-				//tdData.setTitle(scale + "-" + count);
+				Set<String> sinter = jedis.sinter(mongoDBName, mongoDBNames.get(j));
 				tdData.setData(GaUtils.getPv(pvDataMap, sinter));
 				trData.getGaResultTdDatas().add(tdData);
 			}

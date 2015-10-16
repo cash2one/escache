@@ -553,15 +553,15 @@ public class GaDateUtils {
 
 		System.out.println("---------------------------");
 
-		System.out.println(getDaysListBetweenDates(3, "2015-09-24"));
+		//System.out.println(getDaysListBetweenDates(3, "2015-10-16"));
 
-		System.out.println(getWeekListBetweenDates(2, "2015-09-24"));
+		System.out.println(getWeekListBetweenDates(1, "2015-10-16"));
 
 		System.out.println(getMonthsListBetweenDates(1, "2012-01-21"));
 
-		System.out.println(isBeginningOfMonth(Calendar.getInstance()));
+		//System.out.println(isBeginningOfMonth(Calendar.getInstance()));
 		
-		System.out.println(isBeginningOfWeek(Calendar.getInstance()));
+		//System.out.println(isBeginningOfWeek(Calendar.getInstance()));
 		
 	}
 }

@@ -12,7 +12,9 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.cache.ws.constant.GaConstant;
 import com.cache.ws.util.GaDateUtils;
+import com.cache.ws.util.GaUtils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
 import com.mongodb.DB;
@@ -49,11 +51,12 @@ public class MongoDB4TestTest {
 		List<DBObject> dbObjects = new ArrayList<DBObject>();
 
 		
-		List<String> dates = GaDateUtils.getDaysListBetweenDates(30, "2015-10-06");
+		List<String> dates = GaDateUtils.getMonthsListBetweenDates(3, "2015-10-16");
 		
+		dates = GaUtils.getMongDBName(GaConstant.MONTH, dates);
 		
 		for(String date : dates) {
-		for (int i = 1; i <= new Random().nextInt(150); i++) {
+		for (int i = 1; i <= new Random().nextInt(15000); i++) {
 
 			Map<String, String> mapData = new HashMap<String, String>();
 
@@ -69,7 +72,7 @@ public class MongoDB4TestTest {
 		
 		
 		//创建数据库
-		DBCollection ca = db.createCollection("ga-"+date,
+		DBCollection ca = db.createCollection(date,
 				new BasicDBObject());
 
 	
@@ -78,7 +81,7 @@ public class MongoDB4TestTest {
 		//支持分片
 		BasicDBObject comfirmShard = new BasicDBObject();
 		Map<Object,Object> shardMap = new HashMap<Object,Object>();
-		shardMap.put("shardcollection", "dev.ga-"+date);
+		shardMap.put("shardcollection", "dev."+date);
 		shardMap.put("key", new BasicDBObject("userId",1));
 		shardMap.put("enablesharding", "dev");
 		
@@ -91,7 +94,7 @@ public class MongoDB4TestTest {
 		ca.insert(dbObjects);
 		
 
-		System.out.println(db.getCollection("ga-"+date).getStats());
+		System.out.println(db.getCollection(date).getStats());
 		System.out.println(ca.getIndexInfo());
 		
 		}

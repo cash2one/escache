@@ -53,9 +53,7 @@ public class GroupAnalyticsController {
 
 		try {
 			if (indicator.equals(GaConstant.PV)) {
-
 				result = groupAnalyticsService.queryPV(type, scale, dateRange);
-
 			} else if (indicator.equals(GaConstant.VISITOR)) {
 				result = groupAnalyticsService.queryVisitors(type, scale,
 						dateRange);
@@ -63,9 +61,8 @@ public class GroupAnalyticsController {
 				result = groupAnalyticsService.queryRetentionRate(type, scale,
 						dateRange);
 			}
-			
-			
 		} catch (ParseException e) {
+			result.setCode(GaConstant.GA_ERROR_CODE);
 			return result;
 		}
 

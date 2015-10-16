@@ -3,17 +3,36 @@ package com.cache.ws.util;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.cache.ws.constant.GaConstant;
 import com.mongodb.DBObject;
 
 public class GaUtils {
 
+	public static List<String> getMongDBName(String scale, List<String> dates) {
+		List<String> dbNames = new ArrayList<String>();
+
+		for (String date : dates) {
+			if (scale.equals(GaDateUtils.DAY)) {
+				date = GaConstant.MONGODB_NAME_DAY + date;
+			} else if (scale.equals(GaDateUtils.WEEK)) {
+				date = GaConstant.MONGODB_NAME_WEEK + date;
+			} else if (scale.equals(GaDateUtils.MONTH)) {
+				date = GaConstant.MONGODB_NAME_MONTH + date;
+			}
+
+			dbNames.add(date);
+		}
+		return dbNames;
+	}
+
 	public static String[] getIds(List<DBObject> dbObjects) {
 		if (dbObjects == null) {
-			return new String[]{};
+			return new String[] {};
 		}
 		String[] result = new String[dbObjects.size()];
 		int i = 0;
@@ -29,11 +48,11 @@ public class GaUtils {
 			Set<String> keys) {
 		Integer totalPv = 0;
 		if (keys == null) {
-			 String.valueOf(totalPv);
+			String.valueOf(totalPv);
 		}
-	
+
 		for (String key : keys) {
-			Integer pv = pvDataMap.get(key) == null ? 0:pvDataMap.get(key);
+			Integer pv = pvDataMap.get(key) == null ? 0 : pvDataMap.get(key);
 			totalPv = Integer.sum(totalPv, pv);
 		}
 
@@ -66,23 +85,22 @@ public class GaUtils {
 
 		DecimalFormat df1 = new DecimalFormat("0.00%");
 
-		if(dividend == 0) {
+		if (dividend == 0) {
 			return "0.00%";
 		}
-		
+
 		String result = df1.format(Double.valueOf(dividend)
 				/ Double.valueOf(divisor));
 
 		return result;
 	}
-	
+
 	public static Double calculateRetentionRateValue(int dividend, int divisor) {
 
-		if(dividend == 0) {
+		if (dividend == 0) {
 			return 0.00;
 		}
-		return Double.valueOf(dividend)
-				/ Double.valueOf(divisor);
+		return Double.valueOf(dividend) / Double.valueOf(divisor);
 
 	}
 
