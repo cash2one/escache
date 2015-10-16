@@ -33,7 +33,7 @@ public class MongoDB4CRUDTest extends MongoDB4Test {
 		}
 	}
 
-	// @Test
+	// 
 	public void add() {
 		// 先查询所有数据
 		queryAll();
@@ -68,7 +68,7 @@ public class MongoDB4CRUDTest extends MongoDB4Test {
 		queryAll();
 	}
 
-	 @Test
+	 
 	public void remove() {
 		queryAll();
 		DBCursor cur = users.find();
@@ -85,7 +85,7 @@ public class MongoDB4CRUDTest extends MongoDB4Test {
 		queryAll();
 	}
 
-	// @Test
+	// 
 	public void modify() {
 		queryAll();
 		// print("修改："
@@ -114,7 +114,7 @@ public class MongoDB4CRUDTest extends MongoDB4Test {
 		queryAll();
 	}
 
-	// @Test
+	// 
 	public void insert() {
 		DBObject user = new BasicDBObject();
 		user.put("name", "hoojo");
@@ -127,7 +127,7 @@ public class MongoDB4CRUDTest extends MongoDB4Test {
 		print(users.save(user).getN());
 	}
 
-	// @Test
+	// 
 	public void query() {
 		// 查询所有
 		// queryAll();
@@ -203,7 +203,7 @@ public class MongoDB4CRUDTest extends MongoDB4Test {
 		queryAll();
 	}
 
-	// @Test
+	// 
 	public void dataExists() {
 		queryAll();
 		DBObject dbObject = new BasicDBObject();
@@ -211,7 +211,7 @@ public class MongoDB4CRUDTest extends MongoDB4Test {
 		print("name = 199 的记录是否存在 : " + users.findOne(dbObject));
 	}
 
-	// @Test
+	// 
 	public void queryAllCollectionNames() {
 		Set<String> s = db.getCollectionNames();
 		for (String string : s) {
@@ -219,7 +219,7 @@ public class MongoDB4CRUDTest extends MongoDB4Test {
 		}
 	}
 
-	@Test
+	
 	public void queryAllDatas() {
 		Set<String> collectionNames = db.getCollectionNames();
 		DBCollection dbCollection = null;
@@ -240,7 +240,7 @@ public class MongoDB4CRUDTest extends MongoDB4Test {
 		}
 	}
 
-	// @Test
+	// 
 	public void dropCollection() {
 		showAllCollections();
 		db.getCollection("javadb").drop();

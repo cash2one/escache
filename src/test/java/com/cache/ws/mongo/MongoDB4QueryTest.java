@@ -11,7 +11,7 @@ import com.mongodb.QueryOperators;
 
 public class MongoDB4QueryTest extends MongoDB4Test {
 
-	@Test
+	
 	public void queryAllField() {
 		print("queryAllField");
 		DBCollection dbCollection = db.getCollection("users");
@@ -22,7 +22,7 @@ public class MongoDB4QueryTest extends MongoDB4Test {
 
 	}
 
-	// @Test
+	// 
 	public void queryDefField() {
 		// 仅仅
 		print("queryDefField");
