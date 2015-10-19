@@ -70,6 +70,35 @@ public class GaDateUtils {
 		return DateFormatUtils.format(cal, DATE_FORMAT);
 
 	}
+	
+	
+	/**
+	 * @Title:getWeekFirstDay
+	 * @Description: 本周星期一
+	 * @return
+	 * @return String
+	 */
+	public static String getWeekMonday() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		return DateFormatUtils.format(cal, DATE_FORMAT);
+
+	}
+	
+	
+	/**
+	 * @Title:getCurrentMonth
+	 * @Description: 得到当前月
+	 * @return
+	 * @return String
+	 */
+	public static String getCurrentMonth() {
+		Calendar cal = Calendar.getInstance();
+
+		cal.set(Calendar.DATE, 1);
+		return DateFormatUtils.format(cal, MONTH_FORMAT);
+
+	}
 
 	/**
 	 * @Title:getMonthLastDay
@@ -527,6 +556,7 @@ public class GaDateUtils {
 		return datas;
 	}
 
+
 	// 获取查询时期
 
 	public static void main(String[] args) throws ParseException {
@@ -562,6 +592,12 @@ public class GaDateUtils {
 		//System.out.println(isBeginningOfMonth(Calendar.getInstance()));
 		
 		//System.out.println(isBeginningOfWeek(Calendar.getInstance()));
+		
+		
+		System.out.println(getCurrentMonth());
+		System.out.println(getWeekMonday());
+		
+		
 		
 	}
 }

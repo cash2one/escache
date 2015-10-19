@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.cache.ws.constant.GaConstant;
 import com.cache.ws.mongo.MongoDBOperate;
 import com.cache.ws.schedule.GroupAnalyticsScheduleService;
 import com.cache.ws.util.GaDateUtils;
@@ -22,14 +23,14 @@ public class GroupAnalyticsScheduleServiceImpl implements
 	public void exceute() {
 		Calendar cal = Calendar.getInstance();
 		
-		String tableName = "ga-" + GaDateUtils.getCurrentDate();
+		String tableName = GaConstant.MONGODB_NAME_DAY + GaDateUtils.getCurrentDate();
 		mongoDBOperate.createMongoTable(tableName);
 		
 		//判断是否需要建立周表
 		boolean isWeek = GaDateUtils.isBeginningOfWeek(cal);
 		
 		if(isWeek) {
-			tableName = "ga-week-" + GaDateUtils.getCurrentDate();
+			tableName = GaConstant.MONGODB_NAME_WEEK + GaDateUtils.getCurrentDate();
 			mongoDBOperate.createMongoTable(tableName);
 		}
 		
@@ -38,7 +39,7 @@ public class GroupAnalyticsScheduleServiceImpl implements
 		boolean isMonth = GaDateUtils.isBeginningOfMonth(cal);
 		
 		if(isMonth) {
-			tableName = "ga-month-" + GaDateUtils.getCurrentDate();
+			tableName = GaConstant.MONGODB_NAME_MONTH + GaDateUtils.getCurrentMonth();
 			mongoDBOperate.createMongoTable(tableName);
 		}
 		
