@@ -19,7 +19,7 @@ public abstract class MongoDB4Test {
 	protected DB db;
 	protected DBCollection users;
 
-	@Before
+	//@Before
 	public void init() {
 		try {
 			mg = new Mongo("192.168.100.10", 23135);
@@ -33,7 +33,7 @@ public abstract class MongoDB4Test {
 		users = db.getCollection("users");
 	}
 
-	@After
+	//@After
 	public void destory() {
 		if (mg != null) {
 			mg.close();
@@ -43,7 +43,7 @@ public abstract class MongoDB4Test {
 		System.gc();
 	}
 	
-	@Test
+	
 	public void createCollection() {
 		
 		db.createCollection("CA-2015-09-22", new BasicDBObject());

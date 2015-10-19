@@ -14,6 +14,7 @@ import org.bson.types.ObjectId;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 
+import com.cache.ws.constant.GaConstant;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -22,13 +23,10 @@ import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
-/**
- * @author hydm
- * @version 1.0
- */
 public class MongoDBUtil {
 	private static Mongo connection = null;
 	private static DB db = null;
+	private static DB adminDB = null;
 	private static Settings settings;
 
 	static {
@@ -38,6 +36,7 @@ public class MongoDBUtil {
 			connection = new Mongo(settings.get("IP") + ":"
 					+ settings.get("PORT"));
 			db = connection.getDB(settings.get("DB_NAME"));
+			adminDB = connection.getDB("admin");
 		} catch (MongoException e) {
 			e.printStackTrace();
 		} catch (UnknownHostException e) {
@@ -147,6 +146,24 @@ public class MongoDBUtil {
 	 */
 	public static void createCollection(String collectionName, DBObject options) {
 		if (!collectionExists(collectionName)) {
+
+			// 支持分片
+			BasicDBObject openShard = new BasicDBObject();
+			Map<Object, Object> shardMap = new HashMap<Object, Object>();
+			// 数据库支持分片
+			shardMap.put("enablesharding", GaConstant.DB_NAME);
+			openShard.putAll(shardMap);
+			adminDB.command(openShard);
+			// 表支持分片，并确认Key
+			BasicDBObject comfirmShard = new BasicDBObject();
+			Map<Object, Object> comfirmShardMap = new HashMap<Object, Object>();
+			comfirmShardMap.put("shardcollection", GaConstant.DB_NAME
+					+ collectionName);
+			comfirmShardMap.put("key", new BasicDBObject("userId", 1));
+
+			comfirmShard.putAll(comfirmShardMap);
+			adminDB.command(comfirmShard);
+
 			db.createCollection(collectionName, options);
 		}
 	}
@@ -221,17 +238,6 @@ public class MongoDBUtil {
 	 * @param collName
 	 */
 	public static void insert(DBObject dbs, String collName) {
-		// EG
-		// DBObject dbs = new BasicDBObject();
-		// dbs.put("name", "uspcat.com");
-		// dbs.put("age", 2);
-		// List<String> books = new ArrayList<String>();
-		// books.add("EXTJS");
-		// books.add("MONGODB");
-		// dbs.put("books", books);
-		// mongoDb.insert(dbs, "users");
-		// 1.得到集合
-		// 2.插入操作
 		db.getCollection(collName).insert(dbs);
 	}
 

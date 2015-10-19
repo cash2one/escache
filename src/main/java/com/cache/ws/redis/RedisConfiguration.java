@@ -51,6 +51,8 @@ public class RedisConfiguration {
 	private JedisPoolConfig initPoolConfig() {
 		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		jedisPoolConfig.setMaxIdle(Integer.valueOf(settings.get("MaxIdle")));
+		jedisPoolConfig.setMaxTotal(Integer.valueOf(settings.get("MaxActive")));
+
 		jedisPoolConfig.setMaxWaitMillis(Integer.valueOf(settings
 				.get("MaxWaitMillis")));
 		jedisPoolConfig.setTestOnBorrow(true);

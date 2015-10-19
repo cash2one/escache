@@ -7,7 +7,7 @@ import java.util.Map;
 import org.junit.Test;
 
 public class RedisDB4MapTest extends RedisDB4Test {
-	@Test
+	//
 	public void testMap() {
 		Map<String, String> user = new HashMap<String, String>();
 		user.put("name", "cd");

@@ -8,7 +8,7 @@ import redis.clients.jedis.Jedis;
 public class RedisDB4Test {
 	protected Jedis jedis = null;
 
-	@Before
+	//@Before
 	public void init() {
 		// 连接redis服务
 		jedis = new Jedis("182.92.227.23", 6379);
@@ -16,7 +16,7 @@ public class RedisDB4Test {
 		jedis.auth("3edcvfr4");
 	}
 
-	@After
+	//@After
 	public void destory() {
 		if (jedis != null) {
 			jedis.close();

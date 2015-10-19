@@ -3,7 +3,7 @@ package com.cache.ws.redis;
 import org.junit.Test;
 
 public class RedisDB4SetTest extends RedisDB4Test {
-	@Test
+	//
 	public void testSet() {
 		// set
 		jedis.sadd("sname", "wobby");

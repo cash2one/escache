@@ -70,6 +70,35 @@ public class GaDateUtils {
 		return DateFormatUtils.format(cal, DATE_FORMAT);
 
 	}
+	
+	
+	/**
+	 * @Title:getWeekFirstDay
+	 * @Description: 本周星期一
+	 * @return
+	 * @return String
+	 */
+	public static String getWeekMonday() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		return DateFormatUtils.format(cal, DATE_FORMAT);
+
+	}
+	
+	
+	/**
+	 * @Title:getCurrentMonth
+	 * @Description: 得到当前月
+	 * @return
+	 * @return String
+	 */
+	public static String getCurrentMonth() {
+		Calendar cal = Calendar.getInstance();
+
+		cal.set(Calendar.DATE, 1);
+		return DateFormatUtils.format(cal, MONTH_FORMAT);
+
+	}
 
 	/**
 	 * @Title:getMonthLastDay
@@ -188,6 +217,14 @@ public class GaDateUtils {
 		String currentDate = DateFormatUtils.format(cal, DATE_FORMAT);
 		return currentDate;
 	}
+	
+	public static String getYesterdayDate() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);
+		String yesterdayDate = DateFormatUtils.format(cal, DATE_FORMAT);
+		return yesterdayDate;
+	}
+
 
 	/**
 	 * @Title:getCurrentTime
@@ -337,6 +374,18 @@ public class GaDateUtils {
 		default:
 			return SUNDAY;
 		}
+	}
+	
+	public static boolean isBeginningOfWeek(Calendar c) {
+		if (c == null) {
+			return false;
+		}
+		
+		 if(MONDAY == getWeekDayCode(c)) {
+			 return true;
+		 }
+		
+		return false;
 	}
 
 	public static boolean isBeginningOfMonth(Calendar c) {
@@ -507,6 +556,7 @@ public class GaDateUtils {
 		return datas;
 	}
 
+
 	// 获取查询时期
 
 	public static void main(String[] args) throws ParseException {
@@ -533,13 +583,21 @@ public class GaDateUtils {
 
 		System.out.println("---------------------------");
 
-		System.out.println(getDaysListBetweenDates(3, "2015-09-24"));
+		//System.out.println(getDaysListBetweenDates(3, "2015-10-16"));
 
-		System.out.println(getWeekListBetweenDates(2, "2015-09-24"));
+		System.out.println(getWeekListBetweenDates(1, "2015-10-16"));
 
 		System.out.println(getMonthsListBetweenDates(1, "2012-01-21"));
 
-		System.out.println(isBeginningOfMonth(Calendar.getInstance()));
-
+		//System.out.println(isBeginningOfMonth(Calendar.getInstance()));
+		
+		//System.out.println(isBeginningOfWeek(Calendar.getInstance()));
+		
+		
+		System.out.println(getCurrentMonth());
+		System.out.println(getWeekMonday());
+		
+		
+		
 	}
 }
