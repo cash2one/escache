@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +18,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
@@ -30,7 +28,7 @@ public class MongoDB4TestTest {
 	protected DB adminDB;
 	protected DBCollection users;
 
-	//@Before
+	@Before
 	public void setUp() throws Exception {
 		try {
 			mg = new Mongo("192.168.100.5", 27017);
@@ -45,17 +43,19 @@ public class MongoDB4TestTest {
 
 	}
 
-	
+	@Test
 	public void testCreateCollection() throws InstantiationException, IllegalAccessException {
 
 		List<DBObject> dbObjects = new ArrayList<DBObject>();
 
 		
-		List<String> dates = GaDateUtils.getMonthsListBetweenDates(3, "2015-10-16");
+		List<String> dates = GaDateUtils.getDaysListBetweenDates(1, "2015-10-19");
 		
-		dates = GaUtils.getMongDBName(GaConstant.MONTH, dates);
+		dates = GaUtils.getMongDBName(GaConstant.DAY, dates);
+
 		
 		for(String date : dates) {
+			System.out.println(date);
 		for (int i = 1; i <= new Random().nextInt(15000); i++) {
 
 			Map<String, String> mapData = new HashMap<String, String>();
@@ -81,15 +81,23 @@ public class MongoDB4TestTest {
 		//支持分片
 		BasicDBObject comfirmShard = new BasicDBObject();
 		Map<Object,Object> shardMap = new HashMap<Object,Object>();
-		shardMap.put("shardcollection", "dev."+date);
-		shardMap.put("key", new BasicDBObject("userId",1));
 		shardMap.put("enablesharding", "dev");
-		
+		shardMap.put("shardcollection", "dev."+date);
+
+		shardMap.put("key", new BasicDBObject("userId",1));
 		
 		comfirmShard.putAll(shardMap);
 		cr = adminDB.command(comfirmShard);
+		
+		
 		System.out.println(cr.toString());
-	    
+		
+		BasicDBObject comfirmShard1 = new BasicDBObject();
+		
+		
+		
+		cr = db.command(comfirmShard1);
+		System.out.println(cr.toString());
 	    
 		ca.insert(dbObjects);
 		

@@ -1,6 +1,8 @@
 package com.cache.ws.constant;
 
 public class GaConstant {
+	
+	public static String DB_NAME = "cache";
 
 	public static String DAY = "day";
 
