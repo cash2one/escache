@@ -73,14 +73,15 @@ public class GroupAnalyticsService {
 			// 记录同类群组数据
 			for (int j = i + 1; j < dates.size(); j++) {
 				GaResultTdData tdData = new GaResultTdData();
-				Set<String> sinter = jedis.sinter(mongoDBName, mongoDBNames.get(j));
+				Set<String> sinter = jedis.sinter(mongoDBName,
+						mongoDBNames.get(j));
 				tdData.setData(String.valueOf(sinter.size()));
 				trData.getGaResultTdDatas().add(tdData);
 			}
 
 		}
 
-		return calculateTotal(result, "");
+		return calculateTotal(result, GaConstant.VISITOR);
 	}
 
 	/**
@@ -223,14 +224,15 @@ public class GroupAnalyticsService {
 			for (int j = i + 1; j < mongoDBNames.size(); j++) {
 				count++;
 				GaResultTdData tdData = new GaResultTdData();
-				Set<String> sinter = jedis.sinter(mongoDBName, mongoDBNames.get(j));
+				Set<String> sinter = jedis.sinter(mongoDBName,
+						mongoDBNames.get(j));
 				tdData.setData(GaUtils.getPv(pvDataMap, sinter));
 				trData.getGaResultTdDatas().add(tdData);
 			}
 
 		}
 
-		return calculateTotal(result, "");
+		return calculateTotal(result, GaConstant.PV);
 	}
 
 	private GaResult calculateTotal(List<GaResultTrData> data, String indicator)
@@ -247,6 +249,9 @@ public class GroupAnalyticsService {
 		Integer count = 0;
 		// 最大值（用于区间计算）
 		Double max = 0.00;
+
+		// 最小值（用于区间计算）
+		Double min = 0.00;
 
 		List<GaResultTdData> gaResultTdDatas = new ArrayList<GaResultTdData>();
 
@@ -267,16 +272,19 @@ public class GroupAnalyticsService {
 			for (int i = 0; i < size; i++) {
 
 				if (!indicator.equals(GaConstant.RETENTION_RATE)) {
-					int date = Integer.valueOf(data.get(i).getGaResultTdDatas()
-							.get(count).getData());
-					max = date > max ? date : max;
-					dayDate += date;
+					int value = Integer.valueOf(data.get(i)
+							.getGaResultTdDatas().get(count).getData());
+					min = value < min ? value : min;
+					max = value > max ? value : max;
+
+					dayDate += value;
 
 				} else {
-					double date = GaUtils.changeString(data.get(i)
+					double value = GaUtils.changeString(data.get(i)
 							.getGaResultTdDatas().get(count).getData());
-					max = date > max ? date : max;
-					dayDateRetention += date;
+					max = value > max ? value : max;
+					min = value < min ? value : min;
+					dayDateRetention += value;
 				}
 			}
 
@@ -308,7 +316,7 @@ public class GroupAnalyticsService {
 		result.add(total);
 		result.addAll(data);
 
-		gaResult.setMax(max);
+		gaResult.setIntervalValue(max - min);
 		gaResult.setGaResultTrData(result);
 
 		return gaResult;

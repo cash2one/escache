@@ -6,16 +6,20 @@ import com.cache.ws.constant.GaConstant;
 
 public class GaResult {
 
-	/** 最大参数 */
-	private double max;
+	/**区间值*/
+	private double intervalValue;
 
 	/** 每行记录 */
 	private List<GaResultTrData> gaResultTrData;
 	/** 标识 */
 	private String code;
 
-	public double getMax() {
-		return max;
+	public double getIntervalValue() {
+		return intervalValue;
+	}
+
+	public void setIntervalValue(double intervalValue) {
+		this.intervalValue = intervalValue;
 	}
 
 	public GaResult() {
@@ -29,10 +33,6 @@ public class GaResult {
 
 	public void setCode(String code) {
 		this.code = code;
-	}
-
-	public void setMax(double max) {
-		this.max = max;
 	}
 
 	public List<GaResultTrData> getGaResultTrData() {
