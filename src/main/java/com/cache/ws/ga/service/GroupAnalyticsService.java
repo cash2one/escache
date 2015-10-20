@@ -63,7 +63,7 @@ public class GroupAnalyticsService {
 			// 初始化当天数据
 			GaResultTrData trData = new GaResultTrData();
 			trData.setGaResultTdDatas(new ArrayList<GaResultTdData>());
-			trData.setCode(dates.get(i));
+			trData.setCode(GaUtils.displayDate(dates.get(i),scale));
 			int size = jedis.smembers(mongoDBName) == null ? 0 : jedis
 					.smembers(mongoDBName).size();
 			trData.setData(String.valueOf(size));
@@ -135,7 +135,7 @@ public class GroupAnalyticsService {
 			// 初始化数据统计
 			GaResultTrData trData = new GaResultTrData();
 			trData.setGaResultTdDatas(new ArrayList<GaResultTdData>());
-			trData.setCode(dates.get(i));
+			trData.setCode(GaUtils.displayDate(dates.get(i),scale));
 			trData.setTitle(scale);
 
 			int loginNew = dbObjects.get(GaConstant.NEW_USER + mongoDBName)
@@ -210,7 +210,7 @@ public class GroupAnalyticsService {
 			int count = 0;
 			GaResultTrData trData = new GaResultTrData();
 			trData.setGaResultTdDatas(new ArrayList<GaResultTdData>());
-			trData.setCode(dates.get(i));
+			trData.setCode(GaUtils.displayDate(dates.get(i),scale));
 			trData.setTitle(scale + "-" + count);
 
 			trData.setData(GaUtils.getPv(pvDataMap, jedis.smembers(mongoDBName)));

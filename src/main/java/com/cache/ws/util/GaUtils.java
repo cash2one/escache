@@ -13,6 +13,20 @@ import com.mongodb.DBObject;
 
 public class GaUtils {
 
+	public static String displayDate(String date, String scale)
+			throws ParseException {
+		if (scale.equals(GaDateUtils.DAY)) {
+			return date;
+		} else if (scale.equals(GaDateUtils.WEEK)) {
+			date += " - " + GaDateUtils.getSpecifiedOffsetWeek(date, 1);
+
+		} else if (scale.equals(GaDateUtils.MONTH)) {
+			date += " - " + GaDateUtils.getSpecifiedOffsetMonth(date, 1);
+		}
+
+		return date;
+	}
+
 	public static List<String> getMongDBName(String scale, List<String> dates) {
 		List<String> dbNames = new ArrayList<String>();
 
