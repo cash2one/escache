@@ -28,7 +28,6 @@ public class MongoDB4TestTest {
 	protected DB adminDB;
 	protected DBCollection users;
 
-	//@Before
 	public void setUp() throws Exception {
 		try {
 			mg = new Mongo("192.168.100.5", 27017);
@@ -43,7 +42,6 @@ public class MongoDB4TestTest {
 
 	}
 
-	//@Test
 	public void testCreateCollection() {
 
 		List<DBObject> dbObjects = new ArrayList<DBObject>();
