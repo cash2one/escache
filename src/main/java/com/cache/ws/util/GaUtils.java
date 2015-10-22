@@ -13,6 +13,20 @@ import com.mongodb.DBObject;
 
 public class GaUtils {
 
+	public static String displayDate(String date, String scale)
+			throws ParseException {
+		if (scale.equals(GaDateUtils.DAY)) {
+			return date;
+		} else if (scale.equals(GaDateUtils.WEEK)) {
+			date += " - " + GaDateUtils.getSpecifiedOffsetWeek(date, 1);
+
+		} else if (scale.equals(GaDateUtils.MONTH)) {
+			date += " - " + GaDateUtils.getSpecifiedOffsetMonth(date, 1);
+		}
+
+		return date;
+	}
+
 	public static List<String> getMongDBName(String scale, List<String> dates) {
 		List<String> dbNames = new ArrayList<String>();
 
@@ -73,6 +87,26 @@ public class GaUtils {
 		}
 
 		return pvDataMap;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param DBObjects
+	 * @return
+	 */
+	public static String calculateRetentionRate(Double dividend, int divisor) {
+
+		DecimalFormat df1 = new DecimalFormat("0.00%");
+
+		if (dividend == 0) {
+			return "0.00%";
+		}
+
+		String result = df1.format(Double.valueOf(dividend)
+				/ Double.valueOf(divisor));
+
+		return result;
 	}
 
 	/**

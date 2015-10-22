@@ -270,6 +270,24 @@ public class GaDateUtils {
 		String returnDate = DateFormatUtils.format(cal, DATE_FORMAT);
 		return returnDate;
 	}
+	
+	public static String getSpecifiedOffsetWeek(String specifiedDate, int offset)
+			throws ParseException {
+		Date date = DateUtils.parseDate(specifiedDate, DATE_FORMAT);
+		Calendar cal = DateUtils.toCalendar(date);
+		cal.add(Calendar.WEEK_OF_MONTH, offset);
+		String returnDate = DateFormatUtils.format(cal, DATE_FORMAT);
+		return returnDate;
+	}
+	
+	public static String getSpecifiedOffsetMonth(String specifiedDate, int offset)
+			throws ParseException {
+		Date date = DateUtils.parseDate(specifiedDate, DATE_FORMAT);
+		Calendar cal = DateUtils.toCalendar(date);
+		cal.add(Calendar.MONTH, offset);
+		String returnDate = DateFormatUtils.format(cal, DATE_FORMAT);
+		return returnDate;
+	}
 
 	/**
 	 * @Title:getSpecifiedOffsetTime
@@ -596,6 +614,13 @@ public class GaDateUtils {
 		
 		System.out.println(getCurrentMonth());
 		System.out.println(getWeekMonday());
+		
+		
+		System.out.println(getSpecifiedOffsetDate("2015-10-20",1));
+
+		System.out.println(getSpecifiedOffsetWeek("2015-10-20",1));
+
+		System.out.println(getSpecifiedOffsetMonth("2015-10-31",1));
 		
 		
 		

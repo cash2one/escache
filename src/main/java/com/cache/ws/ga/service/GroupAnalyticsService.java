@@ -63,7 +63,7 @@ public class GroupAnalyticsService {
 			// 初始化当天数据
 			GaResultTrData trData = new GaResultTrData();
 			trData.setGaResultTdDatas(new ArrayList<GaResultTdData>());
-			trData.setCode(dates.get(i));
+			trData.setCode(GaUtils.displayDate(dates.get(i),scale));
 			int size = jedis.smembers(mongoDBName) == null ? 0 : jedis
 					.smembers(mongoDBName).size();
 			trData.setData(String.valueOf(size));
@@ -135,7 +135,7 @@ public class GroupAnalyticsService {
 			// 初始化数据统计
 			GaResultTrData trData = new GaResultTrData();
 			trData.setGaResultTdDatas(new ArrayList<GaResultTdData>());
-			trData.setCode(dates.get(i));
+			trData.setCode(GaUtils.displayDate(dates.get(i),scale));
 			trData.setTitle(scale);
 
 			int loginNew = dbObjects.get(GaConstant.NEW_USER + mongoDBName)
@@ -145,6 +145,9 @@ public class GroupAnalyticsService {
 			// 当天留存率=新增用户数/登录用户数*100%
 			trData.setData(GaUtils.calculateRetentionRate(loginNew, loginTotal));
 
+			trData.setValue(GaUtils.calculateRetentionRateValue(loginNew, loginTotal));
+			
+			
 			int size = jedis.smembers(mongoDBName) == null ? 0 : jedis
 					.smembers(mongoDBName).size();
 
@@ -210,7 +213,7 @@ public class GroupAnalyticsService {
 			int count = 0;
 			GaResultTrData trData = new GaResultTrData();
 			trData.setGaResultTdDatas(new ArrayList<GaResultTdData>());
-			trData.setCode(dates.get(i));
+			trData.setCode(GaUtils.displayDate(dates.get(i),scale));
 			trData.setTitle(scale + "-" + count);
 
 			trData.setData(GaUtils.getPv(pvDataMap, jedis.smembers(mongoDBName)));
@@ -245,6 +248,8 @@ public class GroupAnalyticsService {
 		Integer userNumber = 0;
 		// 第0天的数据
 		Integer initialDate = 0;
+		Double initialValue = 0.00;
+		
 		// 同类群组天数
 		Integer count = 0;
 		// 最大值（用于区间计算）
@@ -265,6 +270,8 @@ public class GroupAnalyticsService {
 
 			if (!indicator.equals(GaConstant.RETENTION_RATE)) {
 				initialDate += Integer.valueOf(gaResultTrData.getData());
+			} else {
+				initialValue += gaResultTrData.getValue();
 			}
 
 			int size = gaResultTrData.getGaResultTdDatas().size();
@@ -308,9 +315,9 @@ public class GroupAnalyticsService {
 		if (!indicator.equals(GaConstant.RETENTION_RATE)) {
 			total.setData(String.valueOf(initialDate));
 		} else {
-			total.setData("100%");
+			total.setData(GaUtils.calculateRetentionRate(initialValue, data.size()));
 		}
-
+		
 		total.setGaResultTdDatas(gaResultTdDatas);
 
 		result.add(total);
