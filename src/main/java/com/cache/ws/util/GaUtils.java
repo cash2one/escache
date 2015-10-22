@@ -88,6 +88,26 @@ public class GaUtils {
 
 		return pvDataMap;
 	}
+	
+	/**
+	 * 
+	 * 
+	 * @param DBObjects
+	 * @return
+	 */
+	public static String calculateRetentionRate(Double dividend, int divisor) {
+
+		DecimalFormat df1 = new DecimalFormat("0.00%");
+
+		if (dividend == 0) {
+			return "0.00%";
+		}
+
+		String result = df1.format(Double.valueOf(dividend)
+				/ Double.valueOf(divisor));
+
+		return result;
+	}
 
 	/**
 	 * 

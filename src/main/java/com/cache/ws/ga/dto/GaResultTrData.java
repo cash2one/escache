@@ -12,6 +12,8 @@ public class GaResultTrData {
 
 	private String data;
 
+	private Double value;
+
 	private List<GaResultTdData> gaResultTdDatas;
 
 	private String Message;
@@ -62,6 +64,14 @@ public class GaResultTrData {
 
 	public void setUserNumber(String userNumber) {
 		this.userNumber = userNumber;
+	}
+
+	public Double getValue() {
+		return value;
+	}
+
+	public void setValue(Double value) {
+		this.value = value;
 	}
 
 }
