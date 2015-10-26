@@ -276,17 +276,16 @@ public class GaDateUtils {
 		Date date = DateUtils.parseDate(specifiedDate, DATE_FORMAT);
 		Calendar cal = DateUtils.toCalendar(date);
 		cal.add(Calendar.WEEK_OF_MONTH, offset);
-		String returnDate = DateFormatUtils.format(cal, DATE_FORMAT);
-		return returnDate;
+
+		return getSpecifiedOffsetDate(DateFormatUtils.format(cal, DATE_FORMAT),-1);
 	}
 	
 	public static String getSpecifiedOffsetMonth(String specifiedDate, int offset)
 			throws ParseException {
-		Date date = DateUtils.parseDate(specifiedDate, DATE_FORMAT);
+		Date date = DateUtils.parseDate(specifiedDate, MONTH_FORMAT);
 		Calendar cal = DateUtils.toCalendar(date);
 		cal.add(Calendar.MONTH, offset);
-		String returnDate = DateFormatUtils.format(cal, DATE_FORMAT);
-		return returnDate;
+		return getSpecifiedOffsetDate(DateFormatUtils.format(cal, DATE_FORMAT),-1);
 	}
 
 	/**
