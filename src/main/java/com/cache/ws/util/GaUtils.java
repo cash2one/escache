@@ -1,5 +1,6 @@
 package com.cache.ws.util;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -88,7 +89,7 @@ public class GaUtils {
 
 		return pvDataMap;
 	}
-	
+
 	/**
 	 * 
 	 * 
@@ -134,7 +135,12 @@ public class GaUtils {
 		if (dividend == 0) {
 			return 0.00;
 		}
-		return Double.valueOf(dividend) / Double.valueOf(divisor);
+		BigDecimal bigDecimal = new BigDecimal(Double.valueOf(dividend)
+				/ Double.valueOf(divisor));
+
+		Double value =  bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+		
+		return value;
 
 	}
 
