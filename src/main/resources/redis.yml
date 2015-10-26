@@ -4,3 +4,4 @@ Auth: 3edcxsw2
 TimeOut: 5000
 MaxIdle: 100
 MaxWaitMillis: 1000
+MaxActive: 300
