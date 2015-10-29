@@ -161,14 +161,17 @@ public class GroupAnalyticsService {
 			trData.setTitle(scale);
 
 			int loginNew = dbObjects.get(newUserRedisName).size();
-			int loginTotal = dbObjects.get(redisName).size();
+			// int loginTotal = dbObjects.get(redisName).size();
 			totalTrData.add(loginNew);
 
 			// 当天留存率=新增用户数/登录用户数*100%
-			trData.setData(GaUtils.calculateRetentionRate(loginNew, loginTotal));
+			// trData.setData(GaUtils.calculateRetentionRate(loginNew,
+			// loginTotal));
 
-			trData.setValue(GaUtils.calculateRetentionRateValue(loginNew,
-					loginTotal));
+			// trData.setValue(GaUtils.calculateRetentionRateValue(loginNew,
+			// loginTotal));
+			trData.setData("100.00%");
+			trData.setValue(100.00);
 
 			int size = jedis.smembers(redisName) == null ? 0 : jedis.smembers(
 					redisName).size();
@@ -328,7 +331,8 @@ public class GroupAnalyticsService {
 		result.add(total);
 		result.addAll(data);
 
-		gaResult.setIntervalValue(max - min);
+		gaResult.setMax(max);
+		gaResult.setMin(min);
 		gaResult.setGaResultTrData(result);
 
 		return gaResult;
@@ -364,13 +368,13 @@ public class GroupAnalyticsService {
 			// 循环列
 			for (int i = 0; i < size; i++) {
 
-				double value = GaUtils.changeString(data.get(i)
-						.getGaResultTdDatas().get(counter).getData());
+				double value = data.get(i).getGaResultTdDatas().get(counter)
+						.getValue();
 				max = value > max ? value : max;
 				min = value < min ? value : min;
 
 			}
-			//计算总共的留存率
+			// 计算总共的留存率
 			String retentionRate = calculateTotalRetentionRate(totalData,
 					data.size() - counter, counter + 1);
 
@@ -384,14 +388,15 @@ public class GroupAnalyticsService {
 		total.setCode("所有会话");
 		total.setUserNumber(String.valueOf(userNumber));
 
-		total.setData("100%");
+		total.setData("100.00%");
 
 		total.setGaResultTdDatas(gaResultTdDatas);
 
 		result.add(total);
 		result.addAll(data);
 
-		gaResult.setIntervalValue(max - min);
+		gaResult.setMax(max);
+		gaResult.setMin(min);
 		gaResult.setGaResultTrData(result);
 
 		return gaResult;
