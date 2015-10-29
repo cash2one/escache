@@ -24,6 +24,8 @@ public class GaConstant {
 
 	public static String NEW_USER = "new-";
 	
+	public static String NEW_USER_CODE = "0";
+	
 	public static String GA_ERROR_CODE = "0";
 	
 	public static String GA_NORMAL_CODE = "1";

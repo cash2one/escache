@@ -9,10 +9,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import com.cache.ws.constant.GaConstant;
 import com.mongodb.DBObject;
 
 public class GaUtils {
+
+	public static String getRedisName(String mongoDBName, String type) {
+
+		String redisName = mongoDBName + type
+				+ RandomStringUtils.randomAlphanumeric(5);
+
+		return redisName;
+	}
 
 	public static String displayDate(String date, String scale)
 			throws ParseException {
@@ -22,7 +32,7 @@ public class GaUtils {
 			date += " - " + GaDateUtils.getSpecifiedOffsetWeek(date, 1);
 
 		} else if (scale.equals(GaDateUtils.MONTH)) {
-			date += " - " + GaDateUtils.getSpecifiedOffsetMonth(date, 1);
+			date += "-01 - " + GaDateUtils.getSpecifiedOffsetMonth(date, 1);
 		}
 
 		return date;
@@ -138,8 +148,9 @@ public class GaUtils {
 		BigDecimal bigDecimal = new BigDecimal(Double.valueOf(dividend)
 				/ Double.valueOf(divisor));
 
-		Double value =  bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-		
+		Double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP)
+				.doubleValue();
+
 		return value;
 
 	}
