@@ -321,7 +321,7 @@ public class GroupAnalyticsService {
 			count++;
 		}
 
-		total.setCode("所有会话");
+		total.setCode("所有访客");
 		total.setUserNumber(String.valueOf(userNumber));
 
 		total.setData(String.valueOf(initialDate));
