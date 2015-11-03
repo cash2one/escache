@@ -73,13 +73,25 @@ public class GroupAnalyticsService {
 			trData.setUserNumber(String.valueOf(size));
 			result.add(trData);
 
+			// 最大值（用于区间计算）
+			Double max = 0.00;
+			// 最小值（用于区间计算）
+			Double min = 0.00;
+
 			// 记录同类群组数据
 			for (int j = i + 1; j < dates.size(); j++) {
 				GaResultTdData tdData = new GaResultTdData();
 				Set<String> sinter = jedis.sinter(redisName, redisNames.get(j));
 				tdData.setData(String.valueOf(sinter.size()));
+				Double formatDoubleData = Double.valueOf(sinter.size());
 				trData.getGaResultTdDatas().add(tdData);
+
+				min = formatDoubleData < min ? formatDoubleData : min;
+				max = formatDoubleData > max ? formatDoubleData : max;
 			}
+			// 横向最大值，最小值
+			trData.setMax(max);
+			trData.setMin(min);
 
 		}
 
@@ -178,23 +190,37 @@ public class GroupAnalyticsService {
 
 			trData.setUserNumber(String.valueOf(size));
 			result.add(trData);
+			
+			
+			// 最大值（用于区间计算）
+			Double max = 0.00;
+			// 最小值（用于区间计算）
+			Double min = 0.00;
 
 			// 分组统计
 			for (int j = i + 1; j < mongoDBNames.size(); j++) {
 
 				GaResultTdData tdData = new GaResultTdData();
 
-				Set<String> sinter = jedis.sinter(newUserRedisNames.get(j),
-						redisName);
+				Set<String> sinter = jedis.sinter(redisNames.get(j),
+						newUserRedisName);
 				totalTrData.add(sinter.size());
 				// N天后留存率 = （新增用户中，在往后的第N天还有登录的用户数）/新增总用户数
 				tdData.setData(GaUtils.calculateRetentionRate(sinter.size(),
 						loginNew));
-				tdData.setValue(GaUtils.calculateRetentionRateValue(
-						sinter.size(), loginNew));
-
+				Double value = GaUtils.calculateRetentionRateValue(
+						sinter.size(), loginNew);
+				tdData.setValue(value);
+				
+				//计算区间值
+				min = value < min ? value : min;
+				max = value > max ? value : max;
 				trData.getGaResultTdDatas().add(tdData);
+				
 			}
+			// 横向最大值，最小值
+			trData.setMax(max);
+			trData.setMin(min);
 
 			totalData.add(totalTrData);
 
@@ -257,16 +283,29 @@ public class GroupAnalyticsService {
 			trData.setUserNumber(String.valueOf(size));
 			result.add(trData);
 
+			// 最大值（用于区间计算）
+			Double max = 0.00;
+			// 最小值（用于区间计算）
+			Double min = 0.00;
+
 			// 记录同类群组数据
 			for (int j = i + 1; j < mongoDBNames.size(); j++) {
 				count++;
 				GaResultTdData tdData = new GaResultTdData();
 				Set<String> sinter = jedis.sinter(mongoDBName,
 						mongoDBNames.get(j));
-				tdData.setData(GaUtils.getPv(pvDataMap, sinter));
+				String data = GaUtils.getPv(pvDataMap, sinter);
+				tdData.setData(data);
 				trData.getGaResultTdDatas().add(tdData);
+
+				Double formatDoubleData = Double.valueOf(data);
+				min = formatDoubleData < min ? formatDoubleData : min;
+				max = formatDoubleData > max ? formatDoubleData : max;
 			}
 
+			// 横向最大值，最小值
+			trData.setMax(max);
+			trData.setMin(min);
 		}
 
 		return calculateTotal(result);
@@ -285,10 +324,6 @@ public class GroupAnalyticsService {
 
 		// 同类群组天数
 		Integer count = 0;
-		// 最大值（用于区间计算）
-		Double max = 0.00;
-		// 最小值（用于区间计算）
-		Double min = 0.00;
 
 		List<GaResultTdData> gaResultTdDatas = new ArrayList<GaResultTdData>();
 
@@ -296,6 +331,8 @@ public class GroupAnalyticsService {
 			GaResultTdData gaResultTdData = new GaResultTdData();
 
 			int dayDate = 0;
+			Double max = gaResultTrData.getMax();
+			Double min = gaResultTrData.getMin();
 
 			userNumber += Integer.valueOf(gaResultTrData.getUserNumber());
 
@@ -303,14 +340,22 @@ public class GroupAnalyticsService {
 
 			int size = gaResultTrData.getGaResultTdDatas().size();
 
+			// 纵向计算总和值
 			for (int i = 0; i < size; i++) {
 
 				int value = Integer.valueOf(data.get(i).getGaResultTdDatas()
 						.get(count).getData());
-				min = value < min ? value : min;
-				max = value > max ? value : max;
 
 				dayDate += value;
+
+			}
+			// 横向计算区间类型
+			for (GaResultTdData tdData : gaResultTrData.getGaResultTdDatas()) {
+
+				String type = GaUtils.calculateInterval(max, min,
+						Double.valueOf(tdData.getData()));
+
+				tdData.setType(type);
 
 			}
 
@@ -331,8 +376,6 @@ public class GroupAnalyticsService {
 		result.add(total);
 		result.addAll(data);
 
-		gaResult.setMax(max);
-		gaResult.setMin(min);
 		gaResult.setGaResultTrData(result);
 
 		return gaResult;
@@ -350,30 +393,28 @@ public class GroupAnalyticsService {
 
 		// 同类群组天数
 		Integer counter = 0;
-		// 最大值（用于区间计算）
-		Double max = 0.00;
-		// 最小值（用于区间计算）
-		Double min = 0.00;
+	
 
 		List<GaResultTdData> gaResultTdDatas = new ArrayList<GaResultTdData>();
 
 		// 循环行
 		for (GaResultTrData gaResultTrData : data) {
+			
 			GaResultTdData gaResultTdData = new GaResultTdData();
+			Double max = gaResultTrData.getMax();
+			Double min = gaResultTrData.getMin();
+			
 
 			userNumber += Integer.valueOf(gaResultTrData.getUserNumber());
 
-			int size = gaResultTrData.getGaResultTdDatas().size();
+			// 横向计算区间类型
+			for (GaResultTdData tdData : gaResultTrData.getGaResultTdDatas()) {
 
-			// 循环列
-			for (int i = 0; i < size; i++) {
+				String type = GaUtils.calculateInterval(max, min,tdData.getValue());
 
-				double value = data.get(i).getGaResultTdDatas().get(counter)
-						.getValue();
-				max = value > max ? value : max;
-				min = value < min ? value : min;
-
-			}
+				tdData.setType(type);
+		   }
+			
 			// 计算总共的留存率
 			String retentionRate = calculateTotalRetentionRate(totalData,
 					data.size() - counter, counter + 1);
@@ -385,7 +426,7 @@ public class GroupAnalyticsService {
 			counter++;
 		}
 
-		total.setCode("所有会话");
+		total.setCode("所有访客");
 		total.setUserNumber(String.valueOf(userNumber));
 
 		total.setData("100.00%");
@@ -395,8 +436,6 @@ public class GroupAnalyticsService {
 		result.add(total);
 		result.addAll(data);
 
-		gaResult.setMax(max);
-		gaResult.setMin(min);
 		gaResult.setGaResultTrData(result);
 
 		return gaResult;

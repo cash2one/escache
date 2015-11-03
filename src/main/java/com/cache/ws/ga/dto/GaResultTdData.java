@@ -8,7 +8,17 @@ public class GaResultTdData {
 	
 	private Double value;
 	
+	private String type;
 	
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public Double getValue() {
 		return value;
 	}

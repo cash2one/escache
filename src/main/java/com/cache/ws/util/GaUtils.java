@@ -155,6 +155,21 @@ public class GaUtils {
 
 	}
 
+	public static Double intervalComputing(double dividend, int divisor) {
+
+		if (dividend == 0) {
+			return 0.00;
+		}
+		BigDecimal bigDecimal = new BigDecimal(Double.valueOf(dividend)
+				/ Double.valueOf(divisor));
+
+		Double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP)
+				.doubleValue();
+
+		return value;
+
+	}
+
 	public static String calculateRetentionRate(double dayDateRetention,
 			int size) {
 
@@ -187,6 +202,28 @@ public class GaUtils {
 		}
 
 		return newCount;
+	}
+
+	public static String calculateInterval(Double max, Double min, Double data) {
+		Double half = intervalComputing((max + min), 2);
+		Double maxHalf = intervalComputing((max + half), 2);
+		Double minHalf = intervalComputing((min + half), 2);
+
+		if (data == null) {
+			return "";
+		}
+
+		if (maxHalf < data && data <= max) {
+			return "firstBgColor";
+		} else if (half <= data && data < maxHalf) {
+			return "secondBgColor";
+		} else if (minHalf <= data && data < half) {
+			return "thirdBgColor";
+		} else if (min <= data && data < minHalf) {
+			return "lastBgColor";
+		}
+
+		return "lastBgColor";
 	}
 
 }
