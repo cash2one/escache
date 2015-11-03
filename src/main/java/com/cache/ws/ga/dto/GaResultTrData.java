@@ -17,6 +17,26 @@ public class GaResultTrData {
 	private List<GaResultTdData> gaResultTdDatas;
 
 	private String Message;
+	
+	private Double max;
+	
+	private Double min;
+
+	public Double getMax() {
+		return max;
+	}
+
+	public void setMax(Double max) {
+		this.max = max;
+	}
+
+	public Double getMin() {
+		return min;
+	}
+
+	public void setMin(Double min) {
+		this.min = min;
+	}
 
 	public String getMessage() {
 		return Message;
