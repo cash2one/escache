@@ -353,7 +353,7 @@ public class GroupAnalyticsService {
 			for (GaResultTdData tdData : gaResultTrData.getGaResultTdDatas()) {
 
 				String type = GaUtils.calculateInterval(max, min,
-						Double.valueOf(tdData.getData()));
+						Double.valueOf(tdData.getData()),"");
 
 				tdData.setType(type);
 
@@ -410,7 +410,7 @@ public class GroupAnalyticsService {
 			// 横向计算区间类型
 			for (GaResultTdData tdData : gaResultTrData.getGaResultTdDatas()) {
 
-				String type = GaUtils.calculateInterval(max, min,tdData.getValue());
+				String type = GaUtils.calculateInterval(max, min,tdData.getValue(),GaConstant.RETENTION_RATE);
 
 				tdData.setType(type);
 		   }
