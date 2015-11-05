@@ -164,7 +164,7 @@ public class GroupAnalyticsService {
 
 			List<Integer> totalTrData = new ArrayList<Integer>();
 
-			String redisName = redisNames.get(i);
+			//String redisName = redisNames.get(i);
 			String newUserRedisName = newUserRedisNames.get(i);
 			// 初始化数据统计
 			GaResultTrData trData = new GaResultTrData();
@@ -185,12 +185,9 @@ public class GroupAnalyticsService {
 			trData.setData("100.00%");
 			trData.setValue(100.00);
 
-			int size = jedis.smembers(redisName) == null ? 0 : jedis.smembers(
-					redisName).size();
-
-			trData.setUserNumber(String.valueOf(size));
+			Set<String> newUser = jedis.smembers(newUserRedisName);
+			trData.setUserNumber(String.valueOf(newUser == null ? 0 : newUser.size()));
 			result.add(trData);
-			
 			
 			// 最大值（用于区间计算）
 			Double max = 0.00;
@@ -426,7 +423,7 @@ public class GroupAnalyticsService {
 			counter++;
 		}
 
-		total.setCode("所有访客");
+		total.setCode("所有新访客");
 		total.setUserNumber(String.valueOf(userNumber));
 
 		total.setData("100.00%");
