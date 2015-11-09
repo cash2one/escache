@@ -577,51 +577,62 @@ public class GaDateUtils {
 	// 获取查询时期
 
 	public static void main(String[] args) throws ParseException {
-		System.out.println(getMonthFirstDay());
-		System.out.println(getMonthLastDay());
-		System.out.println(getPreviousMonthFirst());
-		System.out.println(getPreviousMonthEnd());
-		System.out.println(getNextMonthFirst());
-		System.out.println(getNextMonthEnd());
-		System.out.println(getCurrentMonthDays());
-		System.out.println(getSpecifiedMonthDays("1900-02"));
-		System.out.println(getCurrentDate());
-		System.out.println(getOffsetDate(-4));
-		System.out.println(isLeapYear(1900));
-		System.out.println(getWeekDay(Calendar.getInstance()));
-		System.out.println(getDaysListBetweenDates("2012-1-12", "2012-1-21"));
-
-		System.out.println(getSpecifiedOffsetTime("2012-09-09 12:12:12", 12));
-
-		System.out.println(getOffsetDateTime("2015-09-04", -3));
-
-		System.out.println(getOffsetDateTime("2012-09-09 12:12:12", 12));
-		System.out.println(long2Time("1234567890"));
-
-		System.out.println("---------------------------");
-
-		//System.out.println(getDaysListBetweenDates(3, "2015-10-16"));
-
-		System.out.println(getWeekListBetweenDates(1, "2015-10-16"));
-
-		System.out.println(getMonthsListBetweenDates(1, "2012-01-21"));
+//		System.out.println(getMonthFirstDay());
+//		System.out.println(getMonthLastDay());
+//		System.out.println(getPreviousMonthFirst());
+//		System.out.println(getPreviousMonthEnd());
+//		System.out.println(getNextMonthFirst());
+//		System.out.println(getNextMonthEnd());
+//		System.out.println(getCurrentMonthDays());
+//		System.out.println(getSpecifiedMonthDays("1900-02"));
+//		System.out.println(getCurrentDate());
+//		System.out.println(getOffsetDate(-4));
+//		System.out.println(isLeapYear(1900));
+//		System.out.println(getWeekDay(Calendar.getInstance()));
+//		System.out.println(getDaysListBetweenDates("2012-1-12", "2012-1-21"));
+//
+//		System.out.println(getSpecifiedOffsetTime("2012-09-09 12:12:12", 12));
+//
+//		System.out.println(getOffsetDateTime("2015-09-04", -3));
+//
+//		System.out.println(getOffsetDateTime("2012-09-09 12:12:12", 12));
+//		System.out.println(long2Time("1234567890"));
+//
+//		System.out.println("---------------------------");
+//
+//		//System.out.println(getDaysListBetweenDates(3, "2015-10-16"));
+//
+//		System.out.println(getWeekListBetweenDates(1, "2015-10-16"));
+//
+//		System.out.println(getMonthsListBetweenDates(1, "2012-01-21"));
 
 		//System.out.println(isBeginningOfMonth(Calendar.getInstance()));
 		
 		//System.out.println(isBeginningOfWeek(Calendar.getInstance()));
 		
 		
-		System.out.println(getCurrentMonth());
-		System.out.println(getWeekMonday());
+//		System.out.println(getCurrentMonth());
+//		System.out.println(getWeekMonday());
+//		
+//		
+//		System.out.println(getSpecifiedOffsetDate("2015-10-20",1));
+//
+//		System.out.println(getSpecifiedOffsetWeek("2015-10-20",1));
+//
+//		System.out.println(getSpecifiedOffsetMonth("2015-10",1));
+//		
 		
-		
-		System.out.println(getSpecifiedOffsetDate("2015-10-20",1));
+		//1445823892505
+		//1445826942201
+		//1445823901488
+		Date d = new Date(Long.valueOf("1445823892505"));
 
-		System.out.println(getSpecifiedOffsetWeek("2015-10-20",1));
-
-		System.out.println(getSpecifiedOffsetMonth("2015-10-31",1));
+		Date d1 = new Date(Long.valueOf("1445826942201"));
 		
+		Date d2 = new Date(Long.valueOf("1445817600000"));
 		
-		
+		System.out.println(DateFormatUtils.format(d, TIME_FORMAT));
+		System.out.println(DateFormatUtils.format(d1, TIME_FORMAT));
+		System.out.println(DateFormatUtils.format(d2, TIME_FORMAT));
 	}
 }
