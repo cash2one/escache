@@ -70,13 +70,14 @@ public class GaUtils {
 	}
 
 	public static String getPv(ConcurrentHashMap<String, Integer> pvDataMap,
-			Set<String> keys) {
+			Set<String> keys,String mongoDBName) {
 		Integer totalPv = 0;
 		if (keys == null) {
 			String.valueOf(totalPv);
 		}
 
 		for (String key : keys) {
+			key += mongoDBName;
 			Integer pv = pvDataMap.get(key) == null ? 0 : pvDataMap.get(key);
 			totalPv = Integer.sum(totalPv, pv);
 		}
@@ -85,14 +86,14 @@ public class GaUtils {
 	}
 
 	public static ConcurrentHashMap<String, Integer> getPvMap(
-			List<DBObject> dbObjects) {
+			List<DBObject> dbObjects,String mongoDBName) {
 		ConcurrentHashMap<String, Integer> pvDataMap = new ConcurrentHashMap<String, Integer>();
 
 		if (dbObjects == null) {
 			return pvDataMap;
 		}
 		for (DBObject object : dbObjects) {
-			String key = object.get("userId").toString();
+			String key = object.get("userId").toString() + mongoDBName;
 			Integer value = Integer.valueOf(object.get("pv").toString());
 			pvDataMap.put(key, value);
 		}
