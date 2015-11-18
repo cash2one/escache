@@ -194,23 +194,18 @@ public class GroupAnalyticsService {
 			trData.setCode(GaUtils.displayDate(dates.get(i), scale));
 			trData.setTitle(scale);
 
-			int loginNew = dbObjects.get(newUserRedisName).size();
-			// int loginTotal = dbObjects.get(redisName).size();
+			Set<String> newUser = jedis.smembers(newUserRedisName);
+			int loginNew = newUser == null ? 0 : newUser.size();
+			
+			
 			totalTrData.add(loginNew);
+			trData.setUserNumber(String.valueOf(loginNew));
+			result.add(trData);
 
-			// 当天留存率=新增用户数/登录用户数*100%
-			// trData.setData(GaUtils.calculateRetentionRate(loginNew,
-			// loginTotal));
-
-			// trData.setValue(GaUtils.calculateRetentionRateValue(loginNew,
-			// loginTotal));
+		
 			trData.setData("100.00%");
 			trData.setValue(100.00);
-
-			Set<String> newUser = jedis.smembers(newUserRedisName);
-			trData.setUserNumber(String.valueOf(newUser == null ? 0 : newUser
-					.size()));
-			result.add(trData);
+			
 
 			// 最大值（用于区间计算）
 			Double max = 0.00;
