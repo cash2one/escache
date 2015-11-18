@@ -497,9 +497,13 @@ public class GroupAnalyticsService {
 
 		for (int i = 0; i < tr; i++) {
 
-			total += totalData.get(i).get(0);
+			int currentTd = totalData.get(i).get(td);
 
-			current += totalData.get(i).get(td);
+			//排除为0的情况
+			if(currentTd != 0) {
+				total += totalData.get(i).get(0);
+			}
+			current += currentTd;
 
 		}
 
