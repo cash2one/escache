@@ -144,20 +144,20 @@ public class MongoDBUtil {
 	 * @param collectionName
 	 * @param options
 	 */
-	public static void createCollection(String collectionName, DBObject options) {
+	public static void createCollection(String dbName, String collectionName, DBObject options) {
 		if (!collectionExists(collectionName)) {
 
 			// 支持分片
 			BasicDBObject openShard = new BasicDBObject();
 			Map<Object, Object> shardMap = new HashMap<Object, Object>();
 			// 数据库支持分片
-			shardMap.put("enablesharding", GaConstant.DB_NAME);
+			shardMap.put("enablesharding",dbName);
 			openShard.putAll(shardMap);
 			adminDB.command(openShard);
 			// 表支持分片，并确认Key
 			BasicDBObject comfirmShard = new BasicDBObject();
 			Map<Object, Object> comfirmShardMap = new HashMap<Object, Object>();
-			comfirmShardMap.put("shardcollection", GaConstant.DB_NAME
+			comfirmShardMap.put("shardcollection", dbName
 					+ collectionName);
 			comfirmShardMap.put("key", new BasicDBObject("userId", 1));
 

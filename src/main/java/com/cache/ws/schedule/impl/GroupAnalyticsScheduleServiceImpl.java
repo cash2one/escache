@@ -22,29 +22,28 @@ public class GroupAnalyticsScheduleServiceImpl implements
 	@Override
 	public void exceute() {
 		Calendar cal = Calendar.getInstance();
-		
-		String tableName = GaConstant.MONGODB_NAME_DAY + GaDateUtils.getCurrentDate();
-		mongoDBOperate.createMongoTable(tableName);
-		
-		//判断是否需要建立周表
+
+		String tableName = GaConstant.MONGODB_NAME_DAY
+				+ GaDateUtils.getCurrentDate();
+		mongoDBOperate.createMongoTable(GaConstant.DB_NAME, tableName);
+
+		// 判断是否需要建立周表
 		boolean isWeek = GaDateUtils.isBeginningOfWeek(cal);
-		
-		if(isWeek) {
-			tableName = GaConstant.MONGODB_NAME_WEEK + GaDateUtils.getCurrentDate();
-			mongoDBOperate.createMongoTable(tableName);
+
+		if (isWeek) {
+			tableName = GaConstant.MONGODB_NAME_WEEK
+					+ GaDateUtils.getCurrentDate();
+			mongoDBOperate.createMongoTable(GaConstant.DB_NAME, tableName);
 		}
-		
-		
-		//判断是否需要建立月表
+
+		// 判断是否需要建立月表
 		boolean isMonth = GaDateUtils.isBeginningOfMonth(cal);
-		
-		if(isMonth) {
-			tableName = GaConstant.MONGODB_NAME_MONTH + GaDateUtils.getCurrentMonth();
-			mongoDBOperate.createMongoTable(tableName);
+
+		if (isMonth) {
+			tableName = GaConstant.MONGODB_NAME_MONTH
+					+ GaDateUtils.getCurrentMonth();
+			mongoDBOperate.createMongoTable(GaConstant.DB_NAME, tableName);
 		}
-		
-		
-		
 
 	}
 

@@ -24,7 +24,7 @@ public final class MongoDBOperate {
 	 * 
 	 * @return
 	 */
-	public boolean isMongoDataExist(String collection, String type) {
+	public boolean isMongoDataExist(String dbName,String collection, String type) {
 		boolean flag = false;
 		if (MongoDBUtil.collectionExists(collection)) {
 			// TODO:判断MongoDB中是否存在满足条件的数据
@@ -32,15 +32,15 @@ public final class MongoDBOperate {
 			map.put("type", type);
 			flag = MongoDBUtil.dataExists(map, collection);
 		} else {
-			MongoDBUtil.createCollection(collection, new BasicDBObject());
+			MongoDBUtil.createCollection(dbName,collection, new BasicDBObject());
 		}
 		return flag;
 	}
 
-	public void createMongoTable(String collection) {
+	public void createMongoTable(String dbName,String collection) {
 
 		if (!MongoDBUtil.collectionExists(collection)) {
-			MongoDBUtil.createCollection(collection, new BasicDBObject());
+			MongoDBUtil.createCollection(dbName,collection, new BasicDBObject());
 		}
 
 	}

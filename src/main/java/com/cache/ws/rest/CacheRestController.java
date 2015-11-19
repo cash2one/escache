@@ -47,7 +47,7 @@ public class CacheRestController {
 
 			for (String index : indexes) {
 				// 是否有缓存
-				if (!operate.isMongoDataExist(index, rp.getRedisKey())) {
+				if (!operate.isMongoDataExist("",index, rp.getRedisKey())) {
 
 					List<IndicatorData> data = esService.queryDataindexTable(
 							rp.getRedisKey(), index, rp.getTypes());
@@ -87,7 +87,7 @@ public class CacheRestController {
 
 			for (String index : indexes) {
 				// 是否有缓存
-				if (!operate.isMongoDataExist(index, rp.getRedisKey())) {
+				if (!operate.isMongoDataExist("",index, rp.getRedisKey())) {
 
 					List<IndicatorData> data = esService.queryDataindexTable(
 							rp.getRedisKey(), index, rp.getTypes());
