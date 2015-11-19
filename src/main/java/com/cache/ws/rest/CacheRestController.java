@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.cache.ws.constant.GaConstant;
 import com.cache.ws.es.dto.IndicatorData;
 import com.cache.ws.es.service.EsQueryService;
 import com.cache.ws.mongo.MongoDBOperate;
@@ -57,7 +58,7 @@ public class CacheRestController {
 			}
 
 			// 查询
-			List<DBObject> temp = operate.query(rp.getIndexes(),
+			List<DBObject> temp = operate.query(GaConstant.DB_NAME,rp.getIndexes(),
 					rp.getRedisKey());
 
 			resultData = new MongoDBSummaryHandle().handle(temp, null);
@@ -97,7 +98,7 @@ public class CacheRestController {
 			}
 
 			// 查询
-			List<DBObject> temp = operate.query(rp.getIndexes(),
+			List<DBObject> temp = operate.query(GaConstant.DB_NAME,rp.getIndexes(),
 					rp.getRedisKey());
 
 			resultData = new MongoDBSummaryHandle().handle(temp, null);
