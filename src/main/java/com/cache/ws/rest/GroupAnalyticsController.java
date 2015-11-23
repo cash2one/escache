@@ -51,6 +51,9 @@ public class GroupAnalyticsController {
 			return result;
 		}
 
+		type = "73721e6fc23e56c79cc0c8d88f1aad42";
+		
+		
 		try {
 			if (indicator.equals(GaConstant.PV)) {
 				result = groupAnalyticsService.queryPV(type, scale, dateRange);

@@ -417,4 +417,8 @@ public class MongoDBUtil {
 		return getCollection(dbName, collection).find(dbObject, fieldObject)
 				.toArray();
 	}
+
+	public static void openTransactions() {
+
+	}
 }

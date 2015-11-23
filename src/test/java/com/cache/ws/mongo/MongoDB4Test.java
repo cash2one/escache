@@ -23,9 +23,10 @@ public abstract class MongoDB4Test {
 	public void init() {
 		try {
 			mg = new Mongo("192.168.100.10", 23135);
-		} catch (UnknownHostException e) {
+		}catch (MongoException e) {
 			e.printStackTrace();
-		} catch (MongoException e) {
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// 获取xnmz_weims_test DB；如果默认没有创建，mongodb会自动创建
@@ -43,11 +44,15 @@ public abstract class MongoDB4Test {
 		System.gc();
 	}
 	
-	
-	public void createCollection() {
+	//@Test
+	public void transatcion() {
 		
-		db.createCollection("CA-2015-09-22", new BasicDBObject());
+		DBCollection con = db.createCollection("transatcion", new BasicDBObject());
+		
 
+		
+		
+		
 		
 	}
 
