@@ -1,7 +1,7 @@
 package com.cache.ws.constant;
 
 public class GaConstant {
-	
+
 	public static String DB_NAME = "cache";
 
 	public static String DAY = "day";
@@ -23,11 +23,11 @@ public class GaConstant {
 	public static String MONGODB_NAME_MONTH = "ga-month-";
 
 	public static String NEW_USER = "new-";
-	
+
 	public static String NEW_USER_CODE = "0";
-	
+
 	public static String GA_ERROR_CODE = "0";
-	
+
 	public static String GA_NORMAL_CODE = "1";
 
 }

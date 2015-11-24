@@ -24,23 +24,23 @@ public final class MongoDBOperate {
 	 * 
 	 * @return
 	 */
-	public boolean isMongoDataExist(String collection, String type) {
+	public boolean isMongoDataExist(String dbName,String collection, String type) {
 		boolean flag = false;
-		if (MongoDBUtil.collectionExists(collection)) {
+		if (MongoDBUtil.collectionExists(dbName,collection)) {
 			// TODO:判断MongoDB中是否存在满足条件的数据
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("type", type);
-			flag = MongoDBUtil.dataExists(map, collection);
+			flag = MongoDBUtil.dataExists(map, dbName,collection);
 		} else {
-			MongoDBUtil.createCollection(collection, new BasicDBObject());
+			MongoDBUtil.createCollection(dbName,collection, new BasicDBObject());
 		}
 		return flag;
 	}
 
-	public void createMongoTable(String collection) {
+	public void createMongoTable(String dbName,String collection) {
 
-		if (!MongoDBUtil.collectionExists(collection)) {
-			MongoDBUtil.createCollection(collection, new BasicDBObject());
+		if (!MongoDBUtil.collectionExists(dbName,collection)) {
+			MongoDBUtil.createCollection(dbName,collection, new BasicDBObject());
 		}
 
 	}
@@ -64,11 +64,11 @@ public final class MongoDBOperate {
 		MongoDBUtil.insertBatch(_List, collection);
 	}
 
-	public List<DBObject> query(String[] collectionNames, String type) {
+	public List<DBObject> query(String dbName,String[] collectionNames, String type) {
 		// 查询数据
 		List<DBObject> list = new ArrayList<DBObject>();
 		for (String collection : collectionNames) {
-			list.addAll(loadMongoData(collection, type));
+			list.addAll(loadMongoData(dbName,collection, type));
 		}
 		return list;
 	}
@@ -82,19 +82,19 @@ public final class MongoDBOperate {
 	 * 
 	 * @return
 	 */
-	public List<DBObject> loadMongoData(String collection, String type) {
+	public List<DBObject> loadMongoData(String dbName,String collection, String type) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("type", type);
-		return MongoDBUtil.findByRefs(map, collection);
+		return MongoDBUtil.findByRefs(map, dbName,collection);
 	}
 
-	public List<DBObject> loadMongoData(String collection, String type,
+	public List<DBObject> loadMongoData(String dbName,String collection, String type,
 			String isNew) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("type", type);
 		map.put("isNew", isNew);
 
-		return MongoDBUtil.findByRefs(map, collection);
+		return MongoDBUtil.findByRefs(map, dbName,collection);
 	}
 
 }
