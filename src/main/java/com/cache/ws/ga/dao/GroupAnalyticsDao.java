@@ -25,7 +25,7 @@ public class GroupAnalyticsDao {
 	
 	public List<DBObject> queryGaData(String table, String type,String isNew) {
 		List<DBObject> datas = null;
-		datas = mongoDBOperate.loadMongoData(table, type,isNew);
+		datas = mongoDBOperate.loadMongoData(GaConstant.DB_NAME,table, type,isNew);
 
 		return datas;
 	}
