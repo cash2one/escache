@@ -174,13 +174,16 @@ public class MongoDBUtil {
 			// 表支持分片，并确认Key
 			BasicDBObject comfirmShard = new BasicDBObject();
 			Map<Object, Object> comfirmShardMap = new HashMap<Object, Object>();
-			comfirmShardMap.put("shardcollection", dbName + collectionName);
+			comfirmShardMap.put("shardcollection", dbName +"." + collectionName);
 			comfirmShardMap.put("key", new BasicDBObject("userId", 1));
-
 			comfirmShard.putAll(comfirmShardMap);
 			adminDB.command(comfirmShard);
+			if (ExitConstant.DB_NAME.equals(dbName)) {
+				exitDb.createCollection(collectionName, options);
+			} else {
+				db.createCollection(collectionName, options);
+			}
 
-			db.createCollection(collectionName, options);
 		}
 	}
 
