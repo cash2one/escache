@@ -1,8 +1,18 @@
 package com.cache.ws.mongo;
 
 public class ExitCountObject {
-	
-	/**用户访问ID*/
+
+	private String type;
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/** 用户访问ID */
 	private String tt;
 	/** 当前访问路径 */
 	private String loc;
@@ -20,9 +30,10 @@ public class ExitCountObject {
 
 	}
 
-	public ExitCountObject(String tt,String loc, String rf, String rfType, String se,
-			String isNew) {
+	public ExitCountObject(String type, String tt, String loc, String rf,
+			String rfType, String se, String isNew) {
 		super();
+		this.type = type;
 		this.tt = tt;
 		this.loc = loc;
 		this.rf = rf;
@@ -70,6 +81,7 @@ public class ExitCountObject {
 	public void setIsNew(String isNew) {
 		this.isNew = isNew;
 	}
+
 	public String getTt() {
 		return tt;
 	}
