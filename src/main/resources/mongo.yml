@@ -1,3 +1,3 @@
-IP: server1
+IP: gw_server2
 PORT: 27017
 DB_NAME: cache
