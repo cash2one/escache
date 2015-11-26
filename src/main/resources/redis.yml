@@ -1,6 +1,6 @@
-IP: gw_server2
-Port: 6379
-Auth: 3edcvfr4
+IP: server1
+Port: 16379
+Auth: 3edcxsw2
 TimeOut: 5000
 MaxIdle: 100
 MaxWaitMillis: 1000

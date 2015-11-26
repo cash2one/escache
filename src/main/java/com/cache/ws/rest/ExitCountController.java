@@ -18,7 +18,7 @@ import com.cache.ws.util.ExitCountUtils;
 
 @Controller
 @Path("/exitCount")
-public class exitCountController {
+public class ExitCountController {
 
 	@Autowired
 	private ExitCountService exitCountService;
