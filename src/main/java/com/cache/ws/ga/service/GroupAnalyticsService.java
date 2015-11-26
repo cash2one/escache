@@ -46,33 +46,55 @@ public class GroupAnalyticsService {
 		List<String> mongoDBNames = GaUtils.getMongDBName(scale, dates);
 		// redis名称集合
 		List<String> redisNames = new ArrayList<String>();
+		// redis名称集合-新用户
+		List<String> newUserRedisNames = new ArrayList<String>();
 
 		// 分组将数据插入redis中
+		Map<String, List<DBObject>> dbObjects = new HashMap<String, List<DBObject>>();
+
 		for (String mongoDBName : mongoDBNames) {
-			List<DBObject> dbObjects = groupAnalyticsDao.queryGaData(
+			List<DBObject> totalUser = groupAnalyticsDao.queryGaData(
 					mongoDBName, type);
-			String[] ids = GaUtils.getIds(dbObjects);
+
+			List<DBObject> newUser = groupAnalyticsDao.queryGaData(mongoDBName,
+					type, GaConstant.NEW_USER_CODE);
+
+			String[] totalIds = GaUtils.getIds(totalUser);
+			String[] newUserIds = GaUtils.getIds(newUser);
+
 			// redis名称
 			String redisName = GaUtils.getRedisName(mongoDBName, type);
 			redisNames.add(redisName);
-			if (ids != null && ids.length > 0) {
-				jedis.sadd(redisName, ids);
+			if (totalIds != null && totalIds.length > 0) {
+				jedis.sadd(redisName, totalIds);
 			}
+			// 分组将新用户保存进入redis
+			String newUserRedisName = GaConstant.NEW_USER
+					+ GaUtils.getRedisName(mongoDBName, type);
+			newUserRedisNames.add(newUserRedisName);
+
+			if (newUserIds != null && newUserIds.length > 0) {
+				jedis.sadd(newUserRedisName, newUserIds);
+			}
+
+			dbObjects.put(redisName, totalUser);
+			dbObjects.put(newUserRedisName, newUser);
+
 		}
 
 		// 进行分组统计
-		for (int i = 0; i < redisNames.size() - 1; i++) {
-			String redisName = redisNames.get(i);
+		for (int i = 0; i < mongoDBNames.size() - 1; i++) {
+			String newUserRedisName = newUserRedisNames.get(i);
 			// 初始化当天数据
 			GaResultTrData trData = new GaResultTrData();
 			trData.setGaResultTdDatas(new ArrayList<GaResultTdData>());
 			trData.setCode(GaUtils.displayDate(dates.get(i), scale));
-			int size = jedis.smembers(redisName) == null ? 0 : jedis.smembers(
-					redisName).size();
+			Set<String> newUser = jedis.smembers(newUserRedisName);
+			int size = newUser == null ? 0 : newUser.size();
 			trData.setData(String.valueOf(size));
 			trData.setUserNumber(String.valueOf(size));
 			result.add(trData);
-
+				
 			// 最大值（用于区间计算）
 			Double max = 0.00;
 			// 最小值（用于区间计算）
@@ -81,11 +103,10 @@ public class GroupAnalyticsService {
 			// 记录同类群组数据
 			for (int j = i + 1; j < dates.size(); j++) {
 				GaResultTdData tdData = new GaResultTdData();
-				Set<String> sinter = jedis.sinter(redisName, redisNames.get(j));
+				Set<String> sinter = jedis.sinter(newUserRedisName, redisNames.get(j));
 				tdData.setData(String.valueOf(sinter.size()));
 				Double formatDoubleData = Double.valueOf(sinter.size());
 				trData.getGaResultTdDatas().add(tdData);
-
 				min = formatDoubleData < min ? formatDoubleData : min;
 				max = formatDoubleData > max ? formatDoubleData : max;
 			}
@@ -96,8 +117,9 @@ public class GroupAnalyticsService {
 		}
 
 		// 清空redis
-		for (String redisName : redisNames) {
-			jedis.del(redisName);
+		for (int i = 0; i < mongoDBNames.size(); i++) {
+			jedis.del(redisNames.get(i));
+			jedis.del(newUserRedisNames.get(i));
 		}
 
 		return calculateTotal(result);
@@ -164,7 +186,7 @@ public class GroupAnalyticsService {
 
 			List<Integer> totalTrData = new ArrayList<Integer>();
 
-			String redisName = redisNames.get(i);
+			// String redisName = redisNames.get(i);
 			String newUserRedisName = newUserRedisNames.get(i);
 			// 初始化数据统计
 			GaResultTrData trData = new GaResultTrData();
@@ -172,26 +194,19 @@ public class GroupAnalyticsService {
 			trData.setCode(GaUtils.displayDate(dates.get(i), scale));
 			trData.setTitle(scale);
 
-			int loginNew = dbObjects.get(newUserRedisName).size();
-			// int loginTotal = dbObjects.get(redisName).size();
+			Set<String> newUser = jedis.smembers(newUserRedisName);
+			int loginNew = newUser == null ? 0 : newUser.size();
+			
+			
 			totalTrData.add(loginNew);
+			trData.setUserNumber(String.valueOf(loginNew));
+			result.add(trData);
 
-			// 当天留存率=新增用户数/登录用户数*100%
-			// trData.setData(GaUtils.calculateRetentionRate(loginNew,
-			// loginTotal));
-
-			// trData.setValue(GaUtils.calculateRetentionRateValue(loginNew,
-			// loginTotal));
+		
 			trData.setData("100.00%");
 			trData.setValue(100.00);
-
-			int size = jedis.smembers(redisName) == null ? 0 : jedis.smembers(
-					redisName).size();
-
-			trData.setUserNumber(String.valueOf(size));
-			result.add(trData);
 			
-			
+
 			// 最大值（用于区间计算）
 			Double max = 0.00;
 			// 最小值（用于区间计算）
@@ -211,12 +226,12 @@ public class GroupAnalyticsService {
 				Double value = GaUtils.calculateRetentionRateValue(
 						sinter.size(), loginNew);
 				tdData.setValue(value);
-				
-				//计算区间值
+
+				// 计算区间值
 				min = value < min ? value : min;
 				max = value > max ? value : max;
 				trData.getGaResultTdDatas().add(tdData);
-				
+
 			}
 			// 横向最大值，最小值
 			trData.setMax(max);
@@ -248,41 +263,65 @@ public class GroupAnalyticsService {
 		Jedis jedis = RedisConfiguration.getInstance().getClient();
 		// 获取查询日期
 		List<String> dates = GaDateUtils.getQueryDates(scale, dateRange);
-		// 获取DB名称
+		// DB名称集合
 		List<String> mongoDBNames = GaUtils.getMongDBName(scale, dates);
-
+		// redis名称集合
+		List<String> redisNames = new ArrayList<String>();
+		// redis名称集合-新用户
+		List<String> newUserRedisNames = new ArrayList<String>();
+		
 		ConcurrentHashMap<String, Integer> pvDataMap = new ConcurrentHashMap<String, Integer>();
+
 		// 分组将数据插入redis中
+		Map<String, List<DBObject>> dbObjects = new HashMap<String, List<DBObject>>();
+
 		for (String mongoDBName : mongoDBNames) {
-			List<DBObject> dbObjects = groupAnalyticsDao.queryGaData(
+			List<DBObject> totalUser = groupAnalyticsDao.queryGaData(
 					mongoDBName, type);
-			String[] ids = GaUtils.getIds(dbObjects);
-			// 保存PV数据
-			pvDataMap.putAll(GaUtils.getPvMap(dbObjects));
-			// 分组将ID保存进入redis
-			jedis.del(mongoDBName);
-			if (ids != null && ids.length > 0) {
-				jedis.sadd(mongoDBName, ids);
+
+			List<DBObject> newUser = groupAnalyticsDao.queryGaData(mongoDBName,
+					type, GaConstant.NEW_USER_CODE);
+
+			String[] totalIds = GaUtils.getIds(totalUser);
+			String[] newUserIds = GaUtils.getIds(newUser);
+
+			// redis名称
+			String redisName = GaUtils.getRedisName(mongoDBName, type);
+			redisNames.add(redisName);
+			if (totalIds != null && totalIds.length > 0) {
+				jedis.sadd(redisName, totalIds);
 			}
+			// 分组将新用户保存进入redis
+			String newUserRedisName = GaConstant.NEW_USER
+					+ GaUtils.getRedisName(mongoDBName, type);
+			newUserRedisNames.add(newUserRedisName);
+
+			if (newUserIds != null && newUserIds.length > 0) {
+				jedis.sadd(newUserRedisName, newUserIds);
+			}
+
+			dbObjects.put(redisName, totalUser);
+			dbObjects.put(newUserRedisName, newUser);
+			
+			pvDataMap.putAll(GaUtils.getPvMap(totalUser,mongoDBName));
+
 		}
+
 		// 进行分组统计
 		for (int i = 0; i < mongoDBNames.size() - 1; i++) {
-
+			String newUserRedisName = newUserRedisNames.get(i);
 			String mongoDBName = mongoDBNames.get(i);
-			// 初始化数据统计
-			int count = 0;
+			// 初始化当天数据
 			GaResultTrData trData = new GaResultTrData();
 			trData.setGaResultTdDatas(new ArrayList<GaResultTdData>());
 			trData.setCode(GaUtils.displayDate(dates.get(i), scale));
-			trData.setTitle(scale + "-" + count);
-
-			trData.setData(GaUtils.getPv(pvDataMap, jedis.smembers(mongoDBName)));
-			int size = jedis.smembers(mongoDBName) == null ? 0 : jedis
-					.smembers(mongoDBName).size();
-
+			
+			Set<String> newUser = jedis.smembers(newUserRedisName);
+			int size = newUser == null ? 0 : newUser.size();
+			trData.setData(GaUtils.getPv(pvDataMap, newUser,mongoDBName));
 			trData.setUserNumber(String.valueOf(size));
 			result.add(trData);
-
+				
 			// 最大值（用于区间计算）
 			Double max = 0.00;
 			// 最小值（用于区间计算）
@@ -290,25 +329,30 @@ public class GroupAnalyticsService {
 
 			// 记录同类群组数据
 			for (int j = i + 1; j < mongoDBNames.size(); j++) {
-				count++;
 				GaResultTdData tdData = new GaResultTdData();
-				Set<String> sinter = jedis.sinter(mongoDBName,
-						mongoDBNames.get(j));
-				String data = GaUtils.getPv(pvDataMap, sinter);
+				Set<String> sinter = jedis.sinter(newUserRedisName, redisNames.get(j));
+				String data = GaUtils.getPv(pvDataMap, sinter,mongoDBNames.get(j));
 				tdData.setData(data);
-				trData.getGaResultTdDatas().add(tdData);
-
 				Double formatDoubleData = Double.valueOf(data);
+				
+				trData.getGaResultTdDatas().add(tdData);
 				min = formatDoubleData < min ? formatDoubleData : min;
 				max = formatDoubleData > max ? formatDoubleData : max;
 			}
-
 			// 横向最大值，最小值
 			trData.setMax(max);
 			trData.setMin(min);
+
+		}
+
+		// 清空redis
+		for (int i = 0; i < mongoDBNames.size(); i++) {
+			jedis.del(redisNames.get(i));
+			jedis.del(newUserRedisNames.get(i));
 		}
 
 		return calculateTotal(result);
+
 	}
 
 	private GaResult calculateTotal(List<GaResultTrData> data)
@@ -353,7 +397,7 @@ public class GroupAnalyticsService {
 			for (GaResultTdData tdData : gaResultTrData.getGaResultTdDatas()) {
 
 				String type = GaUtils.calculateInterval(max, min,
-						Double.valueOf(tdData.getData()));
+						Double.valueOf(tdData.getData()), "");
 
 				tdData.setType(type);
 
@@ -393,28 +437,27 @@ public class GroupAnalyticsService {
 
 		// 同类群组天数
 		Integer counter = 0;
-	
 
 		List<GaResultTdData> gaResultTdDatas = new ArrayList<GaResultTdData>();
 
 		// 循环行
 		for (GaResultTrData gaResultTrData : data) {
-			
+
 			GaResultTdData gaResultTdData = new GaResultTdData();
 			Double max = gaResultTrData.getMax();
 			Double min = gaResultTrData.getMin();
-			
 
 			userNumber += Integer.valueOf(gaResultTrData.getUserNumber());
 
 			// 横向计算区间类型
 			for (GaResultTdData tdData : gaResultTrData.getGaResultTdDatas()) {
 
-				String type = GaUtils.calculateInterval(max, min,tdData.getValue());
+				String type = GaUtils.calculateInterval(max, min,
+						tdData.getValue(), GaConstant.RETENTION_RATE);
 
 				tdData.setType(type);
-		   }
-			
+			}
+
 			// 计算总共的留存率
 			String retentionRate = calculateTotalRetentionRate(totalData,
 					data.size() - counter, counter + 1);
@@ -449,9 +492,13 @@ public class GroupAnalyticsService {
 
 		for (int i = 0; i < tr; i++) {
 
-			total += totalData.get(i).get(0);
+			int currentTd = totalData.get(i).get(td);
 
-			current += totalData.get(i).get(td);
+			//排除为0的情况
+			if(currentTd != 0) {
+				total += totalData.get(i).get(0);
+			}
+			current += currentTd;
 
 		}
 

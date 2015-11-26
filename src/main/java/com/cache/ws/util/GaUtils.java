@@ -70,13 +70,14 @@ public class GaUtils {
 	}
 
 	public static String getPv(ConcurrentHashMap<String, Integer> pvDataMap,
-			Set<String> keys) {
+			Set<String> keys,String mongoDBName) {
 		Integer totalPv = 0;
 		if (keys == null) {
 			String.valueOf(totalPv);
 		}
 
 		for (String key : keys) {
+			key += mongoDBName;
 			Integer pv = pvDataMap.get(key) == null ? 0 : pvDataMap.get(key);
 			totalPv = Integer.sum(totalPv, pv);
 		}
@@ -85,14 +86,14 @@ public class GaUtils {
 	}
 
 	public static ConcurrentHashMap<String, Integer> getPvMap(
-			List<DBObject> dbObjects) {
+			List<DBObject> dbObjects,String mongoDBName) {
 		ConcurrentHashMap<String, Integer> pvDataMap = new ConcurrentHashMap<String, Integer>();
 
 		if (dbObjects == null) {
 			return pvDataMap;
 		}
 		for (DBObject object : dbObjects) {
-			String key = object.get("userId").toString();
+			String key = object.get("userId").toString() + mongoDBName;
 			Integer value = Integer.valueOf(object.get("pv").toString());
 			pvDataMap.put(key, value);
 		}
@@ -204,14 +205,19 @@ public class GaUtils {
 		return newCount;
 	}
 
-	public static String calculateInterval(Double max, Double min, Double data) {
-		Double half = intervalComputing((max + min), 2);
-		Double maxHalf = intervalComputing((max + half), 2);
-		Double minHalf = intervalComputing((min + half), 2);
-
+	public static String calculateInterval(Double max, Double min, Double data,
+			String type) {
 		if (data == null) {
 			return "";
 		}
+		if (GaConstant.RETENTION_RATE.equals(type)) {
+			max = max * 100;
+			min = min * 100;
+			data = data * 100;
+		}
+		Double half = intervalComputing((max + min), 2);
+		Double maxHalf = intervalComputing((max + half), 2);
+		Double minHalf = intervalComputing((min + half), 2);
 
 		if (maxHalf < data && data <= max) {
 			return "firstBgColor";
@@ -225,5 +231,4 @@ public class GaUtils {
 
 		return "lastBgColor";
 	}
-
 }
