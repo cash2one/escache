@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.cache.ws.constant.GaConstant;
-import com.cache.ws.ga.dto.GaResult;
 import com.cache.ws.ga.service.GroupAnalyticsService;
+import com.cache.ws.ga.dto.GaResult;
 import com.cache.ws.mongo.MongoDBOperate;
 
 @Controller
@@ -51,9 +51,8 @@ public class GroupAnalyticsController {
 			return result;
 		}
 
-		type = "73721e6fc23e56c79cc0c8d88f1aad42";
-		
-		
+		type = "564d8b584c59da027cba765e818cc246";
+
 		try {
 			if (indicator.equals(GaConstant.PV)) {
 				result = groupAnalyticsService.queryPV(type, scale, dateRange);

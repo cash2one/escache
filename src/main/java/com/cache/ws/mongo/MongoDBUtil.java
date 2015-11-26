@@ -174,7 +174,8 @@ public class MongoDBUtil {
 			// 表支持分片，并确认Key
 			BasicDBObject comfirmShard = new BasicDBObject();
 			Map<Object, Object> comfirmShardMap = new HashMap<Object, Object>();
-			comfirmShardMap.put("shardcollection", dbName +"." + collectionName);
+			comfirmShardMap.put("shardcollection", dbName + "."
+					+ collectionName);
 			comfirmShardMap.put("key", new BasicDBObject("userId", 1));
 			comfirmShard.putAll(comfirmShardMap);
 			adminDB.command(comfirmShard);
@@ -203,7 +204,7 @@ public class MongoDBUtil {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private static DBObject getMapped(Map<String, Object> map) {
+	public static DBObject getMapped(Map<String, Object> map) {
 		DBObject dbObject = new BasicDBObject();
 		Iterator<Entry<String, Object>> iterable = map.entrySet().iterator();
 		while (iterable.hasNext()) {
@@ -398,6 +399,14 @@ public class MongoDBUtil {
 	public static List<DBObject> findByRefs(Map<String, Object> map,
 			String dbName, String collection) {
 		return findByRefs(map, dbName, collection, new String[] {});
+	}
+
+	public static DBObject groupByRefs(String dbName, String collection,
+			DBObject key, DBObject cond, DBObject initial, String reduce) {
+
+		return getCollection(dbName, collection).group(key, cond, initial,
+				reduce);
+
 	}
 
 	/**
