@@ -2,7 +2,6 @@ package com.cache.ws.mongo;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,30 +47,35 @@ public class MongoDB4TestTest {
 
 	}
 
+	 //@Test
 	public void addData() {
-		DBCollection collExit = exitDB.getCollection("exit-2015-11-20");
 
-		List<String> strs = new ArrayList<String>();
+		DBCollection collExit = exitDB.createCollection(
+				"exit-indicator-2015-11-25", null);
+		
+		
 
-		DBObject queryObject = new BasicDBObject();
-		queryObject.put("_id", "A");
-		queryObject.put("score", 100);
-		// queryObject.put("pendingTransactions",strs);
-
-		collExit.save(queryObject);
-
-		DBObject queryObject1 = new BasicDBObject();
-		queryObject1.put("_id", "B");
-		queryObject1.put("score", 100);
-		// queryObject1.put("pendingTransactions",strs);
-
-		collExit.save(queryObject1);
+//		 List<String> strs = new ArrayList<String>();
+//		
+//		 DBObject queryObject = new BasicDBObject();
+//		 queryObject.put("_id", "A");
+//		 queryObject.put("score", 100);
+//		 // queryObject.put("pendingTransactions",strs);
+//		
+//		 collExit.save(queryObject);
+//		
+//		 DBObject queryObject1 = new BasicDBObject();
+//		 queryObject1.put("_id", "B");
+//		 queryObject1.put("score", 100);
+//		 // queryObject1.put("pendingTransactions",strs);
+//		
+//		 collExit.save(queryObject1);
 	}
 
 	public void transatcion() {
 
 		DBCollection coll = exitDB.getCollection("transatcion");
-		DBCollection collExit = exitDB.getCollection("exit-2015-11-20");
+		DBCollection collExit = exitDB.getCollection("exit-indicator-2015-11-25");
 		DBObject initialObject = new BasicDBObject();
 		initialObject.put("from", "A");
 		initialObject.put("to", "B");
@@ -210,11 +214,13 @@ public class MongoDB4TestTest {
 	public void saveDate() {
 
 		Map<String, Object> source = new HashMap<String, Object>();
-		source.put("loc", "http://loc2");
 		source.put("rf", "http://loc1");
+		source.put("loc", "http://loc2");
 		source.put("rf_type", "2");
-		source.put("se", "百度");
+		source.put("se", "Google");
 		source.put("isNew", "0");
+		source.put("tt", "dingwei");
+		source.put("type","564d8b584c59da027cba765e818cc246");
 
 		// 退出次数对象
 		ExitCountObject exitCount = createExitCount(source);
@@ -222,16 +228,11 @@ public class MongoDB4TestTest {
 			return;
 		}
 
+		// 连接表名称
 		DBCollection collTransatcion = exitDB.getCollection("transatcion");
-		DBCollection collExit = exitDB.getCollection("exit-2015-11-20");
+		DBCollection collExit = exitDB.getCollection("exit-indicator-2015-11-25");
 
-		if ("-".equals(exitCount.getRf())) { // 来源路径为 "-".
-			DBObject locQuery = getLocQueryObject(exitCount);
-			DBObject locUpdate = getLocUpdateObject(1);
-			collExit.update(locQuery, locUpdate, true, false);
-
-		} else {// 两段式提交保存
-
+		if (!"-".equals(exitCount.getRf())) { // 来源路径为 "-".
 			DBObject transatcionObject = getTransatcionObject(
 					exitCount.getLoc(), exitCount.getRf());
 
@@ -250,30 +251,10 @@ public class MongoDB4TestTest {
 				if (transatcionWR.getError() == null) {
 
 					// 第一次提交
-					DBObject rfQuery = getExitCountObject(transatcionObject,
-							exitCount, true);
+					boolean isSuccess = firstSumbit(transatcionObject,
+							exitCount, collExit);
 
-					DBObject rfUpdate = new BasicDBObject();
-					rfUpdate.put("$inc", new BasicDBObject("exitCount", -1));
-					rfUpdate.put("$push",
-							new BasicDBObject("pendingTransactions",
-									transatcionObject.get("_id")));
-					WriteResult rfWR = collExit.update(rfQuery, rfUpdate, true,
-							false);
-					String rfError = rfWR.getError();
-
-					DBObject locQuery = getExitCountObject(transatcionObject,
-							exitCount, false);
-					DBObject locUpdate = new BasicDBObject();
-					locUpdate.put("$inc", new BasicDBObject("exitCount", 1));
-					locUpdate.put("$push",
-							new BasicDBObject("pendingTransactions",
-									transatcionObject.get("_id")));
-
-					WriteResult locWR = collExit.update(locQuery, locUpdate,
-							true, false);
-
-					if (rfError == null && locWR.getError() == null) {
+					if (isSuccess) {
 
 						// 更新事物状态
 						transatcionWR = collTransatcion.update(
@@ -284,44 +265,20 @@ public class MongoDB4TestTest {
 						if (transatcionWR.getError() == null) {
 
 							// 第二次提交
-							DBObject rfPullQuery = getPullExitCountObject(
-									transatcionObject, exitCount, true);
+							isSuccess = sencondSubmit(transatcionObject,
+									exitCount, collExit);
 
-							DBObject rfPullUpdate = new BasicDBObject();
-							rfPullUpdate.put("$pull",
-									new BasicDBObject("pendingTransactions",
-											transatcionObject.get("_id")));
+							if (isSuccess) {
 
-							WriteResult rfPullWR = collExit.update(rfPullQuery,
-									rfPullUpdate);
-							String rfPullWRError = rfPullWR.getError();
-
-							DBObject locPullQuery = getPullExitCountObject(
-									transatcionObject, exitCount, false);
-
-							DBObject locPullUpdate = new BasicDBObject();
-							locPullUpdate.put("$pull",
-									new BasicDBObject("pendingTransactions",
-											transatcionObject.get("_id")));
-
-							WriteResult locPullWR = collExit.update(
-									locPullQuery, locPullUpdate);
-
-							if (rfPullWRError == null
-									&& locPullWR.getError() == null) {
-
-								// 完成该事物
+								// 完成
 								transatcionWR = collTransatcion
 										.update(getUpdateTransatcionObject(transatcionObject
 												.get("_id")),
 												getUpdateTransatcionStatus("done"));
 
 							}
-
 						}
-
 					}
-
 				}
 
 			}
@@ -330,15 +287,96 @@ public class MongoDB4TestTest {
 
 	}
 
+	private boolean sencondSubmit(DBObject transatcionObject,
+			ExitCountObject exitCount, DBCollection collExit) {
+		// 第二次提交
+		DBObject rfPullQuery = getPullExitCountObject(transatcionObject,
+				exitCount, true);
+
+		DBObject rfPullUpdate = new BasicDBObject();
+		rfPullUpdate.put("$pull", new BasicDBObject("pendingTransactions",
+				transatcionObject.get("_id")));
+
+		WriteResult rfPullWR = collExit.update(rfPullQuery, rfPullUpdate);
+		String rfPullWRError = rfPullWR.getError();
+
+		DBObject locPullQuery = getPullExitCountObject(transatcionObject,
+				exitCount, false);
+
+		DBObject locPullUpdate = new BasicDBObject();
+		locPullUpdate.put("$pull", new BasicDBObject("pendingTransactions",
+				transatcionObject.get("_id")));
+
+		WriteResult locPullWR = collExit.update(locPullQuery, locPullUpdate);
+
+		if (rfPullWRError == null && locPullWR.getError() == null) {
+			return true;
+		}
+		return false;
+
+	}
+
+	private boolean firstSumbit(DBObject transatcionObject,
+			ExitCountObject exitCount, DBCollection collExit) {
+
+	
+		DBObject rfQuery = getExitCountObject(transatcionObject, exitCount,
+				true);
+	
+		DBObject rfUpdate = new BasicDBObject();
+		rfUpdate.put("$push", new BasicDBObject("pendingTransactions",
+				transatcionObject.get("_id")));
+		
+		DBObject dBObject = collExit.findOne(rfQuery);
+		//是否存在
+		if(dBObject == null) {
+			rfUpdate.put("$inc", new BasicDBObject("exitCount", 0));
+		} else {
+			Integer eCount = Integer.valueOf(dBObject.get("exitCount").toString());
+			if(eCount > 0) {
+				rfUpdate.put("$inc", new BasicDBObject("exitCount", -1));
+			} else {
+				rfUpdate.put("$inc", new BasicDBObject("exitCount", 0));
+			}
+		}
+		
+	
+		WriteResult rfWR = collExit.update(rfQuery, rfUpdate, true, false);
+
+
+		String rfWRError = rfWR.getError();
+
+		DBObject locQuery = getExitCountObject(transatcionObject, exitCount,
+				false);
+		DBObject locUpdate = new BasicDBObject();
+		locUpdate.put("$inc", new BasicDBObject("exitCount", 1));
+		locUpdate.put("$push", new BasicDBObject("pendingTransactions",
+				transatcionObject.get("_id")));
+
+		WriteResult locWR = collExit.update(locQuery, locUpdate, true, false);
+
+		if (rfWRError == null && locWR.getError() == null) {
+			return true;
+		}
+		return false;
+
+	}
+
 	private DBObject getPullExitCountObject(DBObject transatcionObject,
 			ExitCountObject exitCount, boolean isRf) {
 
 		DBObject queryObject = new BasicDBObject();
 
+		queryObject.put("tt", exitCount.getTt());
 		if (isRf) {
 			queryObject.put("url", exitCount.getRf());
 		} else {
 			queryObject.put("url", exitCount.getLoc());
+		}
+		queryObject.put("rfType", exitCount.getRfType());
+		queryObject.put("isNew", exitCount.getIsNew());
+		if (StringUtils.isNotBlank(exitCount.getSe())) {
+			queryObject.put("se", exitCount.getSe());
 		}
 
 		return queryObject;
@@ -350,6 +388,8 @@ public class MongoDB4TestTest {
 
 		DBObject queryObject = new BasicDBObject();
 
+		queryObject.put("type", exitCount.getType());
+		queryObject.put("tt", exitCount.getTt());
 		if (isRf) {
 			queryObject.put("url", exitCount.getRf());
 		} else {
@@ -395,6 +435,14 @@ public class MongoDB4TestTest {
 
 	private ExitCountObject createExitCount(Map<String, Object> source) {
 
+		// 用户ID
+		String tt = source.containsKey("tt") ? source.get("tt").toString() : "";
+
+		String type = source.get("type").toString();
+		
+		if (StringUtils.isBlank(tt)) {
+			return null;
+		}
 		// 当前路径
 		String loc = source.containsKey("loc") ? source.get("loc").toString()
 				: "";
@@ -411,8 +459,10 @@ public class MongoDB4TestTest {
 		// 新老访客
 		String isNew = source.containsKey("isNew") ? source.get("isNew")
 				.toString() : "";
+				
+		
 
-		return new ExitCountObject(loc, rf, rfType, se, isNew);
+		return new ExitCountObject(type,tt,loc, rf, rfType, se, isNew);
 	}
 
 	public DBObject getLocQueryObject(ExitCountObject exitCount) {
@@ -420,7 +470,7 @@ public class MongoDB4TestTest {
 		queryObject.put("url", exitCount.getLoc());
 
 		if (StringUtils.isNotBlank(exitCount.getRfType())) {
-			queryObject.put("reType", exitCount.getRfType());
+			queryObject.put("rfType", exitCount.getRfType());
 		}
 		if (StringUtils.isNotBlank(exitCount.getSe())) {
 			queryObject.put("se", exitCount.getSe());
@@ -438,6 +488,7 @@ public class MongoDB4TestTest {
 				.put("$set",
 						new BasicDBObject("lastModified", GaDateUtils
 								.getCurrentTime()));
+
 		return updateObject;
 	}
 
