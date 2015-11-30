@@ -51,7 +51,6 @@ public class GroupAnalyticsController {
 			return result;
 		}
 
-		type = "564d8b584c59da027cba765e818cc246";
 
 		try {
 			if (indicator.equals(GaConstant.PV)) {
