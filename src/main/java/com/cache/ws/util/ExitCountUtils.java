@@ -12,7 +12,7 @@ public class ExitCountUtils {
 			collections.add(endDate);
 		} else {
 			collections = GaDateUtils.getDaysListBetweenDates(
-					Math.abs(dateRange) + 1, endDate);
+					Math.abs(dateRange), endDate);
 		}
 
 		return collections;

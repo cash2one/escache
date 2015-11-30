@@ -20,10 +20,8 @@ public class ExitCountService {
 
 	public List<ExitCountResult> queryExitCount(ExitCountQueryDto queryDto) {
 
-		List<ExitCountResult> result = null;
-
 		List<String> tables = queryDto.getTables();
-		List<DBObject> datas = new ArrayList<DBObject>();
+		List<ExitCountResult> result = new ArrayList<ExitCountResult>(tables.size());
 		for (String table : tables) {
 
 			String talbeName = ExitConstant.MONGODB_NAME_EXIT + table;
@@ -31,13 +29,23 @@ public class ExitCountService {
 			DBObject data = exitCountDao.queryExitCount(talbeName,
 					queryDto.getType(), queryDto.getIsNew(),
 					queryDto.getRf_type(), queryDto.getSe());
-
-			datas.add(data);
+			ExitCountResult er = changeObject(data);
+			result.add(er);
 
 		}
 
 		return result;
 
+	}
+
+	private ExitCountResult changeObject(DBObject data) {
+		ExitCountResult er = new ExitCountResult();
+		if (data != null) {
+			er.setUrl(data.get("url").toString());
+			er.setExitCount(Integer.valueOf(data.get("num").toString()));
+		}
+
+		return er;
 	}
 
 }
