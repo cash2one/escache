@@ -1,7 +1,10 @@
 package com.cache.ws.exit.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,7 +13,10 @@ import com.cache.ws.constant.ExitConstant;
 import com.cache.ws.exit.dao.ExitCountDao;
 import com.cache.ws.exit.dto.ExitCountQueryDto;
 import com.cache.ws.exit.dto.ExitCountResult;
+import com.cache.ws.util.FastJsonUtils;
+import com.cache.ws.util.bean.MapUtils;
 import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 
 @Component
 public class ExitCountService {
@@ -18,10 +24,11 @@ public class ExitCountService {
 	@Autowired
 	private ExitCountDao exitCountDao;
 
-	public List<ExitCountResult> queryExitCount(ExitCountQueryDto queryDto) {
+	public Map<String, Object> queryExitCount(ExitCountQueryDto queryDto) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
 		List<String> tables = queryDto.getTables();
-		List<ExitCountResult> result = new ArrayList<ExitCountResult>(tables.size());
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
 		for (String table : tables) {
 
 			String talbeName = ExitConstant.MONGODB_NAME_EXIT + table;
@@ -29,23 +36,36 @@ public class ExitCountService {
 			DBObject data = exitCountDao.queryExitCount(talbeName,
 					queryDto.getType(), queryDto.getIsNew(),
 					queryDto.getRf_type(), queryDto.getSe());
-			ExitCountResult er = changeObject(data);
-			result.add(er);
 
+			List<ExitCountResult> dataTabe = FastJsonUtils.json2list(
+					data.toString(), ExitCountResult.class);
+
+			resultMap = addData(dataTabe, resultMap);
+
+		}
+		return resultMap;
+
+	}
+
+	private Map<String, Object> addData(List<ExitCountResult> dataTabe,
+			Map<String, Object> result) {
+
+		if (dataTabe != null && dataTabe.size() > 0) {
+			for (ExitCountResult data : dataTabe) {
+
+				String key = data.getUrl();
+				int value = data.getNum();
+
+				if (result.containsKey(key)) {
+					value += Integer.valueOf(result.get(key).toString());
+				}
+				result.put(key, value);
+
+			}
 		}
 
 		return result;
 
-	}
-
-	private ExitCountResult changeObject(DBObject data) {
-		ExitCountResult er = new ExitCountResult();
-		if (data != null) {
-			er.setUrl(data.get("url").toString());
-			er.setExitCount(Integer.valueOf(data.get("num").toString()));
-		}
-
-		return er;
 	}
 
 }

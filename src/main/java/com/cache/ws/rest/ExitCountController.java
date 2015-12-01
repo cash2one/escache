@@ -1,6 +1,7 @@
 package com.cache.ws.rest;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.cache.ws.exit.dto.ExitCountQueryDto;
-import com.cache.ws.exit.dto.ExitCountResult;
 import com.cache.ws.exit.service.ExitCountService;
 import com.cache.ws.util.ExitCountUtils;
 
@@ -40,12 +40,12 @@ public class ExitCountController {
 	@GET
 	@Path("/condition/{type}/{rf_type}/{se}/{isNew}/{dateRange}")
 	@Produces("application/json")
-	public List<ExitCountResult> GroupAnalyticsQuery(
+	public Map<String, Object> GroupAnalyticsQuery(
 			@PathParam("type") String type,
 			@PathParam("rf_type") String rfType, @PathParam("se") String se,
 			@PathParam("isNew") String isNew,
 			@PathParam("dateRange") int dateRange) {
-		List<ExitCountResult> exitCounts = null;
+		Map<String, Object> exitCounts = null;
 
 		try {
 			if (StringUtils.isBlank(type)) {
