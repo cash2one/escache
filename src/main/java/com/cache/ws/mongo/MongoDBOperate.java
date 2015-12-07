@@ -97,26 +97,24 @@ public final class MongoDBOperate {
 	public DBObject loadMongoDataGroup(String dbName, String collection,
 			String type, String isNew, String rfType, String se) {
 
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("type", type);
+		Map<String, Object> condMap = new HashMap<String, Object>();
+		condMap.put("type", type);
 		if (!"-1".equals(isNew)) {
-			map.put("isNew", isNew);
+			condMap.put("isNew", isNew);
 		}
 		if (!"-1".equals(rfType)) {
-
-			map.put("rfType", isNew);
+			condMap.put("rfType", rfType);
 		}
 		if (!"-1".equals(se)) {
-			map.put("se", isNew);
+			condMap.put("se", se);
 		}
 		DBObject key = new BasicDBObject("url", true);
 		
-		DBObject cond = MongoDBUtil.getMapped(map);
+		DBObject cond = MongoDBUtil.getMapped(condMap);
 		
-		
-		DBObject initial = new BasicDBObject("num", 0);
+		DBObject initial = new BasicDBObject("ec", 0);
 
-		String reduce = "function (doc, prev) { " + " prev.num++  }";
+		String reduce = "function (doc, out) { " + " out.ec += doc.exitCount  }";
 
 		DBObject dBObject = MongoDBUtil.groupByRefs(dbName, collection, key,
 				cond, initial, reduce);

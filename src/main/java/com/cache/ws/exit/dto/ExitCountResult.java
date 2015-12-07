@@ -5,16 +5,14 @@ public class ExitCountResult {
 	/** 访问地址 */
 	private String url;
 	/** 退出次数 */
-	private Integer exitCount;
+	private Integer ec;
 
-	private Integer num;
-
-	public Integer getNum() {
-		return num;
+	public Integer getEc() {
+		return ec;
 	}
 
-	public void setNum(Integer num) {
-		this.num = num;
+	public void setEc(Integer ec) {
+		this.ec = ec;
 	}
 
 	public String getUrl() {
@@ -23,14 +21,6 @@ public class ExitCountResult {
 
 	public void setUrl(String url) {
 		this.url = url;
-	}
-
-	public Integer getExitCount() {
-		return exitCount;
-	}
-
-	public void setExitCount(Integer exitCount) {
-		this.exitCount = exitCount;
 	}
 
 }

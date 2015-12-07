@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.cache.ws.constant.ExitConstant;
 import com.cache.ws.exit.dto.ExitCountQueryDto;
 import com.cache.ws.exit.service.ExitCountService;
 import com.cache.ws.util.ExitCountUtils;
@@ -38,21 +39,26 @@ public class ExitCountController {
 	 * @return
 	 */
 	@GET
-	@Path("/condition/{type}/{rf_type}/{se}/{isNew}/{dateRange}")
+	@Path("/condition/{type}/{rf_type}/{se}/{isNew}/{start}/{end}")
 	@Produces("application/json")
 	public Map<String, Object> GroupAnalyticsQuery(
 			@PathParam("type") String type,
 			@PathParam("rf_type") String rfType, @PathParam("se") String se,
 			@PathParam("isNew") String isNew,
-			@PathParam("dateRange") int dateRange) {
+			@PathParam("start") int start,
+			@PathParam("end") int end
+			) {
 		Map<String, Object> exitCounts = null;
 
 		try {
+			
+			type = "564d8b584c59da027cba765e818cc246";
+			
 			if (StringUtils.isBlank(type)) {
 				return exitCounts;
 			}
 			ExitCountQueryDto queryDto = getQueryDto(type, rfType, se, isNew,
-					dateRange);
+					start,end);
 
 			exitCounts = exitCountService.queryExitCount(queryDto);
 		} catch (Exception e) {
@@ -62,17 +68,19 @@ public class ExitCountController {
 	}
 
 	private ExitCountQueryDto getQueryDto(String type, String rfType,
-			String se, String isNew, int dateRange) {
+			String se, String isNew,int start,int end) {
 
 		ExitCountQueryDto query = new ExitCountQueryDto();
 
+		String seValue = ExitConstant.browsersKeyMap.get(se);
+		seValue = seValue == null ? "-1" : seValue;
 		query.setType(type);
 		query.setRf_type(rfType);
-		query.setSe(se);
+		query.setSe(seValue);
 		query.setIsNew(isNew);
 
 		// 获取查询日期
-		List<String> tables = ExitCountUtils.getTables(dateRange);
+		List<String> tables = ExitCountUtils.getTables(start,end);
 
 		query.setTables(tables);
 

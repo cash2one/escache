@@ -500,6 +500,22 @@ public class GaDateUtils {
 
 		return getDaysListBetweenDates(beginDate, end);
 	}
+	
+	public static List<String> getDaysListBetweenDates(int begin, int end) {
+		String beginDate = "";
+		String endDate = "";
+		String currentDate = getCurrentDate();
+		try {
+			
+			beginDate = getOffsetDateTime(currentDate,begin);
+			endDate = getOffsetDateTime(currentDate,end);
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		return getDaysListBetweenDates(beginDate, endDate);
+	}
 
 	public static List<String> getMonthsListBetweenDates(int begin, String end) {
 		String beginDate = "";

@@ -5,14 +5,13 @@ import java.util.List;
 
 public class ExitCountUtils {
 
-	public static List<String> getTables(int dateRange) {
+	public static List<String> getTables(int start,int end) {
 		List<String> collections = new ArrayList<String>();
 		String endDate = GaDateUtils.getCurrentDate();
-		if (dateRange == 0) {
+		if (end == 0 && start == 0) {
 			collections.add(endDate);
 		} else {
-			collections = GaDateUtils.getDaysListBetweenDates(
-					Math.abs(dateRange), endDate);
+			collections = GaDateUtils.getDaysListBetweenDates(start,end);
 		}
 
 		return collections;

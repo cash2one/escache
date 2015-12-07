@@ -1,7 +1,6 @@
 package com.cache.ws.exit.service;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +13,7 @@ import com.cache.ws.exit.dao.ExitCountDao;
 import com.cache.ws.exit.dto.ExitCountQueryDto;
 import com.cache.ws.exit.dto.ExitCountResult;
 import com.cache.ws.util.FastJsonUtils;
-import com.cache.ws.util.bean.MapUtils;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 
 @Component
 public class ExitCountService {
@@ -54,13 +51,12 @@ public class ExitCountService {
 			for (ExitCountResult data : dataTabe) {
 
 				String key = data.getUrl();
-				int value = data.getNum();
+				int value = data.getEc();
 
 				if (result.containsKey(key)) {
 					value += Integer.valueOf(result.get(key).toString());
 				}
 				result.put(key, value);
-
 			}
 		}
 
