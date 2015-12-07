@@ -24,6 +24,9 @@ public class ExitCountController {
 	@Autowired
 	private ExitCountService exitCountService;
 
+	
+	
+	
 	/**
 	 * 
 	 * @param type
@@ -41,7 +44,52 @@ public class ExitCountController {
 	@GET
 	@Path("/condition/{type}/{rf_type}/{se}/{isNew}/{start}/{end}")
 	@Produces("application/json")
-	public Map<String, Object> GroupAnalyticsQuery(
+	public Map<String, Object> ecQuery(
+			@PathParam("type") String type,
+			@PathParam("rf_type") String rfType, @PathParam("se") String se,
+			@PathParam("isNew") String isNew,
+			@PathParam("start") int start,
+			@PathParam("end") int end
+			) {
+		Map<String, Object> exitCounts = null;
+
+		try {
+			
+			//type = "564d8b584c59da027cba765e818cc246";
+			
+			if (StringUtils.isBlank(type)) {
+				return exitCounts;
+			}
+			ExitCountQueryDto queryDto = getQueryDto(type, rfType, se, isNew,
+					start,end);
+
+			exitCounts = exitCountService.queryExitCount(queryDto);
+		} catch (Exception e) {
+			return exitCounts;
+		}
+		return exitCounts;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @param type
+	 *            客户ID
+	 * @param rf_type
+	 *            来源过滤
+	 * @param se
+	 *            搜索引擎
+	 * @param isNew
+	 *            新老访客
+	 * @param dateRange
+	 *            时间范围
+	 * @return
+	 */
+	@GET
+	@Path("/summary/condition/{type}/{rf_type}/{se}/{isNew}/{start}/{end}")
+	@Produces("application/json")
+	public Map<String, Object> ecSummaryQuery(
 			@PathParam("type") String type,
 			@PathParam("rf_type") String rfType, @PathParam("se") String se,
 			@PathParam("isNew") String isNew,
@@ -60,7 +108,7 @@ public class ExitCountController {
 			ExitCountQueryDto queryDto = getQueryDto(type, rfType, se, isNew,
 					start,end);
 
-			exitCounts = exitCountService.queryExitCount(queryDto);
+			exitCounts = exitCountService.queryExitCountSummary(queryDto);
 		} catch (Exception e) {
 			return exitCounts;
 		}

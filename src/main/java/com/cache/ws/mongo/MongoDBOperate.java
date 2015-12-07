@@ -94,7 +94,7 @@ public final class MongoDBOperate {
 		return MongoDBUtil.findByRefs(map, dbName, collection);
 	}
 
-	public DBObject loadMongoDataGroup(String dbName, String collection,
+	public DBObject loadEcDataGroup(String dbName, String collection,
 			String type, String isNew, String rfType, String se) {
 
 		Map<String, Object> condMap = new HashMap<String, Object>();
@@ -109,6 +109,35 @@ public final class MongoDBOperate {
 			condMap.put("se", se);
 		}
 		DBObject key = new BasicDBObject("url", true);
+		
+		DBObject cond = MongoDBUtil.getMapped(condMap);
+		
+		DBObject initial = new BasicDBObject("ec", 0);
+
+		String reduce = "function (doc, out) { " + " out.ec += doc.exitCount  }";
+
+		DBObject dBObject = MongoDBUtil.groupByRefs(dbName, collection, key,
+				cond, initial, reduce);
+
+		return dBObject;
+
+	}
+	
+	public DBObject loadEcSummaryDataGroup(String dbName, String collection,
+			String type, String isNew, String rfType, String se) {
+
+		Map<String, Object> condMap = new HashMap<String, Object>();
+		condMap.put("type", type);
+		if (!"-1".equals(isNew)) {
+			condMap.put("isNew", isNew);
+		}
+		if (!"-1".equals(rfType)) {
+			condMap.put("rfType", rfType);
+		}
+		if (!"-1".equals(se)) {
+			condMap.put("se", se);
+		}
+		DBObject key = new BasicDBObject("type", true);
 		
 		DBObject cond = MongoDBUtil.getMapped(condMap);
 		

@@ -18,10 +18,21 @@ public class ExitCountDao {
 
 		DBObject data = null;
 
-		data = mongoDBOperate.loadMongoDataGroup(ExitConstant.DB_NAME, table,
+		data = mongoDBOperate.loadEcDataGroup(ExitConstant.DB_NAME, table,
 				type, isNew, rfType, se);
 
 		return data;
 	}
 
+	
+	public DBObject queryExitCountSummay(String table, String type, String isNew,
+			String rfType, String se) {
+
+		DBObject data = null;
+
+		data = mongoDBOperate.loadEcSummaryDataGroup(ExitConstant.DB_NAME, table,
+				type, isNew, rfType, se);
+
+		return data;
+	}
 }
